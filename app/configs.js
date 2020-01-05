@@ -1,7 +1,3 @@
-/**
- * Created by Rajesh on 7/4/19.
- */
-
 require("dotenv").config();
 
 module.exports = {

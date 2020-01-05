@@ -1,7 +1,7 @@
 {
-  "name": "Efile-dashboard",
+  "name": "question-set-generator",
   "version": "1.0.0",
-  "description": "Efile dashboard using NodeJS, Express, React",
+  "description": "Question Set Generator using NodeJS, Express, React",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -14,10 +14,10 @@
     "JS",
     "express",
     "React",
-    "Search",
-    "Efile"
+    "Questions",
+    "Generator"
   ],
-  "author": "Rajesh Baidya",
+  "author": "Zihad Ul Islam",
   "license": "MIT",
   "dependencies": {
     "@material-ui/core": "^4.0.1",
@@ -36,7 +36,6 @@
     "md5": "^2.2.1",
     "method-override": "^3.0.0",
     "mongoose": "^5.5.8",
-    "mysql": "^2.17.1",
     "path": "^0.12.7",
     "prop-types": "^15.6.0",
     "pug": "^2.0.0-rc.4",
