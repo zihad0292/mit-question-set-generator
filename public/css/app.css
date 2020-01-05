@@ -1,0 +1,41 @@
+@font-face {
+  font-family: 'Helvetica 85 Heavy';
+  font-style: normal;
+  font-weight: normal;
+  src: local("Helvetica 85 Heavy"), url("/fonts/HelveticaNeue-Heavy.woff") format("woff"); }
+
+@font-face {
+  font-family: 'Helvetica 65 Medium';
+  font-style: normal;
+  font-weight: normal;
+  src: local("Helvetica 65 Medium"), url("/fonts/HelveticaNeue-Medium.woff") format("woff"); }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: "Helvetica 65 Medium", "Helvetica", "Arial", sans-serif;
+  color: #5f5f5f; }
+
+#app {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0; }
+
+.light {
+  font-weight: 200; }
+
+.container {
+  max-width: 1150px; }
+
+.full-height {
+  min-height: 100%; }
+
+.center-aligned {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center; }
+
+/*# sourceMappingURL=app.css.map*/
