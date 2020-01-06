@@ -4,14 +4,9 @@ var bodyParser = require("body-parser");
 var methodOverride = require("method-override");
 var mongoose = require("mongoose");
 var configs = require("./configs");
-var initializers = require("./initializers");
-
-var sessionManager = require("./session");
 
 var app = express();
 var routes = require("./routes");
-var middleware = require("./middlewares");
-sessionManager(app);
 
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
@@ -30,22 +25,8 @@ var database = configs.database;
 mongoose.connect("mongodb://" + mongoHost + ":" + mongoPort + "/" + database, {
   useNewUrlParser: true
 });
-initializers.createSystemUser();
-initializers.createFieldDataType();
 
 app.use("/api/", routes);
-
-app.get(
-  "/dashboard*",
-  [middleware.requireAuthentication, middleware.superAdminAuth],
-  function(req, res) {
-    res.render("index");
-  }
-);
-
-app.get("/login", function(req, res) {
-  res.render("index");
-});
 
 app.get("/", function(req, res) {
   res.redirect("/dashboard/");
