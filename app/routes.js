@@ -8,8 +8,8 @@ var questionBankController = require("./controllers/questionBankController");
 
 // Question Bank CRUD
 routes.get("/question-bank/list", questionBankController.getAllQuestions);
-routes.post("/question-bank/new", questionBankController.createQuestion);
-routes.post("/question-bank/update", questionBankController.updateQuestion);
+routes.post("/question-bank/create", questionBankController.createQuestion);
+routes.post("/question-bank/edit", questionBankController.updateQuestion);
 routes.delete("/question-bank/delete", questionBankController.deleteQuestion);
 
 // Question Set CRUD
@@ -17,5 +17,8 @@ routes.delete("/question-bank/delete", questionBankController.deleteQuestion);
 // routes.post("/question-set/new", questionSetController.createQuestionSet);
 // routes.post("/question-set/update", questionSetController.updateQuestionSet);
 // routes.delete("/question-set/delete", questionSetController.deleteQuestionSet);
+
+// Stat
+routes.get("/stats", console.log("Retrieving stat from backend"));
 
 module.exports = routes;

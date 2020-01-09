@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { render } from "react-dom";
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
@@ -8,23 +8,21 @@ import { withStyles } from "@material-ui/core/styles";
 
 import Grid from "@material-ui/core/Grid";
 
-import PrivateRoute from "./privateRoute";
+// Layout components
 import TopBar from "./components/topBar";
 import Sidebar from "./components/sidebar";
+
+// Page components
 import Landing from "./pages/landing";
-import About from "./pages/about";
-import Office from "./pages/office";
-import Users from "./pages/users";
-import DBConfig from "./pages/dbConfig";
-import IndexRelation from "./pages/indexRelations";
-import CreateIndexRelation from "./pages/indexRelations/create";
-import UpdateIndexRelation from "./pages/indexRelations/update";
-import Stats from "./pages/stats";
-import Crawler from "./pages/crawler";
-import Search from "./pages/search";
-import DataTypes from "./pages/dataTypes/all";
-import Credentials from "./pages/dataTypes/credentials";
+// import QuestionBank from "./pages/questionBank";
+// import CreateQuestion from "./pages/questionBank/createQuestion";
+// import EditQuestion from "./pages/questionBank/editQuestion";
+// import QuestionSets from "./pages/questionSets";
+// import CreateQuestionSet from "./pages/questionSets/createQuestionSet";
 import NotFound from "./pages/notfound";
+
+// Actions
+import { retrieveStats } from "./actions/statsActions";
 
 const styles = theme => ({
   toolbar: theme.mixins.toolbar,
@@ -54,9 +52,10 @@ class Layout extends Component {
   }
 
   componentDidMount() {
-    const { fetched, isLoggedIn } = this.props;
-    if (!fetched && !isLoggedIn) {
-      this.props.retrieveSessionInfo();
+    const { fetched } = this.props;
+    console.log(this.props);
+    if (!fetched) {
+      this.props.retrieveStats();
     } else {
       this.setState({
         fetching: false
@@ -92,36 +91,16 @@ class Layout extends Component {
         <Sidebar isOpen={openMenu} />
         <div className={classes.routeContainer}>
           <Switch>
-            <PrivateRoute exact path='/dashboard/' component={Landing} />
-            <PrivateRoute path='/dashboard/home' component={Landing} />
-            <PrivateRoute path='/dashboard/office' component={Office} />
-            <PrivateRoute path='/dashboard/users' component={Users} />
-            <PrivateRoute path='/dashboard/database' component={DBConfig} />
-            <PrivateRoute
-              path='/dashboard/index_relation/:dbConfig/new'
-              component={CreateIndexRelation}
-            />
-            <PrivateRoute
-              path='/dashboard/index_relation/:index/edit'
-              component={UpdateIndexRelation}
-            />
-            <PrivateRoute
-              path='/dashboard/index_relation'
-              component={IndexRelation}
-            />
-            <PrivateRoute path='/dashboard/stats/indexes' component={Stats} />
-            <PrivateRoute path='/dashboard/stats/crawler' component={Crawler} />
-            <PrivateRoute path='/dashboard/search' component={Search} />
-            <PrivateRoute path='/dashboard/about' component={About} />
-            <PrivateRoute
-              path='/dashboard/data-types/all'
-              component={DataTypes}
-            />
-            <PrivateRoute
-              path='/dashboard/data-types/credentials'
-              component={Credentials}
-            />
-            <PrivateRoute component={NotFound} />
+            <Route exact path='/dashboard' component={Landing} />
+            {/* <Route path='/question-bank' component={QuestionBank} />
+            <Route path='/question-bank/create' component={CreateQuestion} />
+            <Route
+              path='/question-bank/edit/:question_id'
+              component={EditQuestion}
+            /> */}
+            {/* <Route path='/question-sets' component={QuestionSets} />
+            <Route path='/question-sets/create' component={CreateQuestionSet} /> */}
+            <Route component={NotFound} />
           </Switch>
         </div>
       </div>
@@ -129,4 +108,17 @@ class Layout extends Component {
   }
 }
 
-export default withStyles(styles)(Layout);
+function mapStateToProps(store) {
+  return {
+    fetched: store.statsInfo.fetched
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ retrieveStats }, dispatch);
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(Layout));
