@@ -66,15 +66,14 @@ const Pages = [
   {
     title: "Question Bank",
     url: "/question-bank",
-    icon: "business"
+    icon: "collections_icon"
   },
   {
     title: "Question Sets",
     url: "/question-sets",
-    icon: "supervised_user_circle"
+    icon: "filter_none_icon"
   }
 ];
-
 class Sidebar extends Component {
   constructor(props) {
     super(props);

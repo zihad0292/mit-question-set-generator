@@ -12,16 +12,16 @@ import Dashboard from "./layout";
 import NotFound from "./pages/notfound";
 
 const theme = createMuiTheme({
-  palette: {
-    primary: {
-      light: "#b388ff",
-      main: "#7c4dff",
-      dark: "#651fff"
-    },
-    secondary: {
-      main: "#43a047"
-    }
-  },
+  // palette: {
+  //   primary: {
+  //     light: "#b388ff",
+  //     main: "#7c4dff",
+  //     dark: "#651fff"
+  //   },
+  //   secondary: {
+  //     main: "#43a047"
+  //   }
+  // },
   shape: {
     borderRadius: 8
   },

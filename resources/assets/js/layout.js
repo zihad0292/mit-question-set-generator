@@ -53,7 +53,6 @@ class Layout extends Component {
 
   componentDidMount() {
     const { fetched } = this.props;
-    console.log(this.props);
     if (!fetched) {
       this.props.retrieveStats();
     } else {

@@ -32,12 +32,11 @@ const styles = theme => ({
     height: "100%"
   },
   homeWidget: {
-    height: 500
+    height: 150
   },
   cardContent: {
     position: "absolute",
-    bottom: 0,
-    marginBottom: theme.spacing(5)
+    bottom: 0
   },
   titleStyle: {
     fontSize: "2.3rem",
@@ -51,6 +50,9 @@ const styles = theme => ({
   statTitleStyle: {
     fontSize: "3.5rem",
     marginBottom: theme.spacing(0.5)
+  },
+  statFirstRow: {
+    marginBottom: theme.spacing(3)
   }
 });
 
@@ -81,87 +83,59 @@ class Landing extends Component {
     const { classes, history } = this.props;
 
     return (
-      <PageContainer maxWidth='lg'>
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={8}>
+      <PageContainer maxWidth="lg">
+        <Grid container spacing={2} className={classes.statFirstRow}>
+          <Grid item xs={12} sm={3}>
             <CustomSmallPaper className={classes.homeWidget}>
-              <CardMedia
-                className={classes.media}
-                image='/images/welcome.png'
-                title='welcome'
-              />
               <CardContent className={classes.cardContent}>
-                <WidgetTitle color='primary' className={classes.titleStyle}>
-                  Welcome
-                </WidgetTitle>
-                <Typography variant='subtitle1'>Placeholder</Typography>
-                <Typography variant='subtitle2'>Placeholder</Typography>
+                <Typography color="primary" variant="h4">
+                  English
+                </Typography>
+                <Typography variant="subtitle1">54 Questions</Typography>
               </CardContent>
             </CustomSmallPaper>
           </Grid>
-          <Grid item xs={12} sm={4}>
-            <Grid container spacing={2} direction='column'>
-              <Grid item>
-                <CustomSmallPaper className={classes.smallWidgetStyle}>
-                  <Grid
-                    container
-                    direction='column'
-                    justify='center'
-                    alignItems='center'
-                    style={{ height: "100%" }}
-                  >
-                    <WidgetTitle
-                      color='primary'
-                      className={classes.statTitleStyle}
-                      align='center'
-                    >
-                      Placeholder
-                    </WidgetTitle>
-                    <WidgetTitle small align='center'>
-                      Database Configs
-                    </WidgetTitle>
-                    <Button
-                      variant='outlined'
-                      onClick={() => {
-                        history.push("/dashboard/database/");
-                      }}
-                    >
-                      View More
-                    </Button>
-                  </Grid>
-                </CustomSmallPaper>
-              </Grid>
-              <Grid item>
-                <CustomSmallPaper className={classes.smallWidgetStyle}>
-                  <Grid
-                    container
-                    direction='column'
-                    justify='center'
-                    alignItems='center'
-                    style={{ height: "100%" }}
-                  >
-                    <WidgetTitle
-                      color='primary'
-                      className={classes.statTitleStyle}
-                      align='center'
-                    >
-                      Placeholder
-                    </WidgetTitle>
-                    <WidgetTitle small align='center'>
-                      Total Index Relation
-                    </WidgetTitle>
-                    <Button
-                      variant='outlined'
-                      onClick={() => {
-                        history.push("/dashboard/index_relation/");
-                      }}
-                    >
-                      View More
-                    </Button>
-                  </Grid>
-                </CustomSmallPaper>
-              </Grid>
-            </Grid>
+          <Grid item xs={12} sm={3}>
+            <CustomSmallPaper className={classes.homeWidget}>
+              <CardContent className={classes.cardContent}>
+                <Typography color="primary" variant="h4">
+                  Math
+                </Typography>
+                <Typography variant="subtitle1">54 Questions</Typography>
+              </CardContent>
+            </CustomSmallPaper>
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <CustomSmallPaper className={classes.homeWidget}>
+              <CardContent className={classes.cardContent}>
+                <Typography color="primary" variant="h4">
+                  Physics
+                </Typography>
+                <Typography variant="subtitle1">54 Questions</Typography>
+              </CardContent>
+            </CustomSmallPaper>
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <CustomSmallPaper className={classes.homeWidget}>
+              <CardContent className={classes.cardContent}>
+                <Typography color="primary" variant="h4">
+                  Chemistry
+                </Typography>
+                <Typography variant="subtitle1">54 Questions</Typography>
+              </CardContent>
+            </CustomSmallPaper>
+          </Grid>
+        </Grid>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={12}>
+            <CustomSmallPaper className={classes.homeWidget}>
+              <CardContent className={classes.cardContent}>
+                <Typography variant="h3" color="textPrimary" align="center">
+                  Question Sets
+                </Typography>
+                <Typography variant="subtitle1">5 Sets available</Typography>
+              </CardContent>
+            </CustomSmallPaper>
           </Grid>
         </Grid>
       </PageContainer>

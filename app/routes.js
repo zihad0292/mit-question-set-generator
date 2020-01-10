@@ -19,6 +19,6 @@ routes.delete("/question-bank/delete", questionBankController.deleteQuestion);
 // routes.delete("/question-set/delete", questionSetController.deleteQuestionSet);
 
 // Stat
-routes.get("/stats", console.log("Retrieving stat from backend"));
+// routes.get("/stats", console.log("Retrieving stat from backend"));
 
 module.exports = routes;

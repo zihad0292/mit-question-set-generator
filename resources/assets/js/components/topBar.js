@@ -31,7 +31,7 @@ class TopBar extends Component {
     return (
       <AppBar position='fixed' className={classes.appBar}>
         <Toolbar>
-          <IconButton
+          {/* <IconButton
             edge='start'
             color='inherit'
             aria-label='Menu'
@@ -39,7 +39,7 @@ class TopBar extends Component {
             onClick={onToggleClick}
           >
             <MenuIcon />
-          </IconButton>
+          </IconButton> */}
           <Typography variant='h6' className={classes.title}>
             Admission Question Set Generator
           </Typography>
