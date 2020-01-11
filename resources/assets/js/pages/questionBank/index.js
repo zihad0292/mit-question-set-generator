@@ -6,26 +6,26 @@ import { withStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 import Grid from "@material-ui/core/Grid";
 import Icon from "@material-ui/core/Icon";
+import Chip from "@material-ui/core/Chip";
+import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
+import CardMedia from "@material-ui/core/CardMedia";
+import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import MaterialTable, { MTableToolbar } from "material-table";
-import Chip from "@material-ui/core/Chip";
-import { MessagePopUp } from "../../../components/messagePopUps";
 
 import {
-  fetchDataTypes,
-  deleteDataType
-} from "../../../actions/dataTypesActions";
+  fetchQuestions,
+  deleteQuestion
+} from "../../actions/questionBankActions";
+
 import {
   PageContainer,
   CustomSmallPaper,
   WidgetTitle,
   FullBodyLoader,
   ConfirmDialog
-} from "../../../components/utils";
-
-import AddNewDataType from "./addNewDataType";
-import UpdateDataType from "./updateDataType";
+} from "../../components/utils";
 
 const styles = theme => ({
   tableTitle: {
@@ -73,55 +73,34 @@ const styles = theme => ({
     backgroundImage: "url('/images/index-relation-banner.png')",
     minHeight: 140,
     backgroundSize: "cover"
-  },
-  iconWidth: {
-    width: "24px"
   }
 });
 
-class DataTypes extends Component {
+class QuestionBank extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showUpdate: false,
+      subject: "",
+      questions: [],
       selected: null,
-      confirm: false,
-      message: "",
-      showMessage: false
+      confirm: false
     };
 
-    this.onModalClose = this.onModalClose.bind(this);
     this.onEditClick = this.onEditClick.bind(this);
     this.onDeleteClick = this.onDeleteClick.bind(this);
     this.onDeleteSubmit = this.onDeleteSubmit.bind(this);
-    this.handleMessageClose = this.handleMessageClose.bind(this);
   }
 
   componentDidMount() {
-    if (this.props.dataTypes.length == 0) {
-      this.props.fetchDataTypes();
-    }
+    const subject = this.props.match.params.subject;
+    this.setState({
+      subject: subject
+    });
+
+    this.props.fetchQuestions(subject);
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.message && nextProps.message.length > 0) {
-      this.setState({
-        message: nextProps.message,
-        showMessage: true
-      });
-    }
-
-    if (this.props.deleted != nextProps.deleted && nextProps.deleted) {
-      this.props.fetchDataTypes();
-    }
-  }
-
-  onDeleteClick(selectedIndex, dataTypeId = null) {
-    if (dataTypeId) {
-      const { dataTypes } = this.props;
-      selectedIndex = dataTypes.findIndex(x => x._id === dataTypeId);
-    }
-
+  onDeleteClick(selectedIndex) {
     this.setState({
       selected: selectedIndex,
       confirm: true
@@ -129,224 +108,62 @@ class DataTypes extends Component {
   }
 
   onDeleteSubmit() {
-    const { dataTypes } = this.props;
     const { selected } = this.state;
-    console.log(selected);
 
-    this.props.deleteDataType(dataTypes[selected]._id);
+    this.props.deleteQuestion(selected._id);
 
     this.setState({
       confirm: false
     });
   }
 
-  onEditClick(selectedIndex, dataTypeId = null) {
-    if (dataTypeId) {
-      const { dataTypes } = this.props;
-      selectedIndex = dataTypes.findIndex(x => x._id === dataTypeId);
+  onEditClick(selectedIndex) {
+    console.log("Redirect to edit page");
+    alert("Redirect to edit page");
+  }
+
+  renderQuestions() {
+    const { classes } = this.props;
+
+    const subject = this.state.subject;
+    let questionsToRender = [];
+
+    if (subject === "english") {
+      questionsToRender = this.props.englishQuestions;
+    } else if (subject === "math") {
+      questionsToRender = this.props.mathQuestions;
+    } else if (subject === "physics") {
+      questionsToRender = this.props.physicsQuestions;
+    } else {
+      questionsToRender = this.props.chemistryQuestions;
     }
-
-    this.setState({
-      selected: selectedIndex,
-      showUpdate: true
-    });
-  }
-
-  onModalClose() {
-    this.setState({
-      showUpdate: false,
-      confirm: false
-    });
-  }
-
-  handleMessageClose() {
-    this.setState({
-      showMessage: false
-    });
-  }
-
-  renderDataTypeTable() {
-    const { dataTypes, classes } = this.props;
-
-    const columns = [
-      {
-        title: "Data Type",
-        field: "dataType",
-        sorting: false
-      },
-      {
-        title: "Enabled",
-        field: "enabled",
-        sorting: false,
-        render: rowData => {
-          return (
-            <Chip
-              variant='outlined'
-              color={rowData.enabled ? "secondary" : "default"}
-              label={rowData.enabled ? "Enabled" : "Disabled"}
-              size='small'
-              icon={
-                <Icon className={classes.iconWidth}>fiber_manual_record</Icon>
-              }
-            />
-          );
-        }
-      },
-      {
-        title: "Has Credentials",
-        field: "hasCredentials",
-        sorting: false,
-        render: rowData => {
-          return (
-            <Chip
-              variant='outlined'
-              color={rowData.hasCredentials ? "secondary" : "default"}
-              label={rowData.hasCredentials ? "Yes" : "No"}
-              size='small'
-              icon={
-                <Icon className={classes.iconWidth}>fiber_manual_record</Icon>
-              }
-            />
-          );
-        }
-      }
-    ];
-
-    const components = {
-      Toolbar: props => (
-        <div className={classes.toolbarStyle}>
-          <MTableToolbar {...props} />
-        </div>
-      ),
-      Container: props => {
-        return (
-          <CustomSmallPaper style={props.style}>
-            {props.children}
-          </CustomSmallPaper>
-        );
-      },
-      Action: props => {
-        if (props.action.icon === "edit") {
-          return (
-            <IconButton
-              aria-label='delete'
-              size='small'
-              disabled={
-                props.data.dataType.toLowerCase() === "html" ||
-                props.data.dataType.toLowerCase() === "plain" ||
-                props.data.dataType.toLowerCase() === "base64" ||
-                props.data.dataType.toLowerCase() === "encryption" ||
-                props.data.dataType.toLowerCase() === "ftp" ||
-                props.data.dataType.toLowerCase() === "sftp"
-              }
-              onClick={event => props.action.onClick(event, props.data)}
-            >
-              <Icon>edit</Icon>
-            </IconButton>
-          );
-        } else {
-          return (
-            <IconButton
-              aria-label='delete'
-              size='small'
-              disabled={
-                props.data.dataType.toLowerCase() === "html" ||
-                props.data.dataType.toLowerCase() === "plain" ||
-                props.data.dataType.toLowerCase() === "base64" ||
-                props.data.dataType.toLowerCase() === "encryption" ||
-                props.data.dataType.toLowerCase() === "ftp" ||
-                props.data.dataType.toLowerCase() === "sftp"
-              }
-              onClick={event => props.action.onClick(event, props.data)}
-            >
-              <Icon>delete</Icon>
-            </IconButton>
-          );
-        }
-      }
-    };
-
-    const actions = [
-      {
-        icon: "edit",
-        tooltip: "Edit Index",
-        onClick: (event, rowData) => {
-          //history.push('/dashboard/index_relation/' + rowData._id + "/edit");
-          this.onEditClick(null, rowData._id);
-        }
-      },
-      {
-        icon: "delete",
-        tooltip: "Delete Index",
-        onClick: (event, rowData) => {
-          this.onDeleteClick(null, rowData._id);
-        }
-      }
-    ];
-
-    const options = {
-      showTitle: false,
-      actionsColumnIndex: -1,
-      searchFieldStyle: {
-        color: "#fff"
-      }
-    };
-
-    return (
-      <MaterialTable
-        title='Created Index List'
-        columns={columns}
-        data={dataTypes}
-        actions={actions}
-        options={options}
-        components={components}
-        style={{ overflow: "hidden" }}
-      />
-    );
+    console.log(questionsToRender);
   }
 
   render() {
-    const { classes, fetching, deleting, dataTypes } = this.props;
-    const { selected, showMessage, message } = this.state;
+    const { classes, fetching, deleting } = this.props;
+    const { selected } = this.state;
 
     return (
-      <PageContainer maxWidth='lg'>
+      <PageContainer maxWidth="lg">
         <Grid container spacing={3}>
           <Grid item xs={12} sm={8} className={classes.relativeContainer}>
-            <WidgetTitle>All Data Types List</WidgetTitle>
-            {this.renderDataTypeTable()}
-            <FullBodyLoader active={fetching || deleting} />
+            <WidgetTitle>All Database List</WidgetTitle>
+            {this.renderQuestions()}
+            {/* <FullBodyLoader active={fetching || deleting} /> */}
           </Grid>
           <Grid item xs={12} sm={4}>
-            <WidgetTitle>Add New Data Type</WidgetTitle>
-            <AddNewDataType />
+            <WidgetTitle>Add New Database</WidgetTitle>
+            <AddNewDB />
           </Grid>
         </Grid>
-        <Modal
-          aria-labelledby='dataType-edit-modal'
-          aria-describedby='dataType-edit-modal'
-          disableAutoFocus={true}
-          open={this.state.showUpdate}
-          onClose={this.onModalClose}
-        >
-          <UpdateDataType
-            selectedDataType={dataTypes[selected]}
-            onUpdateComplete={this.onModalClose}
-          />
-        </Modal>
-        <ConfirmDialog
-          title='Confirm Delete?'
-          description="Do You Really Want to Delete this Data Type? This means all of the users from this Data Type won't be able to log in and do activity in future."
+        {/* <ConfirmDialog
+          title="Confirm Delete?"
+          description="Do You Really Want to Delete this Database Config. This means database info will be lost and cannot be connected in future."
           active={this.state.confirm}
           onClose={this.onModalClose}
           onSubmit={this.onDeleteSubmit}
-        />
-        <MessagePopUp
-          visible={showMessage}
-          variant='success'
-          onClose={this.handleMessageClose}
-          message={message}
-        />
+        /> */}
       </PageContainer>
     );
   }
@@ -354,18 +171,26 @@ class DataTypes extends Component {
 
 function mapStateToProps(store) {
   return {
-    ...store.dataTypesInfo,
-    userType: store.userInfo.type,
-    dataTypes: store.dataTypesInfo.dataTypes
+    fetched: store.questionBankInfo.fetched,
+    fetching: store.questionBankInfo.fetching,
+    deleting: store.questionBankInfo.deleting,
+    questions: store.questionBankInfo.questions,
+    englishQuestions: store.questionBankInfo.englishQuestions,
+    countEnglishQuestions: store.questionBankInfo.countEnglishQuestions,
+    mathQuestions: store.questionBankInfo.mathQuestions,
+    countMathQuestions: store.questionBankInfo.countMathQuestions,
+    physicsQuestions: store.questionBankInfo.physicsQuestions,
+    countPhysicsQuestions: store.questionBankInfo.countPhysicsQuestions,
+    chemistryQuestions: store.questionBankInfo.chemistryQuestions,
+    countChemistryQuestions: store.questionBankInfo.countChemistryQuestions
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  // return bindActionCreators({ fetchDBConfigList, setDBConfigToken, deleteDBConfig, fetchDataTypes }, dispatch)
-  return bindActionCreators({ fetchDataTypes, deleteDataType }, dispatch);
+  return bindActionCreators({ fetchQuestions, deleteQuestion }, dispatch);
 }
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withStyles(styles)(DataTypes));
+)(withStyles(styles)(QuestionBank));

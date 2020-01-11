@@ -2,26 +2,28 @@ import axios from "axios";
 
 const baseUrl = "/api/question-bank/";
 
-export function fetchDataTypes() {
+export function fetchQuestions(subject) {
   return function(dispatch) {
-    dispatch({ type: "FETCHING_FIELD_DATA_TYPE" });
+    console.log("Fetching all questions");
+    dispatch({ type: "FETCHING_ALL_QUESTIONS_FULFILLED" });
+    //   dispatch({ type: "FETCHING_FIELD_DATA_TYPE" });
 
-    axios
-      .get(`${baseUrl}list`)
-      .then(resp => {
-        const d = resp.data;
-        if (d.success) {
-          dispatch({
-            type: "FETCHING_FIELD_DATA_TYPE_FULFILLED",
-            payload: d.results
-          });
-        } else {
-          dispatch({ type: "FIELD_DATA_TYPE_ERROR", payload: d.message });
-        }
-      })
-      .catch(err => {
-        dispatch({ type: "FIELD_DATA_TYPE_ERROR", payload: err });
-      });
+    //   axios
+    //     .get(`${baseUrl}list`)
+    //     .then(resp => {
+    //       const d = resp.data;
+    //       if (d.success) {
+    //         dispatch({
+    //           type: "FETCHING_FIELD_DATA_TYPE_FULFILLED",
+    //           payload: d.results
+    //         });
+    //       } else {
+    //         dispatch({ type: "FIELD_DATA_TYPE_ERROR", payload: d.message });
+    //       }
+    //     })
+    //     .catch(err => {
+    //       dispatch({ type: "FIELD_DATA_TYPE_ERROR", payload: err });
+    //     });
   };
 }
 
@@ -76,32 +78,33 @@ export function updateDataType(id, data_type, enabled, hasCredentials) {
   };
 }
 
-export function deleteDataType(id) {
+export function deleteQuestion(id) {
   return function(dispatch) {
-    dispatch({ type: "DELETE_FIELD_DATA_TYPE" });
+    console.log("Deleting question");
+    // dispatch({ type: "DELETE_FIELD_DATA_TYPE" });
 
-    axios
-      .delete(`${baseUrl}delete?id=${id}`)
-      .then(resp => {
-        const d = resp.data;
+    // axios
+    //   .delete(`${baseUrl}delete?id=${id}`)
+    //   .then(resp => {
+    //     const d = resp.data;
 
-        if (d.success) {
-          dispatch({
-            type: "DELETE_FIELD_DATA_TYPE_FULFILLED",
-            payload: d.message
-          });
-        } else {
-          dispatch({
-            type: "FETCHING_FIELD_DATA_TYPE_FAILED",
-            payload: d.error
-          });
-        }
-      })
-      .catch(err => {
-        dispatch({
-          type: "FETCHING_FIELD_DATA_TYPE_FAILED",
-          payload: err.message
-        });
-      });
+    //     if (d.success) {
+    //       dispatch({
+    //         type: "DELETE_FIELD_DATA_TYPE_FULFILLED",
+    //         payload: d.message
+    //       });
+    //     } else {
+    //       dispatch({
+    //         type: "FETCHING_FIELD_DATA_TYPE_FAILED",
+    //         payload: d.error
+    //       });
+    //     }
+    //   })
+    //   .catch(err => {
+    //     dispatch({
+    //       type: "FETCHING_FIELD_DATA_TYPE_FAILED",
+    //       payload: err.message
+    //     });
+    //   });
   };
 }

@@ -71,13 +71,13 @@ class Layout extends Component {
         <Grid
           container
           spacing={0}
-          direction='column'
-          alignItems='center'
-          justify='center'
+          direction="column"
+          alignItems="center"
+          justify="center"
           style={{ minHeight: "100vh" }}
         >
           <Grid item xs={3}>
-            <img src='/images/preloader.gif' />
+            <img src="/images/preloader.gif" />
           </Grid>
         </Grid>
       );
@@ -90,8 +90,8 @@ class Layout extends Component {
         <Sidebar isOpen={openMenu} />
         <div className={classes.routeContainer}>
           <Switch>
-            <Route exact path='/dashboard' component={Landing} />
-            {/* <Route path='/question-bank' component={QuestionBank} />
+            <Route exact path="/dashboard" component={Landing} />
+            {/* <Route path='/question-bank/:subject' component={QuestionBank} />
             <Route path='/question-bank/create' component={CreateQuestion} />
             <Route
               path='/question-bank/edit/:question_id'

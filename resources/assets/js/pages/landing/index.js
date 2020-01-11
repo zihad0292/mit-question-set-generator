@@ -32,11 +32,14 @@ const styles = theme => ({
     height: "100%"
   },
   homeWidget: {
-    height: 150
+    height: 150,
+    cursor: "pointer"
   },
   cardContent: {
-    position: "absolute",
-    bottom: 0
+    position: "relative"
+  },
+  questionSetCard: {
+    height: 180
   },
   titleStyle: {
     fontSize: "2.3rem",
@@ -53,6 +56,12 @@ const styles = theme => ({
   },
   statFirstRow: {
     marginBottom: theme.spacing(3)
+  },
+  alignItemsCenter: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    textAlign: "center"
   }
 });
 
@@ -85,10 +94,30 @@ class Landing extends Component {
     return (
       <PageContainer maxWidth="lg">
         <Grid container spacing={2} className={classes.statFirstRow}>
-          <Grid item xs={12} sm={3}>
-            <CustomSmallPaper className={classes.homeWidget}>
+          <Grid item xs={12} sm={4}>
+            <CustomSmallPaper
+              className={`${classes.homeWidget} ${classes.questionSetCard} ${classes.alignItemsCenter}`}
+              onClick={() => history.push("/dashboard/question-sets")}
+            >
               <CardContent className={classes.cardContent}>
-                <Typography color="primary" variant="h4">
+                <div>
+                  <Typography variant="h4" color="primary">
+                    Question Sets
+                  </Typography>
+                  <Typography variant="h5">5 Sets available</Typography>
+                </div>
+              </CardContent>
+            </CustomSmallPaper>
+          </Grid>
+        </Grid>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={3}>
+            <CustomSmallPaper
+              className={`${classes.homeWidget} ${classes.alignItemsCenter}`}
+              onClick={() => history.push("/dashboard/question-bank/english")}
+            >
+              <CardContent className={classes.cardContent}>
+                <Typography color="primary" variant="h5">
                   English
                 </Typography>
                 <Typography variant="subtitle1">54 Questions</Typography>
@@ -96,9 +125,12 @@ class Landing extends Component {
             </CustomSmallPaper>
           </Grid>
           <Grid item xs={12} sm={3}>
-            <CustomSmallPaper className={classes.homeWidget}>
+            <CustomSmallPaper
+              className={`${classes.homeWidget} ${classes.alignItemsCenter}`}
+              onClick={() => history.push("/dashboard/question-bank/math")}
+            >
               <CardContent className={classes.cardContent}>
-                <Typography color="primary" variant="h4">
+                <Typography color="primary" variant="h5">
                   Math
                 </Typography>
                 <Typography variant="subtitle1">54 Questions</Typography>
@@ -106,9 +138,12 @@ class Landing extends Component {
             </CustomSmallPaper>
           </Grid>
           <Grid item xs={12} sm={3}>
-            <CustomSmallPaper className={classes.homeWidget}>
+            <CustomSmallPaper
+              className={`${classes.homeWidget} ${classes.alignItemsCenter}`}
+              onClick={() => history.push("/dashboard/question-bank/physics")}
+            >
               <CardContent className={classes.cardContent}>
-                <Typography color="primary" variant="h4">
+                <Typography color="primary" variant="h5">
                   Physics
                 </Typography>
                 <Typography variant="subtitle1">54 Questions</Typography>
@@ -116,24 +151,15 @@ class Landing extends Component {
             </CustomSmallPaper>
           </Grid>
           <Grid item xs={12} sm={3}>
-            <CustomSmallPaper className={classes.homeWidget}>
+            <CustomSmallPaper
+              className={`${classes.homeWidget} ${classes.alignItemsCenter}`}
+              onClick={() => history.push("/dashboard/question-bank/chemistry")}
+            >
               <CardContent className={classes.cardContent}>
-                <Typography color="primary" variant="h4">
+                <Typography color="primary" variant="h5">
                   Chemistry
                 </Typography>
                 <Typography variant="subtitle1">54 Questions</Typography>
-              </CardContent>
-            </CustomSmallPaper>
-          </Grid>
-        </Grid>
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={12}>
-            <CustomSmallPaper className={classes.homeWidget}>
-              <CardContent className={classes.cardContent}>
-                <Typography variant="h3" color="textPrimary" align="center">
-                  Question Sets
-                </Typography>
-                <Typography variant="subtitle1">5 Sets available</Typography>
               </CardContent>
             </CustomSmallPaper>
           </Grid>

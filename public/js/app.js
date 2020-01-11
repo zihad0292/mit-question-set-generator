@@ -56717,11 +56717,14 @@ var styles = function styles(theme) {
       height: "100%"
     },
     homeWidget: {
-      height: 150
+      height: 150,
+      cursor: "pointer"
     },
     cardContent: {
-      position: "absolute",
-      bottom: 0
+      position: "relative"
+    },
+    questionSetCard: {
+      height: 180
     },
     titleStyle: {
       fontSize: "2.3rem",
@@ -56738,6 +56741,12 @@ var styles = function styles(theme) {
     },
     statFirstRow: {
       marginBottom: theme.spacing(3)
+    },
+    alignItemsCenter: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      textAlign: "center"
     }
   };
 };
@@ -56786,16 +56795,56 @@ var Landing = function (_Component) {
           { container: true, spacing: 2, className: classes.statFirstRow },
           _react2.default.createElement(
             _Grid2.default,
+            { item: true, xs: 12, sm: 4 },
+            _react2.default.createElement(
+              _utils.CustomSmallPaper,
+              {
+                className: classes.homeWidget + " " + classes.questionSetCard + " " + classes.alignItemsCenter,
+                onClick: function onClick() {
+                  return history.push("/dashboard/question-sets");
+                }
+              },
+              _react2.default.createElement(
+                _CardContent2.default,
+                { className: classes.cardContent },
+                _react2.default.createElement(
+                  "div",
+                  null,
+                  _react2.default.createElement(
+                    _Typography2.default,
+                    { variant: "h4", color: "primary" },
+                    "Question Sets"
+                  ),
+                  _react2.default.createElement(
+                    _Typography2.default,
+                    { variant: "h5" },
+                    "5 Sets available"
+                  )
+                )
+              )
+            )
+          )
+        ),
+        _react2.default.createElement(
+          _Grid2.default,
+          { container: true, spacing: 2 },
+          _react2.default.createElement(
+            _Grid2.default,
             { item: true, xs: 12, sm: 3 },
             _react2.default.createElement(
               _utils.CustomSmallPaper,
-              { className: classes.homeWidget },
+              {
+                className: classes.homeWidget + " " + classes.alignItemsCenter,
+                onClick: function onClick() {
+                  return history.push("/dashboard/question-bank/english");
+                }
+              },
               _react2.default.createElement(
                 _CardContent2.default,
                 { className: classes.cardContent },
                 _react2.default.createElement(
                   _Typography2.default,
-                  { color: "primary", variant: "h4" },
+                  { color: "primary", variant: "h5" },
                   "English"
                 ),
                 _react2.default.createElement(
@@ -56811,13 +56860,18 @@ var Landing = function (_Component) {
             { item: true, xs: 12, sm: 3 },
             _react2.default.createElement(
               _utils.CustomSmallPaper,
-              { className: classes.homeWidget },
+              {
+                className: classes.homeWidget + " " + classes.alignItemsCenter,
+                onClick: function onClick() {
+                  return history.push("/dashboard/question-bank/math");
+                }
+              },
               _react2.default.createElement(
                 _CardContent2.default,
                 { className: classes.cardContent },
                 _react2.default.createElement(
                   _Typography2.default,
-                  { color: "primary", variant: "h4" },
+                  { color: "primary", variant: "h5" },
                   "Math"
                 ),
                 _react2.default.createElement(
@@ -56833,13 +56887,18 @@ var Landing = function (_Component) {
             { item: true, xs: 12, sm: 3 },
             _react2.default.createElement(
               _utils.CustomSmallPaper,
-              { className: classes.homeWidget },
+              {
+                className: classes.homeWidget + " " + classes.alignItemsCenter,
+                onClick: function onClick() {
+                  return history.push("/dashboard/question-bank/physics");
+                }
+              },
               _react2.default.createElement(
                 _CardContent2.default,
                 { className: classes.cardContent },
                 _react2.default.createElement(
                   _Typography2.default,
-                  { color: "primary", variant: "h4" },
+                  { color: "primary", variant: "h5" },
                   "Physics"
                 ),
                 _react2.default.createElement(
@@ -56855,45 +56914,24 @@ var Landing = function (_Component) {
             { item: true, xs: 12, sm: 3 },
             _react2.default.createElement(
               _utils.CustomSmallPaper,
-              { className: classes.homeWidget },
+              {
+                className: classes.homeWidget + " " + classes.alignItemsCenter,
+                onClick: function onClick() {
+                  return history.push("/dashboard/question-bank/chemistry");
+                }
+              },
               _react2.default.createElement(
                 _CardContent2.default,
                 { className: classes.cardContent },
                 _react2.default.createElement(
                   _Typography2.default,
-                  { color: "primary", variant: "h4" },
+                  { color: "primary", variant: "h5" },
                   "Chemistry"
                 ),
                 _react2.default.createElement(
                   _Typography2.default,
                   { variant: "subtitle1" },
                   "54 Questions"
-                )
-              )
-            )
-          )
-        ),
-        _react2.default.createElement(
-          _Grid2.default,
-          { container: true, spacing: 2 },
-          _react2.default.createElement(
-            _Grid2.default,
-            { item: true, xs: 12, sm: 12 },
-            _react2.default.createElement(
-              _utils.CustomSmallPaper,
-              { className: classes.homeWidget },
-              _react2.default.createElement(
-                _CardContent2.default,
-                { className: classes.cardContent },
-                _react2.default.createElement(
-                  _Typography2.default,
-                  { variant: "h3", color: "textPrimary", align: "center" },
-                  "Question Sets"
-                ),
-                _react2.default.createElement(
-                  _Typography2.default,
-                  { variant: "subtitle1" },
-                  "5 Sets available"
                 )
               )
             )
