@@ -9,6 +9,7 @@ import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
+import Divider from "@material-ui/core/Divider";
 
 // utils
 import {
@@ -28,6 +29,9 @@ import {
 import { retrieveStats } from "../../actions/statsActions";
 
 const styles = theme => ({
+  root: {
+    width: "100%"
+  },
   media: {
     height: "100%"
   },
@@ -55,7 +59,8 @@ const styles = theme => ({
     marginBottom: theme.spacing(0.5)
   },
   statFirstRow: {
-    marginBottom: theme.spacing(3)
+    marginBottom: theme.spacing(3),
+    overflow: "hidden"
   },
   alignItemsCenter: {
     display: "flex",
@@ -92,7 +97,20 @@ class Landing extends Component {
     const { classes, history } = this.props;
 
     return (
-      <PageContainer maxWidth="lg">
+      <PageContainer maxWidth='lg'>
+        <Grid container spacing={3} className={classes.statFirstRow}>
+          <Grid item xs={12} sm={8} className={classes.relativeContainer}>
+            <Typography
+              variant='h4'
+              color='textPrimary'
+              className={classes.subjectTitle}
+            >
+              Overview
+            </Typography>
+            {/* <FullBodyLoader active={fetching || deleting} /> */}
+          </Grid>
+          <Divider className={classes.root} />
+        </Grid>
         <Grid container spacing={2} className={classes.statFirstRow}>
           <Grid item xs={12} sm={4}>
             <CustomSmallPaper
@@ -101,10 +119,10 @@ class Landing extends Component {
             >
               <CardContent className={classes.cardContent}>
                 <div>
-                  <Typography variant="h4" color="primary">
+                  <Typography variant='h4' color='primary'>
                     Question Sets
                   </Typography>
-                  <Typography variant="h5">5 Sets available</Typography>
+                  <Typography variant='h5'>5 Sets available</Typography>
                 </div>
               </CardContent>
             </CustomSmallPaper>
@@ -117,10 +135,10 @@ class Landing extends Component {
               onClick={() => history.push("/dashboard/question-bank/english")}
             >
               <CardContent className={classes.cardContent}>
-                <Typography color="primary" variant="h5">
+                <Typography color='primary' variant='h5'>
                   English
                 </Typography>
-                <Typography variant="subtitle1">54 Questions</Typography>
+                <Typography variant='subtitle1'>54 Questions</Typography>
               </CardContent>
             </CustomSmallPaper>
           </Grid>
@@ -130,10 +148,10 @@ class Landing extends Component {
               onClick={() => history.push("/dashboard/question-bank/math")}
             >
               <CardContent className={classes.cardContent}>
-                <Typography color="primary" variant="h5">
+                <Typography color='primary' variant='h5'>
                   Math
                 </Typography>
-                <Typography variant="subtitle1">54 Questions</Typography>
+                <Typography variant='subtitle1'>54 Questions</Typography>
               </CardContent>
             </CustomSmallPaper>
           </Grid>
@@ -143,10 +161,10 @@ class Landing extends Component {
               onClick={() => history.push("/dashboard/question-bank/physics")}
             >
               <CardContent className={classes.cardContent}>
-                <Typography color="primary" variant="h5">
+                <Typography color='primary' variant='h5'>
                   Physics
                 </Typography>
-                <Typography variant="subtitle1">54 Questions</Typography>
+                <Typography variant='subtitle1'>54 Questions</Typography>
               </CardContent>
             </CustomSmallPaper>
           </Grid>
@@ -156,10 +174,10 @@ class Landing extends Component {
               onClick={() => history.push("/dashboard/question-bank/chemistry")}
             >
               <CardContent className={classes.cardContent}>
-                <Typography color="primary" variant="h5">
+                <Typography color='primary' variant='h5'>
                   Chemistry
                 </Typography>
-                <Typography variant="subtitle1">54 Questions</Typography>
+                <Typography variant='subtitle1'>54 Questions</Typography>
               </CardContent>
             </CustomSmallPaper>
           </Grid>

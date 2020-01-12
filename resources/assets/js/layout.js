@@ -14,8 +14,9 @@ import Sidebar from "./components/sidebar";
 
 // Page components
 import Landing from "./pages/landing";
-import QuestionBank from "./pages/questionBank";
-// import CreateQuestion from "./pages/questionBank/createQuestion";
+import QuestionBank from "./pages/questionBank/";
+import QuestionBankCategory from "./pages/questionBank/category";
+import CreateQuestion from "./pages/questionBank/createQuestion";
 // import EditQuestion from "./pages/questionBank/editQuestion";
 // import QuestionSets from "./pages/questionSets";
 // import CreateQuestionSet from "./pages/questionSets/createQuestionSet";
@@ -42,9 +43,9 @@ class Layout extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { fetched } = nextProps;
+    const { statFetched } = nextProps;
 
-    if (fetched) {
+    if (statFetched) {
       this.setState({
         fetching: false
       });
@@ -52,8 +53,8 @@ class Layout extends Component {
   }
 
   componentDidMount() {
-    const { fetched } = this.props;
-    if (!fetched) {
+    const { statFetched } = this.props;
+    if (!statFetched) {
       this.props.retrieveStats();
     } else {
       this.setState({
@@ -71,13 +72,13 @@ class Layout extends Component {
         <Grid
           container
           spacing={0}
-          direction="column"
-          alignItems="center"
-          justify="center"
+          direction='column'
+          alignItems='center'
+          justify='center'
           style={{ minHeight: "100vh" }}
         >
           <Grid item xs={3}>
-            <img src="/images/preloader.gif" />
+            <img src='/images/preloader.gif' />
           </Grid>
         </Grid>
       );
@@ -90,13 +91,14 @@ class Layout extends Component {
         <Sidebar isOpen={openMenu} />
         <div className={classes.routeContainer}>
           <Switch>
-            <Route exact path="/dashboard" component={Landing} />
+            <Route exact path='/dashboard' component={Landing} />
             <Route
-              path="/dashboard/question-bank/:subject"
-              component={QuestionBank}
+              path='/dashboard/question-bank/:subject'
+              component={QuestionBankCategory}
             />
-            {/*<Route path='/question-bank/create' component={CreateQuestion} />
-            <Route
+            <Route path='/dashboard/question-bank/' component={QuestionBank} />
+            <Route path='/question-bank/create' component={CreateQuestion} />
+            {/*<Route
               path='/question-bank/edit/:question_id'
               component={EditQuestion}
             /> */}
@@ -112,7 +114,7 @@ class Layout extends Component {
 
 function mapStateToProps(store) {
   return {
-    fetched: store.statsInfo.fetched
+    statFetched: store.statsInfo.statFetched
   };
 }
 

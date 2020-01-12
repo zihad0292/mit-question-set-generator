@@ -11,13 +11,12 @@ import Checkbox from "@material-ui/core/Checkbox";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Grid from "@material-ui/core/Grid";
-import IntegrationReactSelect from "../../../components/IntegrationReactSelect";
 
-import {
-  addNewDataType,
-  fetchDataTypes,
-  updateDataType
-} from "../../../actions/dataTypesActions";
+// import {
+//   addNewDataType,
+//   fetchDataTypes,
+//   updateDataType
+// } from "../../../actions/dataTypesActions";
 import { CustomSmallPaper, FlatButton } from "../../../components/utils";
 
 const styles = theme => ({
@@ -37,7 +36,7 @@ const styles = theme => ({
   }
 });
 
-class AddNewForm extends Component {
+class CreateQuestion extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -176,7 +175,7 @@ class AddNewForm extends Component {
   }
 }
 
-AddNewForm.propTypes = {
+CreateQuestion.propTypes = {
   classes: PropTypes.object.isRequired,
   type: PropTypes.oneOf(["add", "update"]),
   selecteddataType: PropTypes.object,
@@ -205,4 +204,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withStyles(styles)(AddNewForm));
+)(withStyles(styles)(CreateQuestion));

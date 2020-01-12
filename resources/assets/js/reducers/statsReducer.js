@@ -4,8 +4,8 @@ const initialState = {
   countMathQuestions: 0,
   countPhysicsQuestions: 0,
   countChemistryQuestions: 0,
-  fetching: false,
-  fetched: false,
+  statFetching: false,
+  statFetched: false,
   error: null,
   message: ""
 };
@@ -17,19 +17,19 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         fetching: false,
-        fetched: true
+        statFetched: true
       };
     case "FETCHING_QUESTIONS_COUNT":
       return {
         ...state,
         fetching: true,
-        fetched: false
+        statFetched: false
       };
     case "FETCHING_ALL_QUESTIONS_COUNT_FULFILLED":
       return {
         ...state,
         fetching: false,
-        fetched: true,
+        statFetched: true,
         error: null,
         countAllQuestions: action.payload,
         message: ""
@@ -38,7 +38,7 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         fetching: false,
-        fetched: true,
+        statFetched: true,
         error: null,
         countEnglishQuestions: action.payload,
         message: ""
@@ -47,7 +47,7 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         fetching: false,
-        fetched: true,
+        statFetched: true,
         error: null,
         countMathQuestions: action.payload,
         message: ""
@@ -56,7 +56,7 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         fetching: false,
-        fetched: true,
+        statFetched: true,
         error: null,
         countPhysicsQuestions: action.payload,
         message: ""
@@ -65,7 +65,7 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         fetching: false,
-        fetched: true,
+        statFetched: true,
         error: null,
         countChemistryQuestions: action.payload,
         message: ""
@@ -74,7 +74,7 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         fetching: false,
-        fetched: false,
+        statFetched: false,
         error: action.payload
       };
     case "CLEAR_QUESTION_COUNT":

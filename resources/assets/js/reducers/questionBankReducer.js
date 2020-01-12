@@ -1,6 +1,49 @@
 const initialState = {
   allQuestions: [],
-  englishQuestions: [],
+  englishQuestions: [
+    {
+      id: "1",
+      question:
+        "Educating people and asking them ... beware ... the erratic traffic and the signboards. Appropriate fillers for the gaps are",
+      options: [
+        { option: "be, At", is_correct: "Yes" },
+        { option: "for, Of", is_correct: "No" },
+        { option: "to, Of", is_correct: "No" },
+        { option: "for, Against", is_correct: "No" },
+        { option: "for, From", is_correct: "No" }
+      ],
+      subject: "english",
+      is_locked: true
+    },
+    {
+      id: "2",
+      question:
+        "Educating people and asking them ... beware ...  the erratic traffic and the signboards. Appropriate fillers for the gaps are",
+      options: [
+        { option: "be, At", is_correct: "No" },
+        { option: "for, Of", is_correct: "Yes" },
+        { option: "to, Of", is_correct: "No" },
+        { option: "for, Against", is_correct: "Yes" },
+        { option: "for, From", is_correct: "No" }
+      ],
+      subject: "english",
+      is_locked: true
+    },
+    {
+      id: "3",
+      question:
+        "Educating people and asking them ... beware ... the erratic traffic and the signboards. Appropriate fillers for the gaps are",
+      options: [
+        { option: "be, At", is_correct: "No" },
+        { option: "for, Of", is_correct: "Yes" },
+        { option: "to, Of", is_correct: "No" },
+        { option: "for, Against", is_correct: "No" },
+        { option: "for, From", is_correct: "No" }
+      ],
+      subject: "english",
+      is_locked: true
+    }
+  ],
   countEnglishQuestions: 0,
   mathQuestions: [],
   countMathQuestions: 0,
