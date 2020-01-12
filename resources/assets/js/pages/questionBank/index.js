@@ -12,7 +12,13 @@ import IconButton from "@material-ui/core/IconButton";
 import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
-import MaterialTable, { MTableToolbar } from "material-table";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import Divider from "@material-ui/core/Divider";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+
+import DeleteIcon from "@material-ui/icons/Delete";
 
 import {
   fetchQuestions,
@@ -53,7 +59,7 @@ const styles = theme => ({
     width: 40
   },
   cardContent: {
-    height: 120,
+    height: "auto",
     overflow: "hidden"
   },
   enableText: {
@@ -73,6 +79,15 @@ const styles = theme => ({
     backgroundImage: "url('/images/index-relation-banner.png')",
     minHeight: 140,
     backgroundSize: "cover"
+  },
+  subjectTitle: {
+    textTransform: "uppercase"
+  },
+  questionContainer: {
+    marginTop: "20px"
+  },
+  questionWrapper: {
+    width: "100%"
   }
 });
 
@@ -97,7 +112,22 @@ class QuestionBank extends Component {
       subject: subject
     });
 
-    this.props.fetchQuestions(subject);
+    // Fetch questions only if respective question state is empty
+    if (subject === "english" && this.props.englishQuestions.length === 0) {
+      this.props.fetchQuestions(subject);
+    } else if (subject === "math" && this.props.mathQuestions.length === 0) {
+      this.props.fetchQuestions(subject);
+    } else if (
+      subject === "physics" &&
+      this.props.physicsQuestions.length === 0
+    ) {
+      this.props.fetchQuestions(subject);
+    } else if (
+      subject === "chemistry" &&
+      this.props.chemistryQuestions.length === 0
+    ) {
+      this.props.fetchQuestions(subject);
+    }
   }
 
   onDeleteClick(selectedIndex) {
@@ -137,25 +167,70 @@ class QuestionBank extends Component {
     } else {
       questionsToRender = this.props.chemistryQuestions;
     }
-    console.log(questionsToRender);
+    console.log("From renderQuestion function" + questionsToRender);
   }
 
   render() {
     const { classes, fetching, deleting } = this.props;
-    const { selected } = this.state;
+    const { selected, subject } = this.state;
 
     return (
       <PageContainer maxWidth="lg">
         <Grid container spacing={3}>
           <Grid item xs={12} sm={8} className={classes.relativeContainer}>
-            <WidgetTitle>All Database List</WidgetTitle>
+            <Typography
+              variant="h5"
+              color="primary"
+              className={classes.subjectTitle}
+            >
+              {subject} Questions
+            </Typography>
             {this.renderQuestions()}
             {/* <FullBodyLoader active={fetching || deleting} /> */}
           </Grid>
-          <Grid item xs={12} sm={4}>
-            <WidgetTitle>Add New Database</WidgetTitle>
-            <AddNewDB />
-          </Grid>
+        </Grid>
+        <Grid container spacing={2} className={classes.questionContainer}>
+          <CustomSmallPaper className={classes.questionWrapper}>
+            <CardContent className={classes.cardContent}>
+              <List className={classes.root}>
+                <ListItem alignItems="flex-start">
+                  This is a question
+                  <ListItemSecondaryAction>
+                    <IconButton edge="end" aria-label="delete">
+                      <DeleteIcon />
+                    </IconButton>
+                    <IconButton edge="end" aria-label="delete">
+                      <DeleteIcon />
+                    </IconButton>
+                  </ListItemSecondaryAction>
+                </ListItem>
+                <Divider component="li" />
+                <ListItem alignItems="flex-start">
+                  This is a question
+                  <ListItemSecondaryAction>
+                    <IconButton edge="end" aria-label="delete">
+                      <DeleteIcon />
+                    </IconButton>
+                    <IconButton edge="end" aria-label="delete">
+                      <DeleteIcon />
+                    </IconButton>
+                  </ListItemSecondaryAction>
+                </ListItem>
+                <Divider component="li" />
+                <ListItem alignItems="flex-start">
+                  This is a question
+                  <ListItemSecondaryAction>
+                    <IconButton edge="end" aria-label="delete">
+                      <DeleteIcon />
+                    </IconButton>
+                    <IconButton edge="end" aria-label="delete">
+                      <DeleteIcon />
+                    </IconButton>
+                  </ListItemSecondaryAction>
+                </ListItem>
+              </List>
+            </CardContent>
+          </CustomSmallPaper>
         </Grid>
         {/* <ConfirmDialog
           title="Confirm Delete?"

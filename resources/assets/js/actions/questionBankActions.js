@@ -5,7 +5,7 @@ const baseUrl = "/api/question-bank/";
 export function fetchQuestions(subject) {
   return function(dispatch) {
     console.log("Fetching all questions");
-    dispatch({ type: "FETCHING_ALL_QUESTIONS_FULFILLED" });
+    dispatch({ type: "FETCHING_ALL_QUESTIONS_FULFILLED", payload: ["a", "b"] });
     //   dispatch({ type: "FETCHING_FIELD_DATA_TYPE" });
 
     //   axios

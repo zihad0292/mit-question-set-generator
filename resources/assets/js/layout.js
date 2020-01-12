@@ -14,7 +14,7 @@ import Sidebar from "./components/sidebar";
 
 // Page components
 import Landing from "./pages/landing";
-// import QuestionBank from "./pages/questionBank";
+import QuestionBank from "./pages/questionBank";
 // import CreateQuestion from "./pages/questionBank/createQuestion";
 // import EditQuestion from "./pages/questionBank/editQuestion";
 // import QuestionSets from "./pages/questionSets";
@@ -91,8 +91,11 @@ class Layout extends Component {
         <div className={classes.routeContainer}>
           <Switch>
             <Route exact path="/dashboard" component={Landing} />
-            {/* <Route path='/question-bank/:subject' component={QuestionBank} />
-            <Route path='/question-bank/create' component={CreateQuestion} />
+            <Route
+              path="/dashboard/question-bank/:subject"
+              component={QuestionBank}
+            />
+            {/*<Route path='/question-bank/create' component={CreateQuestion} />
             <Route
               path='/question-bank/edit/:question_id'
               component={EditQuestion}
