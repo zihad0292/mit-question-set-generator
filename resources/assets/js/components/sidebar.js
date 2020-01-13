@@ -65,7 +65,7 @@ const Pages = [
   },
   {
     title: "Question Bank",
-    url: "/question-bank",
+    url: "/question-bank/allsubjects",
     icon: "collections_icon"
   },
   {

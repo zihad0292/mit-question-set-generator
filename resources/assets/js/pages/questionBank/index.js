@@ -114,7 +114,9 @@ class QuestionBank extends Component {
           <Grid item xs={12} sm={6}>
             <CustomSmallPaper
               className={`${classes.homeWidget} ${classes.alignItemsCenter}`}
-              onClick={() => history.push("/dashboard/question-bank/english")}
+              onClick={() =>
+                history.push("/dashboard/question-bank/allsubjects/english")
+              }
             >
               <CardContent className={classes.cardContent}>
                 <Typography color='primary' variant='h5'>
@@ -127,7 +129,9 @@ class QuestionBank extends Component {
           <Grid item xs={12} sm={6}>
             <CustomSmallPaper
               className={`${classes.homeWidget} ${classes.alignItemsCenter}`}
-              onClick={() => history.push("/dashboard/question-bank/math")}
+              onClick={() =>
+                history.push("/dashboard/question-bank/allsubjects/math")
+              }
             >
               <CardContent className={classes.cardContent}>
                 <Typography color='primary' variant='h5'>
@@ -140,7 +144,9 @@ class QuestionBank extends Component {
           <Grid item xs={12} sm={6}>
             <CustomSmallPaper
               className={`${classes.homeWidget} ${classes.alignItemsCenter}`}
-              onClick={() => history.push("/dashboard/question-bank/physics")}
+              onClick={() =>
+                history.push("/dashboard/question-bank/allsubjects/physics")
+              }
             >
               <CardContent className={classes.cardContent}>
                 <Typography color='primary' variant='h5'>
@@ -153,7 +159,9 @@ class QuestionBank extends Component {
           <Grid item xs={12} sm={6}>
             <CustomSmallPaper
               className={`${classes.homeWidget} ${classes.alignItemsCenter}`}
-              onClick={() => history.push("/dashboard/question-bank/chemistry")}
+              onClick={() =>
+                history.push("/dashboard/question-bank/allsubjects/chemistry")
+              }
             >
               <CardContent className={classes.cardContent}>
                 <Typography color='primary' variant='h5'>

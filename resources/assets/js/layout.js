@@ -93,11 +93,17 @@ class Layout extends Component {
           <Switch>
             <Route exact path='/dashboard' component={Landing} />
             <Route
-              path='/dashboard/question-bank/:subject'
+              path='/dashboard/question-bank/allsubjects/:subject'
               component={QuestionBankCategory}
             />
-            <Route path='/dashboard/question-bank/' component={QuestionBank} />
-            <Route path='/question-bank/create' component={CreateQuestion} />
+            <Route
+              path='/dashboard/question-bank/allsubjects'
+              component={QuestionBank}
+            />
+            <Route
+              path='/dashboard/question-bank/create'
+              component={CreateQuestion}
+            />
             {/*<Route
               path='/question-bank/edit/:question_id'
               component={EditQuestion}
