@@ -199,19 +199,25 @@ class QuestionBankCategory extends Component {
   }
 
   renderQuestions() {
-    const { classes } = this.props;
+    const {
+      classes,
+      englishQuestions,
+      mathQuestions,
+      physicsQuestions,
+      chemistryQuestions
+    } = this.props;
 
     const subject = this.state.subject;
     let questionsToRender = [];
 
     if (subject === "english") {
-      questionsToRender = this.props.englishQuestions;
+      questionsToRender = englishQuestions;
     } else if (subject === "math") {
-      questionsToRender = this.props.mathQuestions;
+      questionsToRender = mathQuestions;
     } else if (subject === "physics") {
-      questionsToRender = this.props.physicsQuestions;
+      questionsToRender = physicsQuestions;
     } else {
-      questionsToRender = this.props.chemistryQuestions;
+      questionsToRender = chemistryQuestions;
     }
     return questionsToRender.map((question, index) => {
       return (

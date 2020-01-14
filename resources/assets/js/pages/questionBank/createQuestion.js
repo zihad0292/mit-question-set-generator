@@ -12,22 +12,26 @@ import Checkbox from "@material-ui/core/Checkbox";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Divider from "@material-ui/core/Divider";
+import IndeterminateCheckBoxIcon from "@material-ui/icons/IndeterminateCheckBox";
 
-// import {
-//   addNewDataType,
-//   fetchDataTypes,
-//   updateDataType
-// } from "../../../actions/dataTypesActions";
+import {
+  addNewQuestion,
+  editQuestion
+} from "../../actions/questionBankActions";
 import {
   PageContainer,
   CustomSmallPaper,
   FlatButton
 } from "../../components/utils";
 
+import IntegrationReactSelect from "../../components/IntegrationReactSelect";
+
 const styles = theme => ({
   root: {
-    marginTop: theme.spacing(2),
     width: "100%"
+  },
+  relativeContainer: {
+    position: "relative"
   },
   tableTitle: {
     margin: theme.spacing(2),
@@ -51,6 +55,22 @@ const styles = theme => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center"
+  },
+  removeIcon: {
+    position: "absolute",
+    right: "20px",
+    top: "50%",
+    marginTop: "-14px",
+    zIndex: "1",
+    cursor: "pointer"
+  },
+  bottomSpacing: {
+    marginBottom: theme.spacing(3)
+  },
+  bottomDivider: {
+    width: "100%",
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2)
   }
 });
 
@@ -58,29 +78,41 @@ class CreateQuestion extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      subject: "",
       question: "",
       options: [
         {
           option: "",
           is_correct: false
+        },
+        {
+          option: "",
+          is_correct: false
+        },
+        {
+          option: "",
+          is_correct: false
         }
       ],
-      optionsCount: 1
+      optionsCount: 3
     };
     this.populateStateVal = this.populateStateVal.bind(this);
-    this.handleChange = this.handleChange.bind(this);
+    this.handleOptionChange = this.handleOptionChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleQuestionChange = this.handleQuestionChange.bind(this);
     this.handleAddOption = this.handleAddOption.bind(this);
-    this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
+    this.handleRemoveOption = this.handleRemoveOption.bind(this);
+    this.handleOptionCheckboxChange = this.handleOptionCheckboxChange.bind(
+      this
+    );
+    this.onSubjectSelect = this.onSubjectSelect.bind(this);
   }
 
   componentDidMount() {
     // const { type } = this.props;
-
     // if (type == "update") {
     //   this.populateStateVal();
     // }
-    console.log("Create question component");
   }
 
   populateStateVal() {
@@ -109,65 +141,96 @@ class CreateQuestion extends Component {
     //   this.props.onComplete();
     // }
   }
-
-  handleAddOption() {
-    if (this.state.optionsCount === 5) {
-      alert("Sorry, you can't take more than 5 options.");
-    } else {
-      let oldOptions = this.state.options;
-      oldOptions.push({
-        option: "",
-        is_correct: false
-      });
-      this.setState({
-        options: oldOptions,
-        optionsCount: this.state.optionsCount + 1
-      });
-    }
+  onSubjectSelect(val) {
+    this.setState({
+      subject: val.value
+    });
   }
 
-  handleChange(index, event) {
+  handleQuestionChange(event) {
+    this.setState({
+      [event.target.name]: [event.target.value]
+    });
+  }
+
+  handleOptionChange(index, event) {
     let oldOptions = this.state.options;
     oldOptions[index].option = event.target.value;
-    console.log(index);
-    console.log(this.state.options);
-    console.log(event.target.value);
     this.setState({
       options: oldOptions
     });
   }
 
-  handleCheckboxChange(event) {
+  handleOptionCheckboxChange(index, event) {
+    let oldOptions = this.state.options;
+    oldOptions[index].is_correct = !oldOptions[index].is_correct;
     this.setState({
-      [event.target.name]: event.target.checked
+      options: oldOptions
+    });
+  }
+  handleAddOption() {
+    let oldOptions = this.state.options;
+    oldOptions.push({
+      option: "",
+      is_correct: false
+    });
+    this.setState({
+      options: oldOptions,
+      optionsCount: this.state.optionsCount + 1
+    });
+  }
+
+  handleRemoveOption(index) {
+    let oldOptions = this.state.options;
+    oldOptions.splice(index, 1);
+    this.setState({
+      options: oldOptions,
+      optionsCount: this.state.optionsCount - 1
     });
   }
 
   handleSubmit() {
-    // const { dataType, is_correct, hasCredentials } = this.state;
-    // const {
-    //   type,
-    //   selectedDataType,
-    //   addNewDataType,
-    //   updateDataType
-    // } = this.props;
-    // if (dataType.length > 0) {
-    //   if (type == "update") {
-    //     updateDataType(selectedDataType._id, dataType, is_correct, hasCredentials);
-    //   } else {
-    //     addNewDataType(dataType, is_correct, hasCredentials);
-    //   }
-    // }
+    const { question, options, subject } = this.state;
+    const { type, selectedQuestion, addNewQuestion, editQuestion } = this.props;
+    if (question.length > 0) {
+      if (type == "edit") {
+        editQuestion(
+          selectedQuestion._id,
+          dataType,
+          is_correct,
+          hasCredentials
+        );
+      } else {
+        addNewQuestion(subject, question, JSON.stringify(options));
+      }
+    }
   }
 
   render() {
     const { classes } = this.props;
-    const { question, options, optionsCount } = this.state;
+    const { subject, question, options, optionsCount } = this.state;
+
+    const subjectList = [
+      { value: "english", label: "English" },
+      { value: "math", label: "Math" },
+      { value: "physics", label: "Physics" },
+      { value: "chemistry", label: "Chemistry" }
+    ];
 
     const optionsToPrint = options.map((option, index) => {
       return (
         <Grid container spacing={3} key={index}>
-          <Grid item xs={10}>
+          <Grid item xs={10} className={classes.relativeContainer}>
+            {index > 2 ? (
+              <IndeterminateCheckBoxIcon
+                color='secondary'
+                fontSize='large'
+                className={classes.removeIcon}
+                onClick={() => this.handleRemoveOption(index)}
+              />
+            ) : (
+              ""
+            )}
             <TextField
               required
               id={"option-" + index}
@@ -177,7 +240,7 @@ class CreateQuestion extends Component {
               margin='normal'
               variant='outlined'
               fullWidth
-              onChange={event => this.handleChange(index, event)}
+              onChange={event => this.handleOptionChange(index, event)}
             />
           </Grid>
           <Grid item xs={2} className={classes.alignCenter}>
@@ -187,7 +250,9 @@ class CreateQuestion extends Component {
                   <Checkbox
                     name={"is-correct-" + index}
                     checked={options[index].is_correct}
-                    onChange={this.handleCheckboxChange}
+                    onChange={event =>
+                      this.handleOptionCheckboxChange(index, event)
+                    }
                     value={options[index].is_correct}
                   />
                 }
@@ -201,22 +266,66 @@ class CreateQuestion extends Component {
 
     return (
       <PageContainer>
+        <Grid container spacing={3} className={classes.bottomSpacing}>
+          <Grid item xs={12} sm={8}>
+            <Typography
+              variant='h4'
+              color='textPrimary'
+              className={classes.subjectTitle}
+            >
+              Add New Question
+            </Typography>
+            {/* <FullBodyLoader active={fetching || deleting} /> */}
+          </Grid>
+          <Divider className={classes.root} />
+        </Grid>
         <CustomSmallPaper>
           <div className={classes.cardContent}>
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <IntegrationReactSelect
+                  suggestions={subjectList}
+                  label='Form'
+                  value={subject}
+                  onChange={this.onSubjectSelect}
+                  placeholder='Select Subject'
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  id='question'
+                  name='question'
+                  label='Question'
+                  value={question}
+                  multiline={true}
+                  rows='3'
+                  margin='normal'
+                  variant='outlined'
+                  fullWidth
+                  onChange={this.handleQuestionChange}
+                />
+              </Grid>
+            </Grid>
             {optionsToPrint}
-            <FlatButton
-              variant='contained'
-              color='default'
-              className={classes.submitButton}
-              size='small'
-              onClick={this.handleAddOption}
-            >
-              Add New Option
-              <Icon className={`${classes.rightIcon} ${classes.addIcon}`}>
-                add
-              </Icon>
-            </FlatButton>
-            <Divider className={classes.root} />
+            {optionsCount < 5 ? (
+              <FlatButton
+                variant='contained'
+                color='default'
+                className={classes.submitButton}
+                size='small'
+                onClick={this.handleAddOption}
+              >
+                Add New Option
+                <Icon className={`${classes.rightIcon} ${classes.addIcon}`}>
+                  add
+                </Icon>
+              </FlatButton>
+            ) : (
+              ""
+            )}
+
+            <Divider className={classes.bottomDivider} />
             <FlatButton
               variant='contained'
               color='primary'
@@ -239,28 +348,20 @@ CreateQuestion.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-// function mapStateToProps(store) {
-//   return {
-//     added: store.dataTypesInfo.added,
-//     adding: store.dataTypesInfo.adding,
-//     updating: store.dataTypesInfo.updating,
-//     updated: store.dataTypesInfo.updated,
-//     dataTypes: store.dataTypesInfo.dataTypes,
-//     userType: store.userInfo.type,
-//     office: store.userInfo.office_id
-//   };
-// }
+function mapStateToProps(store) {
+  return {
+    added: store.questionBankInfo.added,
+    adding: store.questionBankInfo.adding,
+    updating: store.questionBankInfo.updating,
+    updated: store.questionBankInfo.updated
+  };
+}
 
-// function mapDispatchToProps(dispatch) {
-//   return bindActionCreators(
-//     { addNewDataType, fetchDataTypes, updateDataType },
-//     dispatch
-//   );
-// }
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ addNewQuestion, editQuestion }, dispatch);
+}
 
-// export default connect(
-//   mapStateToProps,
-//   mapDispatchToProps
-// )(withStyles(styles)(CreateQuestion));
-
-export default withStyles(styles)(CreateQuestion);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(CreateQuestion));

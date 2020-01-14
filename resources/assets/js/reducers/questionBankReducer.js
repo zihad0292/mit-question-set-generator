@@ -1,49 +1,6 @@
 const initialState = {
   allQuestions: [],
-  englishQuestions: [
-    {
-      id: "1",
-      question:
-        "Educating people and asking them ... beware ... the erratic traffic and the signboards. Appropriate fillers for the gaps are",
-      options: [
-        { option: "be, At", is_correct: "Yes" },
-        { option: "for, Of", is_correct: "No" },
-        { option: "to, Of", is_correct: "No" },
-        { option: "for, Against", is_correct: "No" },
-        { option: "for, From", is_correct: "No" }
-      ],
-      subject: "english",
-      is_locked: true
-    },
-    {
-      id: "2",
-      question:
-        "Educating people and asking them ... beware ...  the erratic traffic and the signboards. Appropriate fillers for the gaps are",
-      options: [
-        { option: "be, At", is_correct: "No" },
-        { option: "for, Of", is_correct: "Yes" },
-        { option: "to, Of", is_correct: "No" },
-        { option: "for, Against", is_correct: "Yes" },
-        { option: "for, From", is_correct: "No" }
-      ],
-      subject: "english",
-      is_locked: true
-    },
-    {
-      id: "3",
-      question:
-        "Educating people and asking them ... beware ... the erratic traffic and the signboards. Appropriate fillers for the gaps are",
-      options: [
-        { option: "be, At", is_correct: "No" },
-        { option: "for, Of", is_correct: "Yes" },
-        { option: "to, Of", is_correct: "No" },
-        { option: "for, Against", is_correct: "No" },
-        { option: "for, From", is_correct: "No" }
-      ],
-      subject: "english",
-      is_locked: true
-    }
-  ],
+  englishQuestions: [],
   countEnglishQuestions: 0,
   mathQuestions: [],
   countMathQuestions: 0,
@@ -81,13 +38,13 @@ export default function reducer(state = initialState, action) {
         message: ""
       };
     case "FETCHING_ENGLISH_QUESTIONS_FULFILLED":
+      console.log("mairala");
       return {
         ...state,
         fetching: false,
         fetched: true,
         error: null,
-        englishQuestions: action.payload.questions,
-        countEnglishQuestions: action.payload.count,
+        englishQuestions: action.payload,
         message: ""
       };
     case "FETCHING_MATH_QUESTIONS_FULFILLED":
@@ -96,8 +53,7 @@ export default function reducer(state = initialState, action) {
         fetching: false,
         fetched: true,
         error: null,
-        mathQuestions: action.payload.questions,
-        countMathQuestions: action.payload.count,
+        mathQuestions: action.payload,
         message: ""
       };
     case "FETCHING_PHYSICS_QUESTIONS_FULFILLED":
@@ -106,8 +62,7 @@ export default function reducer(state = initialState, action) {
         fetching: false,
         fetched: true,
         error: null,
-        physicsQuestions: action.payload.questions,
-        countPhysicsQuestions: action.payload.count,
+        physicsQuestions: action.payload,
         message: ""
       };
     case "FETCHING_CHEMISTRY_QUESTIONS_FULFILLED":
@@ -116,8 +71,7 @@ export default function reducer(state = initialState, action) {
         fetching: false,
         fetched: true,
         error: null,
-        chemistryQuestions: action.payload.questions,
-        countChemistryQuestions: action.payload.count,
+        chemistryQuestions: action.payload,
         message: ""
       };
     case "QUESTION_ERROR":

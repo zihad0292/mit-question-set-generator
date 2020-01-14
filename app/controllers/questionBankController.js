@@ -6,6 +6,13 @@ var QuestionBank = require("../models/questionBank");
 
 module.exports = {
   getAllQuestions: function(req, res) {
+    var url_parts = url.parse(req.url, true);
+    var query = url_parts.query;
+
+    var params = {
+      subject: query.subject
+    };
+
     var response = {
       success: true,
       status: 200
@@ -13,6 +20,7 @@ module.exports = {
 
     var cb = function(err, result) {
       if (err) {
+        console.log(err);
         response.success = false;
         response.status = 401;
         response.error = err;
@@ -27,8 +35,8 @@ module.exports = {
       res.json(response);
     };
 
-    if (query.category) {
-      QuestionBank.find({ category: query.category }, cb);
+    if (query.subject) {
+      QuestionBank.find({ subject: query.subject }, cb);
     } else {
       QuestionBank.getAll(cb);
     }
@@ -39,9 +47,9 @@ module.exports = {
     var query = url_parts.query;
 
     var params = {
+      subject: query.subject,
       question: query.question,
-      options: JSON.parse(query.options),
-      correctAnswers: JSON.parse(query.correctAnswers)
+      options: JSON.parse(query.options)
     };
 
     var response = {

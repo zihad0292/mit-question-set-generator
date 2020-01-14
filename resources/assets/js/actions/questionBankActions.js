@@ -3,58 +3,69 @@ import axios from "axios";
 const baseUrl = "/api/question-bank/";
 
 export function fetchQuestions(subject) {
-  return function(dispatch) {
-    console.log("Fetching all questions");
-    dispatch({ type: "FETCHING_ALL_QUESTIONS_FULFILLED", payload: ["a", "b"] });
-    //   dispatch({ type: "FETCHING_FIELD_DATA_TYPE" });
+  if (subject === "english") {
+    const ACTION_STRING = "FETCHING_ENGLISH_QUESTIONS_FULFILLED";
+  } else if (subject === "math") {
+    const ACTION_STRING = "FETCHING_MATH_QUESTIONS_FULFILLED";
+  } else if (subject === "physics") {
+    const ACTION_STRING = "FETCHING_PHYSICS_QUESTIONS_FULFILLED";
+  } else if (subject === "chemistry") {
+    const ACTION_STRING = "FETCHING_CHEMISTRY_QUESTIONS_FULFILLED";
+  }
 
-    //   axios
-    //     .get(`${baseUrl}list`)
-    //     .then(resp => {
-    //       const d = resp.data;
-    //       if (d.success) {
-    //         dispatch({
-    //           type: "FETCHING_FIELD_DATA_TYPE_FULFILLED",
-    //           payload: d.results
-    //         });
-    //       } else {
-    //         dispatch({ type: "FIELD_DATA_TYPE_ERROR", payload: d.message });
-    //       }
-    //     })
-    //     .catch(err => {
-    //       dispatch({ type: "FIELD_DATA_TYPE_ERROR", payload: err });
-    //     });
+  return function(dispatch) {
+    dispatch({ type: "FETCHING_QUESTIONS" });
+
+    axios
+      .get(`${baseUrl}list?subject=${subject}`)
+      .then(resp => {
+        const d = resp.data;
+        if (d.success) {
+          console.log("mairala");
+          dispatch({
+            type: ACTION_STRING,
+            payload: d.results
+          });
+        } else {
+          dispatch({ type: "QUESTION_ERROR", payload: d.message });
+        }
+      })
+      .catch(err => {
+        dispatch({ type: "QUESTION_ERROR", payload: err });
+      });
   };
 }
 
-export function addNewDataType(data_type, enabled, hasCredentials) {
+export function addNewQuestion(subject, question, options) {
   return function(dispatch) {
-    dispatch({ type: "ADDING_NEW_FIELD_DATA_TYPE" });
+    dispatch({ type: "ADDING_NEW_QUESTION" });
 
     axios
-      .post(`${baseUrl}new?d=${data_type}&e=${enabled}&h=${hasCredentials}`)
+      .post(
+        `${baseUrl}create?subject=${subject}&question=${question}&options=${options}`
+      )
       .then(response => {
         const d = response.data;
 
         if (d.success) {
           dispatch({
-            type: "ADDING_NEW_FIELD_DATA_TYPE_FULFILLED",
+            type: "ADDING_NEW_QUESTION_FULFILLED",
             payload: d.message
           });
         } else {
           dispatch({
-            type: "FETCHING_FIELD_DATA_TYPE_FAILED",
+            type: "QUESTION_ERROR",
             payload: d.error
           });
         }
       })
       .catch(err => {
-        dispatch({ type: "FETCHING_FIELD_DATA_TYPE_FAILED", payload: err });
+        dispatch({ type: "QUESTION_ERROR", payload: err });
       });
   };
 }
 
-export function updateDataType(id, data_type, enabled, hasCredentials) {
+export function editQuestion(id, data_type, enabled, hasCredentials) {
   return function(dispatch) {
     dispatch({ type: "UPDATING_FIELD_DATA_TYPE" });
     const updateUrl = `${baseUrl}update?id=${id}&d=${data_type}&e=${enabled}&h=${hasCredentials}`;

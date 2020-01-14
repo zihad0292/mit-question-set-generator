@@ -7,17 +7,16 @@ var questionBankSchema = new Schema(
       type: String,
       required: [true, "Question Field can not be empty"]
     },
-    category: {
+    subject: {
       type: String,
-      required: [true, "You must select a category"]
+      required: [true, "You must select a subject"]
     },
     options: [
       {
-        position: String,
-        value: String
+        option: String,
+        is_correct: String
       }
-    ],
-    correctAnswers: [String]
+    ]
   },
   {
     timestamps: { createdAt: "created_at", updatedAt: "updated_at" }
