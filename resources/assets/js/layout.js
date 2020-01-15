@@ -17,7 +17,7 @@ import Landing from "./pages/landing";
 import QuestionBank from "./pages/questionBank/";
 import QuestionBankCategory from "./pages/questionBank/category";
 import CreateQuestion from "./pages/questionBank/createQuestion";
-// import EditQuestion from "./pages/questionBank/editQuestion";
+import EditQuestion from "./pages/questionBank/editQuestion";
 // import QuestionSets from "./pages/questionSets";
 // import CreateQuestionSet from "./pages/questionSets/createQuestionSet";
 import NotFound from "./pages/notfound";
@@ -104,10 +104,10 @@ class Layout extends Component {
               path='/dashboard/question-bank/create'
               component={CreateQuestion}
             />
-            {/*<Route
-              path='/question-bank/edit/:question_id'
+            <Route
+              path='/dashboard/question-bank/edit/:question'
               component={EditQuestion}
-            /> */}
+            />
             {/* <Route path='/question-sets' component={QuestionSets} />
             <Route path='/question-sets/create' component={CreateQuestionSet} /> */}
             <Route component={NotFound} />

@@ -6,9 +6,9 @@ import { bindActionCreators } from "redux";
 import { withStyles } from "@material-ui/core/styles";
 
 import Paper from "@material-ui/core/Paper";
-import { WidgetTitle, FullBodyLoader } from "../../../components/utils";
+// import { WidgetTitle, FullBodyLoader } from "../../../components/utils";
 
-import AddNewDataType from "./addNewDataType";
+import CreateQuestion from "./createQuestion";
 
 const styles = theme => ({
   root: {
@@ -22,36 +22,36 @@ const styles = theme => ({
   }
 });
 
-class UpdateDataType extends Component {
+class EditQuestion extends Component {
   constructor(props) {
     super(props);
-    this.onComplete = this.onComplete.bind(this);
+    this.state = {
+      loading: true,
+      selectedQuestion: null
+    };
   }
 
-  onComplete() {
-    this.props.onUpdateComplete();
+  componentDidMount() {
+    const selectedQuestion = JSON.parse(this.props.match.params.question);
+    if (selectedQuestion) {
+      this.setState({
+        loading: false,
+        selectedQuestion: selectedQuestion
+      });
+    }
   }
-
   render() {
-    const { classes } = this.props;
+    const { loading, selectedQuestion } = this.state;
+    if (loading) {
+      return "Loading...";
+    }
 
-    return (
-      <Paper className={classes.root}>
-        <WidgetTitle>Update Data Type Info</WidgetTitle>
-        <AddNewDataType
-          type='update'
-          selectedDataType={this.props.selectedDataType}
-          onComplete={this.onComplete}
-        />
-      </Paper>
-    );
+    return <CreateQuestion type='edit' selectedQuestion={selectedQuestion} />;
   }
 }
 
-UpdateDataType.propTypes = {
-  classes: PropTypes.object.isRequired,
-  selectedDataType: PropTypes.object.isRequired,
-  onUpdateComplete: PropTypes.func.isRequired
+EditQuestion.propTypes = {
+  classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(UpdateDataType);
+export default withStyles(styles)(EditQuestion);

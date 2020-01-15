@@ -75341,6 +75341,36 @@ module.exports = function(originalModule) {
 
 /***/ }),
 
+/***/ "./resources/assets/js/actions/generateActionString.js":
+/*!*************************************************************!*\
+  !*** ./resources/assets/js/actions/generateActionString.js ***!
+  \*************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = generateActionString;
+function generateActionString(subject) {
+  var ACTION_STRING = "";
+  if (subject === "english") {
+    ACTION_STRING = "FETCHING_ENGLISH_QUESTIONS_FULFILLED";
+  } else if (subject === "math") {
+    ACTION_STRING = "FETCHING_MATH_QUESTIONS_FULFILLED";
+  } else if (subject === "physics") {
+    ACTION_STRING = "FETCHING_PHYSICS_QUESTIONS_FULFILLED";
+  } else {
+    ACTION_STRING = "FETCHING_CHEMISTRY_QUESTIONS_FULFILLED";
+  }
+  return ACTION_STRING;
+}
+
+/***/ }),
+
 /***/ "./resources/assets/js/actions/questionBankActions.js":
 /*!************************************************************!*\
   !*** ./resources/assets/js/actions/questionBankActions.js ***!
@@ -75363,28 +75393,24 @@ var _axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 
 var _axios2 = _interopRequireDefault(_axios);
 
+var _generateActionString = __webpack_require__(/*! ./generateActionString */ "./resources/assets/js/actions/generateActionString.js");
+
+var _generateActionString2 = _interopRequireDefault(_generateActionString);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var baseUrl = "/api/question-bank/";
 
 function fetchQuestions(subject) {
-  if (subject === "english") {
-    var _ACTION_STRING = "FETCHING_ENGLISH_QUESTIONS_FULFILLED";
-  } else if (subject === "math") {
-    var _ACTION_STRING2 = "FETCHING_MATH_QUESTIONS_FULFILLED";
-  } else if (subject === "physics") {
-    var _ACTION_STRING3 = "FETCHING_PHYSICS_QUESTIONS_FULFILLED";
-  } else if (subject === "chemistry") {
-    var _ACTION_STRING4 = "FETCHING_CHEMISTRY_QUESTIONS_FULFILLED";
-  }
+  var ACTION_STRING = (0, _generateActionString2.default)(subject);
 
   return function (dispatch) {
     dispatch({ type: "FETCHING_QUESTIONS" });
 
     _axios2.default.get(baseUrl + "list?subject=" + subject).then(function (resp) {
       var d = resp.data;
+      console.log(d);
       if (d.success) {
-        console.log("mairala");
         dispatch({
           type: ACTION_STRING,
           payload: d.results
@@ -75410,6 +75436,7 @@ function addNewQuestion(subject, question, options) {
           type: "ADDING_NEW_QUESTION_FULFILLED",
           payload: d.message
         });
+        dispatch(fetchQuestions(subject));
       } else {
         dispatch({
           type: "QUESTION_ERROR",
@@ -75422,55 +75449,57 @@ function addNewQuestion(subject, question, options) {
   };
 }
 
-function editQuestion(id, data_type, enabled, hasCredentials) {
+function editQuestion(id, subject, oldSubject, question, options) {
   return function (dispatch) {
-    dispatch({ type: "UPDATING_FIELD_DATA_TYPE" });
-    var updateUrl = baseUrl + "update?id=" + id + "&d=" + data_type + "&e=" + enabled + "&h=" + hasCredentials;
+    dispatch({ type: "UPDATING_QUESTION" });
+    var updateUrl = baseUrl + "edit?id=" + id + "&subject=" + subject + "&question=" + question + "&options=" + options;
     _axios2.default.post(updateUrl).then(function (resp) {
       var d = resp.data;
 
       if (d.success) {
         dispatch({
-          type: "UPDATING_FIELD_DATA_TYPE_FULFILLED",
+          type: "UPDATING_QUESTION_FULFILLED",
           payload: d.message
         });
+        dispatch(fetchQuestions(subject));
+        if (subject !== oldSubject) {
+          dispatch(fetchQuestions(oldSubject));
+        }
       } else {
-        dispatch({ type: "FIELD_DATA_TYPE_ERROR", payload: err });
+        dispatch({ type: "QUESTION_ERROR", payload: err });
       }
     }).catch(function (err) {
-      dispatch({ type: "FIELD_DATA_TYPE_ERROR", payload: err });
+      dispatch({ type: "QUESTION_ERROR", payload: err });
     });
   };
 }
 
-function deleteQuestion(id) {
+function deleteQuestion(id, subject) {
+  console.log(id, subject);
   return function (dispatch) {
-    console.log("Deleting question");
-    // dispatch({ type: "DELETE_FIELD_DATA_TYPE" });
+    dispatch({ type: "DELETE_QUESTION" });
 
-    // axios
-    //   .delete(`${baseUrl}delete?id=${id}`)
-    //   .then(resp => {
-    //     const d = resp.data;
+    _axios2.default.delete(baseUrl + "delete?id=" + id).then(function (resp) {
+      var d = resp.data;
 
-    //     if (d.success) {
-    //       dispatch({
-    //         type: "DELETE_FIELD_DATA_TYPE_FULFILLED",
-    //         payload: d.message
-    //       });
-    //     } else {
-    //       dispatch({
-    //         type: "FETCHING_FIELD_DATA_TYPE_FAILED",
-    //         payload: d.error
-    //       });
-    //     }
-    //   })
-    //   .catch(err => {
-    //     dispatch({
-    //       type: "FETCHING_FIELD_DATA_TYPE_FAILED",
-    //       payload: err.message
-    //     });
-    //   });
+      if (d.success) {
+        dispatch({
+          type: "DELETE_QUESTION_FULFILLED",
+          payload: d.message
+        });
+        dispatch(fetchQuestions(subject));
+      } else {
+        dispatch({
+          type: "QUESTION_ERROR",
+          payload: d.error
+        });
+      }
+    }).catch(function (err) {
+      dispatch({
+        type: "QUESTION_ERROR",
+        payload: err.message
+      });
+    });
   };
 }
 
@@ -76672,6 +76701,10 @@ var _createQuestion = __webpack_require__(/*! ./pages/questionBank/createQuestio
 
 var _createQuestion2 = _interopRequireDefault(_createQuestion);
 
+var _editQuestion = __webpack_require__(/*! ./pages/questionBank/editQuestion */ "./resources/assets/js/pages/questionBank/editQuestion.js");
+
+var _editQuestion2 = _interopRequireDefault(_editQuestion);
+
 var _notfound = __webpack_require__(/*! ./pages/notfound */ "./resources/assets/js/pages/notfound/index.js");
 
 var _notfound2 = _interopRequireDefault(_notfound);
@@ -76691,7 +76724,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 // Page components
 
-// import EditQuestion from "./pages/questionBank/editQuestion";
 // import QuestionSets from "./pages/questionSets";
 // import CreateQuestionSet from "./pages/questionSets/createQuestionSet";
 
@@ -76804,6 +76836,10 @@ var Layout = function (_Component) {
             _react2.default.createElement(_reactRouterDom.Route, {
               path: "/dashboard/question-bank/create",
               component: _createQuestion2.default
+            }),
+            _react2.default.createElement(_reactRouterDom.Route, {
+              path: "/dashboard/question-bank/edit/:question",
+              component: _editQuestion2.default
             }),
             _react2.default.createElement(_reactRouterDom.Route, { component: _notfound2.default })
           )
@@ -77469,6 +77505,11 @@ var QuestionBankCategory = function (_Component) {
       }
     }
   }, {
+    key: "componentWillReceiveProps",
+    value: function componentWillReceiveProps(nextProps) {
+      // console.log(nextProps);
+    }
+  }, {
     key: "onDeleteClick",
     value: function onDeleteClick(selectedIndex) {
       this.setState({
@@ -77486,10 +77527,12 @@ var QuestionBankCategory = function (_Component) {
   }, {
     key: "onDeleteSubmit",
     value: function onDeleteSubmit() {
-      var selected = this.state.selected;
+      var _state = this.state,
+          selected = _state.selected,
+          subject = _state.subject;
 
 
-      this.props.deleteQuestion(selected._id);
+      this.props.deleteQuestion(selected, subject);
 
       this.setState({
         confirm: false
@@ -77497,9 +77540,8 @@ var QuestionBankCategory = function (_Component) {
     }
   }, {
     key: "onEditClick",
-    value: function onEditClick(selectedIndex) {
-      console.log("Redirect to edit page");
-      alert("Redirect to edit page");
+    value: function onEditClick(selectedQuestion) {
+      this.props.history.push("/dashboard/question-bank/edit/" + JSON.stringify(selectedQuestion));
     }
   }, {
     key: "renderQuestions",
@@ -77570,7 +77612,7 @@ var QuestionBankCategory = function (_Component) {
                 edge: "end",
                 "aria-label": "edit",
                 onClick: function onClick() {
-                  return _this2.onEditClick(question.id);
+                  return _this2.onEditClick(question);
                 }
               },
               _react2.default.createElement(_Edit2.default, null)
@@ -77581,7 +77623,7 @@ var QuestionBankCategory = function (_Component) {
                 edge: "end",
                 "aria-label": "delete",
                 onClick: function onClick() {
-                  return _this2.onDeleteClick(question.id);
+                  return _this2.onDeleteClick(question._id);
                 }
               },
               _react2.default.createElement(_Delete2.default, null)
@@ -77598,9 +77640,9 @@ var QuestionBankCategory = function (_Component) {
           fetching = _props2.fetching,
           deleting = _props2.deleting,
           history = _props2.history;
-      var _state = this.state,
-          selected = _state.selected,
-          subject = _state.subject;
+      var _state2 = this.state,
+          selected = _state2.selected,
+          subject = _state2.subject;
 
 
       return _react2.default.createElement(
@@ -77676,15 +77718,13 @@ function mapStateToProps(store) {
     fetched: store.questionBankInfo.fetched,
     fetching: store.questionBankInfo.fetching,
     deleting: store.questionBankInfo.deleting,
+    deleted: store.questionBankInfo.deleted,
     questions: store.questionBankInfo.questions,
     englishQuestions: store.questionBankInfo.englishQuestions,
-    countEnglishQuestions: store.questionBankInfo.countEnglishQuestions,
     mathQuestions: store.questionBankInfo.mathQuestions,
-    countMathQuestions: store.questionBankInfo.countMathQuestions,
     physicsQuestions: store.questionBankInfo.physicsQuestions,
-    countPhysicsQuestions: store.questionBankInfo.countPhysicsQuestions,
     chemistryQuestions: store.questionBankInfo.chemistryQuestions,
-    countChemistryQuestions: store.questionBankInfo.countChemistryQuestions
+    message: store.questionBankInfo.message
   };
 }
 
@@ -77826,6 +77866,9 @@ var styles = function styles(theme) {
       width: "100%",
       marginTop: theme.spacing(2),
       marginBottom: theme.spacing(2)
+    },
+    capitalizeWord: {
+      textTransform: "capitalize"
     }
   };
 };
@@ -77839,6 +77882,7 @@ var CreateQuestion = function (_Component) {
     var _this = _possibleConstructorReturn(this, (CreateQuestion.__proto__ || Object.getPrototypeOf(CreateQuestion)).call(this, props));
 
     _this.state = {
+      oldSubject: "",
       subject: "",
       question: "",
       options: [{
@@ -77867,21 +77911,28 @@ var CreateQuestion = function (_Component) {
   _createClass(CreateQuestion, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-      // const { type } = this.props;
-      // if (type == "update") {
-      //   this.populateStateVal();
-      // }
+      var type = this.props.type;
+
+      if (type == "edit") {
+        this.populateStateVal();
+      }
     }
   }, {
     key: "populateStateVal",
     value: function populateStateVal() {
-      var selectedDataType = this.props.selectedDataType;
+      var _this2 = this;
 
+      var selectedQuestion = this.props.selectedQuestion;
 
+      console.log(selectedQuestion);
       this.setState({
-        dataType: selectedDataType.dataType,
-        is_correct: selectedDataType.is_correct,
-        hasCredentials: selectedDataType.hasCredentials
+        oldSubject: selectedQuestion.subject,
+        subject: selectedQuestion.subject,
+        question: selectedQuestion.question,
+        options: selectedQuestion.options,
+        optionsCount: selectedQuestion.options.length
+      }, function () {
+        return console.log(_this2.state);
       });
     }
   }, {
@@ -77961,7 +78012,8 @@ var CreateQuestion = function (_Component) {
       var _state = this.state,
           question = _state.question,
           options = _state.options,
-          subject = _state.subject;
+          subject = _state.subject,
+          oldSubject = _state.oldSubject;
       var _props = this.props,
           type = _props.type,
           selectedQuestion = _props.selectedQuestion,
@@ -77970,7 +78022,7 @@ var CreateQuestion = function (_Component) {
 
       if (question.length > 0) {
         if (type == "edit") {
-          editQuestion(selectedQuestion._id, dataType, is_correct, hasCredentials);
+          editQuestion(selectedQuestion._id, subject, oldSubject, question, JSON.stringify(options));
         } else {
           addNewQuestion(subject, question, JSON.stringify(options));
         }
@@ -77979,7 +78031,7 @@ var CreateQuestion = function (_Component) {
   }, {
     key: "render",
     value: function render() {
-      var _this2 = this;
+      var _this3 = this;
 
       var classes = this.props.classes;
       var _state2 = this.state,
@@ -77989,7 +78041,9 @@ var CreateQuestion = function (_Component) {
           optionsCount = _state2.optionsCount;
 
 
-      var subjectList = [{ value: "english", label: "English" }, { value: "math", label: "Math" }, { value: "physics", label: "Physics" }, { value: "chemistry", label: "Chemistry" }];
+      var subjectList = [{ value: "english", label: "english" }, { value: "math", label: "math" }, { value: "physics", label: "physics" }, { value: "chemistry", label: "chemistry" }];
+
+      var selectedSubj = { value: "" + subject, label: "" + subject };
 
       var optionsToPrint = options.map(function (option, index) {
         return _react2.default.createElement(
@@ -78003,7 +78057,7 @@ var CreateQuestion = function (_Component) {
               fontSize: "large",
               className: classes.removeIcon,
               onClick: function onClick() {
-                return _this2.handleRemoveOption(index);
+                return _this3.handleRemoveOption(index);
               }
             }) : "",
             _react2.default.createElement(_TextField2.default, {
@@ -78016,7 +78070,7 @@ var CreateQuestion = function (_Component) {
               variant: "outlined",
               fullWidth: true,
               onChange: function onChange(event) {
-                return _this2.handleOptionChange(index, event);
+                return _this3.handleOptionChange(index, event);
               }
             })
           ),
@@ -78031,7 +78085,7 @@ var CreateQuestion = function (_Component) {
                   name: "is-correct-" + index,
                   checked: options[index].is_correct,
                   onChange: function onChange(event) {
-                    return _this2.handleOptionCheckboxChange(index, event);
+                    return _this3.handleOptionCheckboxChange(index, event);
                   },
                   value: options[index].is_correct
                 }),
@@ -78074,11 +78128,11 @@ var CreateQuestion = function (_Component) {
               { container: true, spacing: 3 },
               _react2.default.createElement(
                 _Grid2.default,
-                { item: true, xs: 12 },
+                { item: true, xs: 12, className: classes.capitalizeWord },
                 _react2.default.createElement(_IntegrationReactSelect2.default, {
                   suggestions: subjectList,
                   label: "Form",
-                  value: subject,
+                  selected: selectedSubj,
                   onChange: this.onSubjectSelect,
                   placeholder: "Select Subject"
                 })
@@ -78163,6 +78217,119 @@ function mapDispatchToProps(dispatch) {
 }
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)((0, _styles.withStyles)(styles)(CreateQuestion));
+
+/***/ }),
+
+/***/ "./resources/assets/js/pages/questionBank/editQuestion.js":
+/*!****************************************************************!*\
+  !*** ./resources/assets/js/pages/questionBank/editQuestion.js ***!
+  \****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _reactRedux = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+
+var _redux = __webpack_require__(/*! redux */ "./node_modules/redux/es/index.js");
+
+var _styles = __webpack_require__(/*! @material-ui/core/styles */ "./node_modules/@material-ui/core/esm/styles/index.js");
+
+var _Paper = __webpack_require__(/*! @material-ui/core/Paper */ "./node_modules/@material-ui/core/esm/Paper/index.js");
+
+var _Paper2 = _interopRequireDefault(_Paper);
+
+var _createQuestion = __webpack_require__(/*! ./createQuestion */ "./resources/assets/js/pages/questionBank/createQuestion.js");
+
+var _createQuestion2 = _interopRequireDefault(_createQuestion);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+// import { WidgetTitle, FullBodyLoader } from "../../../components/utils";
+
+var styles = function styles(theme) {
+  return {
+    root: {
+      flexGrow: 1,
+      maxWidth: 400,
+      position: "relative",
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+      padding: theme.spacing(2)
+    }
+  };
+};
+
+var EditQuestion = function (_Component) {
+  _inherits(EditQuestion, _Component);
+
+  function EditQuestion(props) {
+    _classCallCheck(this, EditQuestion);
+
+    var _this = _possibleConstructorReturn(this, (EditQuestion.__proto__ || Object.getPrototypeOf(EditQuestion)).call(this, props));
+
+    _this.state = {
+      loading: true,
+      selectedQuestion: null
+    };
+    return _this;
+  }
+
+  _createClass(EditQuestion, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var selectedQuestion = JSON.parse(this.props.match.params.question);
+      if (selectedQuestion) {
+        this.setState({
+          loading: false,
+          selectedQuestion: selectedQuestion
+        });
+      }
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _state = this.state,
+          loading = _state.loading,
+          selectedQuestion = _state.selectedQuestion;
+
+      if (loading) {
+        return "Loading...";
+      }
+
+      return _react2.default.createElement(_createQuestion2.default, { type: "edit", selectedQuestion: selectedQuestion });
+    }
+  }]);
+
+  return EditQuestion;
+}(_react.Component);
+
+EditQuestion.propTypes = {
+  classes: _propTypes2.default.object.isRequired
+};
+
+exports.default = (0, _styles.withStyles)(styles)(EditQuestion);
 
 /***/ }),
 
@@ -78575,7 +78742,6 @@ function reducer() {
         message: ""
       });
     case "FETCHING_ENGLISH_QUESTIONS_FULFILLED":
-      console.log("mairala");
       return _extends({}, state, {
         fetching: false,
         fetched: true,

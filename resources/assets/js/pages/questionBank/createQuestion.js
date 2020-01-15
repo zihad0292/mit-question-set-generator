@@ -71,6 +71,9 @@ const styles = theme => ({
     width: "100%",
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(2)
+  },
+  capitalizeWord: {
+    textTransform: "capitalize"
   }
 });
 
@@ -78,6 +81,7 @@ class CreateQuestion extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      oldSubject: "",
       subject: "",
       question: "",
       options: [
@@ -109,20 +113,25 @@ class CreateQuestion extends Component {
   }
 
   componentDidMount() {
-    // const { type } = this.props;
-    // if (type == "update") {
-    //   this.populateStateVal();
-    // }
+    const { type } = this.props;
+    if (type == "edit") {
+      this.populateStateVal();
+    }
   }
 
   populateStateVal() {
-    const { selectedDataType } = this.props;
-
-    this.setState({
-      dataType: selectedDataType.dataType,
-      is_correct: selectedDataType.is_correct,
-      hasCredentials: selectedDataType.hasCredentials
-    });
+    const { selectedQuestion } = this.props;
+    console.log(selectedQuestion);
+    this.setState(
+      {
+        oldSubject: selectedQuestion.subject,
+        subject: selectedQuestion.subject,
+        question: selectedQuestion.question,
+        options: selectedQuestion.options,
+        optionsCount: selectedQuestion.options.length
+      },
+      () => console.log(this.state)
+    );
   }
 
   componentWillReceiveProps(nextProps) {
@@ -190,15 +199,16 @@ class CreateQuestion extends Component {
   }
 
   handleSubmit() {
-    const { question, options, subject } = this.state;
+    const { question, options, subject, oldSubject } = this.state;
     const { type, selectedQuestion, addNewQuestion, editQuestion } = this.props;
     if (question.length > 0) {
       if (type == "edit") {
         editQuestion(
           selectedQuestion._id,
-          dataType,
-          is_correct,
-          hasCredentials
+          subject,
+          oldSubject,
+          question,
+          JSON.stringify(options)
         );
       } else {
         addNewQuestion(subject, question, JSON.stringify(options));
@@ -211,11 +221,13 @@ class CreateQuestion extends Component {
     const { subject, question, options, optionsCount } = this.state;
 
     const subjectList = [
-      { value: "english", label: "English" },
-      { value: "math", label: "Math" },
-      { value: "physics", label: "Physics" },
-      { value: "chemistry", label: "Chemistry" }
+      { value: "english", label: "english" },
+      { value: "math", label: "math" },
+      { value: "physics", label: "physics" },
+      { value: "chemistry", label: "chemistry" }
     ];
+
+    var selectedSubj = { value: `${subject}`, label: `${subject}` };
 
     const optionsToPrint = options.map((option, index) => {
       return (
@@ -282,11 +294,11 @@ class CreateQuestion extends Component {
         <CustomSmallPaper>
           <div className={classes.cardContent}>
             <Grid container spacing={3}>
-              <Grid item xs={12}>
+              <Grid item xs={12} className={classes.capitalizeWord}>
                 <IntegrationReactSelect
                   suggestions={subjectList}
                   label='Form'
-                  value={subject}
+                  selected={selectedSubj}
                   onChange={this.onSubjectSelect}
                   placeholder='Select Subject'
                 />

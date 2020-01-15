@@ -164,6 +164,10 @@ class QuestionBankCategory extends Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    // console.log(nextProps);
+  }
+
   renderRedirect = () => {
     if (this.state.redirect) {
       return <Redirect to='/dashboard/question-bank/allsubjects/' />;
@@ -184,18 +188,19 @@ class QuestionBankCategory extends Component {
   }
 
   onDeleteSubmit() {
-    const { selected } = this.state;
+    const { selected, subject } = this.state;
 
-    this.props.deleteQuestion(selected._id);
+    this.props.deleteQuestion(selected, subject);
 
     this.setState({
       confirm: false
     });
   }
 
-  onEditClick(selectedIndex) {
-    console.log("Redirect to edit page");
-    alert("Redirect to edit page");
+  onEditClick(selectedQuestion) {
+    this.props.history.push(
+      `/dashboard/question-bank/edit/${JSON.stringify(selectedQuestion)}`
+    );
   }
 
   renderQuestions() {
@@ -249,14 +254,14 @@ class QuestionBankCategory extends Component {
             <IconButton
               edge='end'
               aria-label='edit'
-              onClick={() => this.onEditClick(question.id)}
+              onClick={() => this.onEditClick(question)}
             >
               <EditIcon />
             </IconButton>
             <IconButton
               edge='end'
               aria-label='delete'
-              onClick={() => this.onDeleteClick(question.id)}
+              onClick={() => this.onDeleteClick(question._id)}
             >
               <DeleteIcon />
             </IconButton>
@@ -323,15 +328,13 @@ function mapStateToProps(store) {
     fetched: store.questionBankInfo.fetched,
     fetching: store.questionBankInfo.fetching,
     deleting: store.questionBankInfo.deleting,
+    deleted: store.questionBankInfo.deleted,
     questions: store.questionBankInfo.questions,
     englishQuestions: store.questionBankInfo.englishQuestions,
-    countEnglishQuestions: store.questionBankInfo.countEnglishQuestions,
     mathQuestions: store.questionBankInfo.mathQuestions,
-    countMathQuestions: store.questionBankInfo.countMathQuestions,
     physicsQuestions: store.questionBankInfo.physicsQuestions,
-    countPhysicsQuestions: store.questionBankInfo.countPhysicsQuestions,
     chemistryQuestions: store.questionBankInfo.chemistryQuestions,
-    countChemistryQuestions: store.questionBankInfo.countChemistryQuestions
+    message: store.questionBankInfo.message
   };
 }
 

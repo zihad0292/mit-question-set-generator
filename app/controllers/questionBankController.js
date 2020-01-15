@@ -25,11 +25,7 @@ module.exports = {
         response.status = 401;
         response.error = err;
       } else {
-        if (result && result.length > 0) response.results = result;
-        else {
-          response.results = [];
-          if (result) response.results.push(result);
-        }
+        response.results = result;
       }
 
       res.json(response);
@@ -82,8 +78,8 @@ module.exports = {
 
     var params = {
       question: query.question,
-      options: JSON.parse(query.options),
-      correctAnswers: JSON.parse(query.correctAnswers)
+      subject: query.subject,
+      options: JSON.parse(query.options)
     };
 
     QuestionBank.update(query.id, params, function(err, success) {

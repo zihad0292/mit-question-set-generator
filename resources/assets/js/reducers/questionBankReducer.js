@@ -38,7 +38,6 @@ export default function reducer(state = initialState, action) {
         message: ""
       };
     case "FETCHING_ENGLISH_QUESTIONS_FULFILLED":
-      console.log("mairala");
       return {
         ...state,
         fetching: false,

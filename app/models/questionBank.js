@@ -14,7 +14,7 @@ var questionBankSchema = new Schema(
     options: [
       {
         option: String,
-        is_correct: String
+        is_correct: Boolean
       }
     ]
   },
@@ -92,7 +92,7 @@ module.exports = {
   },
 
   update: function(id, params, result) {
-    Office.findOneAndUpdate(
+    QuestionBank.findOneAndUpdate(
       { _id: id },
       params,
       { runValidators: false },
@@ -107,7 +107,7 @@ module.exports = {
   },
 
   delete: function(id, result) {
-    Office.deleteOne({ _id: id }, function(err) {
+    QuestionBank.deleteOne({ _id: id }, function(err) {
       if (err) {
         result(err, null);
       } else {

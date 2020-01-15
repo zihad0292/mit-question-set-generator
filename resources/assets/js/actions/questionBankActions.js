@@ -1,17 +1,10 @@
 import axios from "axios";
+import generateActionString from "./generateActionString";
 
 const baseUrl = "/api/question-bank/";
 
 export function fetchQuestions(subject) {
-  if (subject === "english") {
-    const ACTION_STRING = "FETCHING_ENGLISH_QUESTIONS_FULFILLED";
-  } else if (subject === "math") {
-    const ACTION_STRING = "FETCHING_MATH_QUESTIONS_FULFILLED";
-  } else if (subject === "physics") {
-    const ACTION_STRING = "FETCHING_PHYSICS_QUESTIONS_FULFILLED";
-  } else if (subject === "chemistry") {
-    const ACTION_STRING = "FETCHING_CHEMISTRY_QUESTIONS_FULFILLED";
-  }
+  const ACTION_STRING = generateActionString(subject);
 
   return function(dispatch) {
     dispatch({ type: "FETCHING_QUESTIONS" });
@@ -20,8 +13,8 @@ export function fetchQuestions(subject) {
       .get(`${baseUrl}list?subject=${subject}`)
       .then(resp => {
         const d = resp.data;
+        console.log(d);
         if (d.success) {
-          console.log("mairala");
           dispatch({
             type: ACTION_STRING,
             payload: d.results
@@ -52,6 +45,7 @@ export function addNewQuestion(subject, question, options) {
             type: "ADDING_NEW_QUESTION_FULFILLED",
             payload: d.message
           });
+          dispatch(fetchQuestions(subject));
         } else {
           dispatch({
             type: "QUESTION_ERROR",
@@ -65,10 +59,10 @@ export function addNewQuestion(subject, question, options) {
   };
 }
 
-export function editQuestion(id, data_type, enabled, hasCredentials) {
+export function editQuestion(id, subject, oldSubject, question, options) {
   return function(dispatch) {
-    dispatch({ type: "UPDATING_FIELD_DATA_TYPE" });
-    const updateUrl = `${baseUrl}update?id=${id}&d=${data_type}&e=${enabled}&h=${hasCredentials}`;
+    dispatch({ type: "UPDATING_QUESTION" });
+    const updateUrl = `${baseUrl}edit?id=${id}&subject=${subject}&question=${question}&options=${options}`;
     axios
       .post(updateUrl)
       .then(resp => {
@@ -76,46 +70,51 @@ export function editQuestion(id, data_type, enabled, hasCredentials) {
 
         if (d.success) {
           dispatch({
-            type: "UPDATING_FIELD_DATA_TYPE_FULFILLED",
+            type: "UPDATING_QUESTION_FULFILLED",
             payload: d.message
           });
+          dispatch(fetchQuestions(subject));
+          if (subject !== oldSubject) {
+            dispatch(fetchQuestions(oldSubject));
+          }
         } else {
-          dispatch({ type: "FIELD_DATA_TYPE_ERROR", payload: err });
+          dispatch({ type: "QUESTION_ERROR", payload: err });
         }
       })
       .catch(err => {
-        dispatch({ type: "FIELD_DATA_TYPE_ERROR", payload: err });
+        dispatch({ type: "QUESTION_ERROR", payload: err });
       });
   };
 }
 
-export function deleteQuestion(id) {
+export function deleteQuestion(id, subject) {
+  console.log(id, subject);
   return function(dispatch) {
-    console.log("Deleting question");
-    // dispatch({ type: "DELETE_FIELD_DATA_TYPE" });
+    dispatch({ type: "DELETE_QUESTION" });
 
-    // axios
-    //   .delete(`${baseUrl}delete?id=${id}`)
-    //   .then(resp => {
-    //     const d = resp.data;
+    axios
+      .delete(`${baseUrl}delete?id=${id}`)
+      .then(resp => {
+        const d = resp.data;
 
-    //     if (d.success) {
-    //       dispatch({
-    //         type: "DELETE_FIELD_DATA_TYPE_FULFILLED",
-    //         payload: d.message
-    //       });
-    //     } else {
-    //       dispatch({
-    //         type: "FETCHING_FIELD_DATA_TYPE_FAILED",
-    //         payload: d.error
-    //       });
-    //     }
-    //   })
-    //   .catch(err => {
-    //     dispatch({
-    //       type: "FETCHING_FIELD_DATA_TYPE_FAILED",
-    //       payload: err.message
-    //     });
-    //   });
+        if (d.success) {
+          dispatch({
+            type: "DELETE_QUESTION_FULFILLED",
+            payload: d.message
+          });
+          dispatch(fetchQuestions(subject));
+        } else {
+          dispatch({
+            type: "QUESTION_ERROR",
+            payload: d.error
+          });
+        }
+      })
+      .catch(err => {
+        dispatch({
+          type: "QUESTION_ERROR",
+          payload: err.message
+        });
+      });
   };
 }
