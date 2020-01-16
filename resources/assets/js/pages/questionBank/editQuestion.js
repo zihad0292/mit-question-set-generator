@@ -5,6 +5,8 @@ import { bindActionCreators } from "redux";
 
 import { withStyles } from "@material-ui/core/styles";
 
+import CloseIcon from "@material-ui/icons/Close";
+
 import Paper from "@material-ui/core/Paper";
 // import { WidgetTitle, FullBodyLoader } from "../../../components/utils";
 
@@ -19,6 +21,16 @@ const styles = theme => ({
     left: "50%",
     transform: "translate(-50%, -50%)",
     padding: theme.spacing(2)
+  },
+  wrapper: {
+    position: "relative"
+  },
+  closeIcon: {
+    cursor: "pointer",
+    position: "absolute",
+    top: "30px",
+    right: "25px",
+    zIndex: "1"
   }
 });
 
@@ -32,21 +44,35 @@ class EditQuestion extends Component {
   }
 
   componentDidMount() {
-    const selectedQuestion = JSON.parse(this.props.match.params.question);
-    if (selectedQuestion) {
+    if (this.props.selectedQuestion) {
       this.setState({
         loading: false,
-        selectedQuestion: selectedQuestion
+        selectedQuestion: this.props.selectedQuestion
       });
     }
   }
   render() {
     const { loading, selectedQuestion } = this.state;
+    const { classes } = this.props;
     if (loading) {
       return "Loading...";
     }
 
-    return <CreateQuestion type='edit' selectedQuestion={selectedQuestion} />;
+    return (
+      <div className={classes.wrapper}>
+        <CloseIcon
+          color='secondary'
+          fontSize='large'
+          className={classes.closeIcon}
+          onClick={this.props.onEditClose}
+        />
+        <CreateQuestion
+          type='edit'
+          selectedQuestion={selectedQuestion}
+          onEditClose={this.props.onEditClose}
+        />
+      </div>
+    );
   }
 }
 

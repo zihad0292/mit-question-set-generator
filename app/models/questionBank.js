@@ -16,7 +16,10 @@ var questionBankSchema = new Schema(
         option: String,
         is_correct: Boolean
       }
-    ]
+    ],
+    rearrange_locked: {
+      type: Boolean
+    }
   },
   {
     timestamps: { createdAt: "created_at", updatedAt: "updated_at" }

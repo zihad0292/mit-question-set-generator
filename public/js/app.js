@@ -21015,6 +21015,35 @@ exports.default = _default;
 
 /***/ }),
 
+/***/ "./node_modules/@material-ui/icons/Close.js":
+/*!**************************************************!*\
+  !*** ./node_modules/@material-ui/icons/Close.js ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ "./node_modules/@babel/runtime/helpers/interopRequireDefault.js");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
+
+var _createSvgIcon = _interopRequireDefault(__webpack_require__(/*! ./utils/createSvgIcon */ "./node_modules/@material-ui/icons/utils/createSvgIcon.js"));
+
+var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
+  d: "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+}), 'Close');
+
+exports.default = _default;
+
+/***/ }),
+
 /***/ "./node_modules/@material-ui/icons/Delete.js":
 /*!***************************************************!*\
   !*** ./node_modules/@material-ui/icons/Delete.js ***!
@@ -75424,11 +75453,11 @@ function fetchQuestions(subject) {
   };
 }
 
-function addNewQuestion(subject, question, options) {
+function addNewQuestion(subject, question, options, rearrange_locked) {
   return function (dispatch) {
     dispatch({ type: "ADDING_NEW_QUESTION" });
 
-    _axios2.default.post(baseUrl + "create?subject=" + subject + "&question=" + question + "&options=" + options).then(function (response) {
+    _axios2.default.post(baseUrl + "create?subject=" + subject + "&question=" + question + "&options=" + options + "&rearrange_locked=" + rearrange_locked).then(function (response) {
       var d = response.data;
 
       if (d.success) {
@@ -75449,10 +75478,10 @@ function addNewQuestion(subject, question, options) {
   };
 }
 
-function editQuestion(id, subject, oldSubject, question, options) {
+function editQuestion(id, subject, oldSubject, question, options, rearrange_locked) {
   return function (dispatch) {
     dispatch({ type: "UPDATING_QUESTION" });
-    var updateUrl = baseUrl + "edit?id=" + id + "&subject=" + subject + "&question=" + question + "&options=" + options;
+    var updateUrl = baseUrl + "edit?id=" + id + "&subject=" + subject + "&question=" + question + "&options=" + options + "&rearrange_locked=" + rearrange_locked;
     _axios2.default.post(updateUrl).then(function (resp) {
       var d = resp.data;
 
@@ -76838,7 +76867,7 @@ var Layout = function (_Component) {
               component: _createQuestion2.default
             }),
             _react2.default.createElement(_reactRouterDom.Route, {
-              path: "/dashboard/question-bank/edit/:question",
+              path: "/dashboard/question-bank/edit/",
               component: _editQuestion2.default
             }),
             _react2.default.createElement(_reactRouterDom.Route, { component: _notfound2.default })
@@ -77363,6 +77392,10 @@ var _questionBankActions = __webpack_require__(/*! ../../actions/questionBankAct
 
 var _utils = __webpack_require__(/*! ../../components/utils */ "./resources/assets/js/components/utils.js");
 
+var _editQuestion = __webpack_require__(/*! ./editQuestion */ "./resources/assets/js/pages/questionBank/editQuestion.js");
+
+var _editQuestion2 = _interopRequireDefault(_editQuestion);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -77404,15 +77437,24 @@ var styles = function styles(theme) {
       height: "auto",
       overflow: "hidden"
     },
-    enableText: {
+    noQuestionsToDisplay: {
       display: "flex",
       alignItems: "center",
-      justifyContent: "center"
+      justifyContent: "center",
+      minHeight: "300px"
     },
     enableIcon: {
       position: "relative",
       top: -1,
       marginRight: theme.spacing(0.5)
+    },
+    noBottomSpacing: {
+      marginBottom: 0
+    },
+    optionsContainer: {
+      fontSize: ".8em",
+      lineHeight: "1.7",
+      marginTop: 0
     },
     correctAnswer: {
       color: "green",
@@ -77434,7 +77476,8 @@ var styles = function styles(theme) {
       marginTop: "20px"
     },
     questionWrapper: {
-      width: "100%"
+      width: "100%",
+      minHeight: "300px"
     },
     bottomSpacing: {
       marginBottom: theme.spacing(3)
@@ -77469,12 +77512,14 @@ var QuestionBankCategory = function (_Component) {
       redirect: false,
       questions: [],
       selected: null,
-      confirm: false
+      confirm: false,
+      editQuestionComponent: false
     };
 
     _this.onEditClick = _this.onEditClick.bind(_this);
     _this.onDeleteClick = _this.onDeleteClick.bind(_this);
     _this.onDeleteSubmit = _this.onDeleteSubmit.bind(_this);
+    _this.handleCloseComponent = _this.handleCloseComponent.bind(_this);
     _this.onModalClose = _this.onModalClose.bind(_this);
     return _this;
   }
@@ -77525,6 +77570,13 @@ var QuestionBankCategory = function (_Component) {
       });
     }
   }, {
+    key: "handleCloseComponent",
+    value: function handleCloseComponent() {
+      this.setState({
+        editQuestionComponent: false
+      });
+    }
+  }, {
     key: "onDeleteSubmit",
     value: function onDeleteSubmit() {
       var _state = this.state,
@@ -77541,7 +77593,10 @@ var QuestionBankCategory = function (_Component) {
   }, {
     key: "onEditClick",
     value: function onEditClick(selectedQuestion) {
-      this.props.history.push("/dashboard/question-bank/edit/" + JSON.stringify(selectedQuestion));
+      this.setState({
+        selected: selectedQuestion,
+        editQuestionComponent: true
+      });
     }
   }, {
     key: "renderQuestions",
@@ -77568,6 +77623,22 @@ var QuestionBankCategory = function (_Component) {
       } else {
         questionsToRender = chemistryQuestions;
       }
+
+      if (questionsToRender.length === 0) {
+        return _react2.default.createElement(
+          _Grid2.default,
+          { container: true, spacing: 3, className: classes.noQuestionsToDisplay },
+          _react2.default.createElement(
+            _Typography2.default,
+            {
+              variant: "h5",
+              color: "textPrimary",
+              className: classes.subjectTitle
+            },
+            "Sorry, there are no questions to display."
+          )
+        );
+      }
       return questionsToRender.map(function (question, index) {
         return _react2.default.createElement(
           _react.Fragment,
@@ -77577,14 +77648,14 @@ var QuestionBankCategory = function (_Component) {
             { item: true, xs: 10 },
             _react2.default.createElement(
               "p",
-              null,
+              { className: classes.noBottomSpacing },
               index + 1,
               ".\xA0",
               question.question
             ),
             _react2.default.createElement(
               "p",
-              null,
+              { className: classes.optionsContainer },
               question.options.map(function (option, idx) {
                 return _react2.default.createElement(
                   _react.Fragment,
@@ -77592,7 +77663,7 @@ var QuestionBankCategory = function (_Component) {
                   _react2.default.createElement(
                     "span",
                     null,
-                    option.is_correct === "Yes" ? _react2.default.createElement(_Done2.default, { className: classes.correctAnswer }) : "",
+                    option.is_correct === true ? _react2.default.createElement(_Done2.default, { className: classes.correctAnswer }) : "",
                     "(",
                     (0, _utils.numberToAlphabet)(idx),
                     ")\xA0",
@@ -77642,69 +77713,78 @@ var QuestionBankCategory = function (_Component) {
           history = _props2.history;
       var _state2 = this.state,
           selected = _state2.selected,
-          subject = _state2.subject;
+          subject = _state2.subject,
+          editQuestionComponent = _state2.editQuestionComponent;
 
 
       return _react2.default.createElement(
-        _utils.PageContainer,
-        { maxWidth: "lg" },
-        this.renderRedirect(),
-        _react2.default.createElement(
-          _Grid2.default,
-          { container: true, spacing: 3, className: classes.bottomSpacing },
+        _react.Fragment,
+        null,
+        !editQuestionComponent && _react2.default.createElement(
+          _utils.PageContainer,
+          { maxWidth: "lg" },
+          this.renderRedirect(),
           _react2.default.createElement(
             _Grid2.default,
-            { item: true, xs: 12, sm: 8, className: classes.relativeContainer },
+            { container: true, spacing: 3, className: classes.bottomSpacing },
             _react2.default.createElement(
-              _Typography2.default,
-              {
-                variant: "h4",
-                color: "textPrimary",
-                className: classes.subjectTitle
-              },
-              subject,
-              " Questions",
+              _Grid2.default,
+              { item: true, xs: 12, sm: 8, className: classes.relativeContainer },
               _react2.default.createElement(
-                _utils.FlatButton,
+                _Typography2.default,
                 {
-                  variant: "contained",
-                  color: "primary",
-                  className: classes.buttonStyles,
-                  size: "medium",
-                  onClick: function onClick() {
-                    return history.push("/dashboard/question-bank/create");
-                  }
+                  variant: "h4",
+                  color: "textPrimary",
+                  className: classes.subjectTitle
                 },
-                "Add New",
-                _react2.default.createElement(_Add2.default, { className: classes.buttonIcon })
+                subject,
+                " Questions",
+                _react2.default.createElement(
+                  _utils.FlatButton,
+                  {
+                    variant: "contained",
+                    color: "primary",
+                    className: classes.buttonStyles,
+                    size: "medium",
+                    onClick: function onClick() {
+                      return history.push("/dashboard/question-bank/create");
+                    }
+                  },
+                  "Add New",
+                  _react2.default.createElement(_Add2.default, { className: classes.buttonIcon })
+                )
+              )
+            ),
+            _react2.default.createElement(_Divider2.default, { className: classes.root })
+          ),
+          _react2.default.createElement(
+            _Grid2.default,
+            { container: true, spacing: 2, className: classes.questionContainer },
+            _react2.default.createElement(
+              _utils.CustomSmallPaper,
+              { className: classes.questionWrapper },
+              _react2.default.createElement(
+                _CardContent2.default,
+                { className: classes.cardContent },
+                _react2.default.createElement(
+                  _Grid2.default,
+                  { container: true, className: classes.root },
+                  this.renderQuestions()
+                )
               )
             )
           ),
-          _react2.default.createElement(_Divider2.default, { className: classes.root })
+          _react2.default.createElement(_utils.ConfirmDialog, {
+            title: "Confirm Delete?",
+            description: "Do You Really Want to Delete this Question?",
+            active: this.state.confirm,
+            onClose: this.onModalClose,
+            onSubmit: this.onDeleteSubmit
+          })
         ),
-        _react2.default.createElement(
-          _Grid2.default,
-          { container: true, spacing: 2, className: classes.questionContainer },
-          _react2.default.createElement(
-            _utils.CustomSmallPaper,
-            { className: classes.questionWrapper },
-            _react2.default.createElement(
-              _CardContent2.default,
-              { className: classes.cardContent },
-              _react2.default.createElement(
-                _Grid2.default,
-                { container: true, className: classes.root },
-                this.renderQuestions()
-              )
-            )
-          )
-        ),
-        _react2.default.createElement(_utils.ConfirmDialog, {
-          title: "Confirm Delete?",
-          description: "Do You Really Want to Delete this Question?",
-          active: this.state.confirm,
-          onClose: this.onModalClose,
-          onSubmit: this.onDeleteSubmit
+        editQuestionComponent && _react2.default.createElement(_editQuestion2.default, {
+          selectedQuestion: selected,
+          onEditClose: this.handleCloseComponent
         })
       );
     }
@@ -77895,6 +77975,7 @@ var CreateQuestion = function (_Component) {
         option: "",
         is_correct: false
       }],
+      rearrange_locked: true,
       optionsCount: 3
     };
     _this.populateStateVal = _this.populateStateVal.bind(_this);
@@ -77904,6 +77985,7 @@ var CreateQuestion = function (_Component) {
     _this.handleAddOption = _this.handleAddOption.bind(_this);
     _this.handleRemoveOption = _this.handleRemoveOption.bind(_this);
     _this.handleOptionCheckboxChange = _this.handleOptionCheckboxChange.bind(_this);
+    _this.handleCheckboxChange = _this.handleCheckboxChange.bind(_this);
     _this.onSubjectSelect = _this.onSubjectSelect.bind(_this);
     return _this;
   }
@@ -77920,19 +78002,15 @@ var CreateQuestion = function (_Component) {
   }, {
     key: "populateStateVal",
     value: function populateStateVal() {
-      var _this2 = this;
-
       var selectedQuestion = this.props.selectedQuestion;
 
-      console.log(selectedQuestion);
       this.setState({
         oldSubject: selectedQuestion.subject,
         subject: selectedQuestion.subject,
         question: selectedQuestion.question,
         options: selectedQuestion.options,
+        rearrange_locked: selectedQuestion.rearrange_locked,
         optionsCount: selectedQuestion.options.length
-      }, function () {
-        return console.log(_this2.state);
       });
     }
   }, {
@@ -77984,6 +78062,11 @@ var CreateQuestion = function (_Component) {
       });
     }
   }, {
+    key: "handleCheckboxChange",
+    value: function handleCheckboxChange(event) {
+      this.setState(_defineProperty({}, event.target.name, !this.state.rearrange_locked));
+    }
+  }, {
     key: "handleAddOption",
     value: function handleAddOption() {
       var oldOptions = this.state.options;
@@ -78013,7 +78096,8 @@ var CreateQuestion = function (_Component) {
           question = _state.question,
           options = _state.options,
           subject = _state.subject,
-          oldSubject = _state.oldSubject;
+          oldSubject = _state.oldSubject,
+          rearrange_locked = _state.rearrange_locked;
       var _props = this.props,
           type = _props.type,
           selectedQuestion = _props.selectedQuestion,
@@ -78022,22 +78106,26 @@ var CreateQuestion = function (_Component) {
 
       if (question.length > 0) {
         if (type == "edit") {
-          editQuestion(selectedQuestion._id, subject, oldSubject, question, JSON.stringify(options));
+          editQuestion(selectedQuestion._id, subject, oldSubject, question, JSON.stringify(options), rearrange_locked);
+          this.props.onEditClose();
         } else {
-          addNewQuestion(subject, question, JSON.stringify(options));
+          addNewQuestion(subject, question, JSON.stringify(options), rearrange_locked);
         }
       }
     }
   }, {
     key: "render",
     value: function render() {
-      var _this3 = this;
+      var _this2 = this;
 
-      var classes = this.props.classes;
+      var _props2 = this.props,
+          classes = _props2.classes,
+          type = _props2.type;
       var _state2 = this.state,
           subject = _state2.subject,
           question = _state2.question,
           options = _state2.options,
+          rearrange_locked = _state2.rearrange_locked,
           optionsCount = _state2.optionsCount;
 
 
@@ -78057,7 +78145,7 @@ var CreateQuestion = function (_Component) {
               fontSize: "large",
               className: classes.removeIcon,
               onClick: function onClick() {
-                return _this3.handleRemoveOption(index);
+                return _this2.handleRemoveOption(index);
               }
             }) : "",
             _react2.default.createElement(_TextField2.default, {
@@ -78070,7 +78158,7 @@ var CreateQuestion = function (_Component) {
               variant: "outlined",
               fullWidth: true,
               onChange: function onChange(event) {
-                return _this3.handleOptionChange(index, event);
+                return _this2.handleOptionChange(index, event);
               }
             })
           ),
@@ -78085,7 +78173,7 @@ var CreateQuestion = function (_Component) {
                   name: "is-correct-" + index,
                   checked: options[index].is_correct,
                   onChange: function onChange(event) {
-                    return _this3.handleOptionCheckboxChange(index, event);
+                    return _this2.handleOptionCheckboxChange(index, event);
                   },
                   value: options[index].is_correct
                 }),
@@ -78112,7 +78200,8 @@ var CreateQuestion = function (_Component) {
                 color: "textPrimary",
                 className: classes.subjectTitle
               },
-              "Add New Question"
+              type === "edit" ? "Edit" : "Add New",
+              " Question"
             )
           ),
           _react2.default.createElement(_Divider2.default, { className: classes.root })
@@ -78129,10 +78218,15 @@ var CreateQuestion = function (_Component) {
               _react2.default.createElement(
                 _Grid2.default,
                 { item: true, xs: 12, className: classes.capitalizeWord },
-                _react2.default.createElement(_IntegrationReactSelect2.default, {
+                subject !== "" ? _react2.default.createElement(_IntegrationReactSelect2.default, {
                   suggestions: subjectList,
                   label: "Form",
                   selected: selectedSubj,
+                  onChange: this.onSubjectSelect,
+                  placeholder: "Select Subject"
+                }) : _react2.default.createElement(_IntegrationReactSelect2.default, {
+                  suggestions: subjectList,
+                  label: "Form",
                   onChange: this.onSubjectSelect,
                   placeholder: "Select Subject"
                 })
@@ -78156,6 +78250,27 @@ var CreateQuestion = function (_Component) {
               )
             ),
             optionsToPrint,
+            _react2.default.createElement(
+              _Grid2.default,
+              { container: true, spacing: 3 },
+              _react2.default.createElement(
+                _Grid2.default,
+                { item: true, xs: 12 },
+                _react2.default.createElement(
+                  _FormGroup2.default,
+                  null,
+                  _react2.default.createElement(_FormControlLabel2.default, {
+                    control: _react2.default.createElement(_Checkbox2.default, {
+                      name: "rearrange_locked",
+                      checked: rearrange_locked,
+                      onChange: this.handleCheckboxChange,
+                      value: rearrange_locked
+                    }),
+                    label: "Options can be rearranged?"
+                  })
+                )
+              )
+            ),
             optionsCount < 5 ? _react2.default.createElement(
               _utils.FlatButton,
               {
@@ -78183,7 +78298,8 @@ var CreateQuestion = function (_Component) {
                 fullWidth: true,
                 onClick: this.handleSubmit
               },
-              "Save Question",
+              type === "edit" ? "Update" : "Save",
+              " Question",
               _react2.default.createElement(
                 _Icon2.default,
                 { className: classes.rightIcon },
@@ -78250,6 +78366,10 @@ var _redux = __webpack_require__(/*! redux */ "./node_modules/redux/es/index.js"
 
 var _styles = __webpack_require__(/*! @material-ui/core/styles */ "./node_modules/@material-ui/core/esm/styles/index.js");
 
+var _Close = __webpack_require__(/*! @material-ui/icons/Close */ "./node_modules/@material-ui/icons/Close.js");
+
+var _Close2 = _interopRequireDefault(_Close);
+
 var _Paper = __webpack_require__(/*! @material-ui/core/Paper */ "./node_modules/@material-ui/core/esm/Paper/index.js");
 
 var _Paper2 = _interopRequireDefault(_Paper);
@@ -78277,6 +78397,16 @@ var styles = function styles(theme) {
       left: "50%",
       transform: "translate(-50%, -50%)",
       padding: theme.spacing(2)
+    },
+    wrapper: {
+      position: "relative"
+    },
+    closeIcon: {
+      cursor: "pointer",
+      position: "absolute",
+      top: "30px",
+      right: "25px",
+      zIndex: "1"
     }
   };
 };
@@ -78299,11 +78429,10 @@ var EditQuestion = function (_Component) {
   _createClass(EditQuestion, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-      var selectedQuestion = JSON.parse(this.props.match.params.question);
-      if (selectedQuestion) {
+      if (this.props.selectedQuestion) {
         this.setState({
           loading: false,
-          selectedQuestion: selectedQuestion
+          selectedQuestion: this.props.selectedQuestion
         });
       }
     }
@@ -78313,12 +78442,27 @@ var EditQuestion = function (_Component) {
       var _state = this.state,
           loading = _state.loading,
           selectedQuestion = _state.selectedQuestion;
+      var classes = this.props.classes;
 
       if (loading) {
         return "Loading...";
       }
 
-      return _react2.default.createElement(_createQuestion2.default, { type: "edit", selectedQuestion: selectedQuestion });
+      return _react2.default.createElement(
+        "div",
+        { className: classes.wrapper },
+        _react2.default.createElement(_Close2.default, {
+          color: "secondary",
+          fontSize: "large",
+          className: classes.closeIcon,
+          onClick: this.props.onEditClose
+        }),
+        _react2.default.createElement(_createQuestion2.default, {
+          type: "edit",
+          selectedQuestion: selectedQuestion,
+          onEditClose: this.props.onEditClose
+        })
+      );
     }
   }]);
 

@@ -105,7 +105,7 @@ class Layout extends Component {
               component={CreateQuestion}
             />
             <Route
-              path='/dashboard/question-bank/edit/:question'
+              path='/dashboard/question-bank/edit/'
               component={EditQuestion}
             />
             {/* <Route path='/question-sets' component={QuestionSets} />

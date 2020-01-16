@@ -45,7 +45,8 @@ module.exports = {
     var params = {
       subject: query.subject,
       question: query.question,
-      options: JSON.parse(query.options)
+      options: JSON.parse(query.options),
+      rearrange_locked: query.rearrange_locked
     };
 
     var response = {
@@ -79,7 +80,8 @@ module.exports = {
     var params = {
       question: query.question,
       subject: query.subject,
-      options: JSON.parse(query.options)
+      options: JSON.parse(query.options),
+      rearrange_locked: query.rearrange_locked
     };
 
     QuestionBank.update(query.id, params, function(err, success) {

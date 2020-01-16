@@ -98,6 +98,7 @@ class CreateQuestion extends Component {
           is_correct: false
         }
       ],
+      rearrange_locked: true,
       optionsCount: 3
     };
     this.populateStateVal = this.populateStateVal.bind(this);
@@ -109,6 +110,7 @@ class CreateQuestion extends Component {
     this.handleOptionCheckboxChange = this.handleOptionCheckboxChange.bind(
       this
     );
+    this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
     this.onSubjectSelect = this.onSubjectSelect.bind(this);
   }
 
@@ -121,17 +123,14 @@ class CreateQuestion extends Component {
 
   populateStateVal() {
     const { selectedQuestion } = this.props;
-    console.log(selectedQuestion);
-    this.setState(
-      {
-        oldSubject: selectedQuestion.subject,
-        subject: selectedQuestion.subject,
-        question: selectedQuestion.question,
-        options: selectedQuestion.options,
-        optionsCount: selectedQuestion.options.length
-      },
-      () => console.log(this.state)
-    );
+    this.setState({
+      oldSubject: selectedQuestion.subject,
+      subject: selectedQuestion.subject,
+      question: selectedQuestion.question,
+      options: selectedQuestion.options,
+      rearrange_locked: selectedQuestion.rearrange_locked,
+      optionsCount: selectedQuestion.options.length
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -177,6 +176,12 @@ class CreateQuestion extends Component {
       options: oldOptions
     });
   }
+
+  handleCheckboxChange(event) {
+    this.setState({
+      [event.target.name]: !this.state.rearrange_locked
+    });
+  }
   handleAddOption() {
     let oldOptions = this.state.options;
     oldOptions.push({
@@ -199,7 +204,13 @@ class CreateQuestion extends Component {
   }
 
   handleSubmit() {
-    const { question, options, subject, oldSubject } = this.state;
+    const {
+      question,
+      options,
+      subject,
+      oldSubject,
+      rearrange_locked
+    } = this.state;
     const { type, selectedQuestion, addNewQuestion, editQuestion } = this.props;
     if (question.length > 0) {
       if (type == "edit") {
@@ -208,17 +219,30 @@ class CreateQuestion extends Component {
           subject,
           oldSubject,
           question,
-          JSON.stringify(options)
+          JSON.stringify(options),
+          rearrange_locked
         );
+        this.props.onEditClose();
       } else {
-        addNewQuestion(subject, question, JSON.stringify(options));
+        addNewQuestion(
+          subject,
+          question,
+          JSON.stringify(options),
+          rearrange_locked
+        );
       }
     }
   }
 
   render() {
-    const { classes } = this.props;
-    const { subject, question, options, optionsCount } = this.state;
+    const { classes, type } = this.props;
+    const {
+      subject,
+      question,
+      options,
+      rearrange_locked,
+      optionsCount
+    } = this.state;
 
     const subjectList = [
       { value: "english", label: "english" },
@@ -285,7 +309,7 @@ class CreateQuestion extends Component {
               color='textPrimary'
               className={classes.subjectTitle}
             >
-              Add New Question
+              {type === "edit" ? "Edit" : "Add New"} Question
             </Typography>
             {/* <FullBodyLoader active={fetching || deleting} /> */}
           </Grid>
@@ -295,13 +319,22 @@ class CreateQuestion extends Component {
           <div className={classes.cardContent}>
             <Grid container spacing={3}>
               <Grid item xs={12} className={classes.capitalizeWord}>
-                <IntegrationReactSelect
-                  suggestions={subjectList}
-                  label='Form'
-                  selected={selectedSubj}
-                  onChange={this.onSubjectSelect}
-                  placeholder='Select Subject'
-                />
+                {subject !== "" ? (
+                  <IntegrationReactSelect
+                    suggestions={subjectList}
+                    label='Form'
+                    selected={selectedSubj}
+                    onChange={this.onSubjectSelect}
+                    placeholder='Select Subject'
+                  />
+                ) : (
+                  <IntegrationReactSelect
+                    suggestions={subjectList}
+                    label='Form'
+                    onChange={this.onSubjectSelect}
+                    placeholder='Select Subject'
+                  />
+                )}
               </Grid>
               <Grid item xs={12}>
                 <TextField
@@ -320,6 +353,24 @@ class CreateQuestion extends Component {
               </Grid>
             </Grid>
             {optionsToPrint}
+
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <FormGroup>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        name='rearrange_locked'
+                        checked={rearrange_locked}
+                        onChange={this.handleCheckboxChange}
+                        value={rearrange_locked}
+                      />
+                    }
+                    label='Options can be rearranged?'
+                  />
+                </FormGroup>
+              </Grid>
+            </Grid>
             {optionsCount < 5 ? (
               <FlatButton
                 variant='contained'
@@ -346,7 +397,7 @@ class CreateQuestion extends Component {
               fullWidth
               onClick={this.handleSubmit}
             >
-              Save Question
+              {type === "edit" ? "Update" : "Save"} Question
               <Icon className={classes.rightIcon}>save</Icon>
             </FlatButton>
           </div>

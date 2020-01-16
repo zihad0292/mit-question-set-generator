@@ -35,6 +35,8 @@ import {
   numberToAlphabet
 } from "../../components/utils";
 
+import EditQuestion from "./editQuestion";
+
 const styles = theme => ({
   root: {
     width: "100%"
@@ -67,15 +69,24 @@ const styles = theme => ({
     height: "auto",
     overflow: "hidden"
   },
-  enableText: {
+  noQuestionsToDisplay: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    minHeight: "300px"
   },
   enableIcon: {
     position: "relative",
     top: -1,
     marginRight: theme.spacing(0.5)
+  },
+  noBottomSpacing: {
+    marginBottom: 0
+  },
+  optionsContainer: {
+    fontSize: ".8em",
+    lineHeight: "1.7",
+    marginTop: 0
   },
   correctAnswer: {
     color: "green",
@@ -97,7 +108,8 @@ const styles = theme => ({
     marginTop: "20px"
   },
   questionWrapper: {
-    width: "100%"
+    width: "100%",
+    minHeight: "300px"
   },
   bottomSpacing: {
     marginBottom: theme.spacing(3)
@@ -120,12 +132,14 @@ class QuestionBankCategory extends Component {
       redirect: false,
       questions: [],
       selected: null,
-      confirm: false
+      confirm: false,
+      editQuestionComponent: false
     };
 
     this.onEditClick = this.onEditClick.bind(this);
     this.onDeleteClick = this.onDeleteClick.bind(this);
     this.onDeleteSubmit = this.onDeleteSubmit.bind(this);
+    this.handleCloseComponent = this.handleCloseComponent.bind(this);
     this.onModalClose = this.onModalClose.bind(this);
   }
 
@@ -187,6 +201,12 @@ class QuestionBankCategory extends Component {
     });
   }
 
+  handleCloseComponent() {
+    this.setState({
+      editQuestionComponent: false
+    });
+  }
+
   onDeleteSubmit() {
     const { selected, subject } = this.state;
 
@@ -198,9 +218,10 @@ class QuestionBankCategory extends Component {
   }
 
   onEditClick(selectedQuestion) {
-    this.props.history.push(
-      `/dashboard/question-bank/edit/${JSON.stringify(selectedQuestion)}`
-    );
+    this.setState({
+      selected: selectedQuestion,
+      editQuestionComponent: true
+    });
   }
 
   renderQuestions() {
@@ -224,19 +245,33 @@ class QuestionBankCategory extends Component {
     } else {
       questionsToRender = chemistryQuestions;
     }
+
+    if (questionsToRender.length === 0) {
+      return (
+        <Grid container spacing={3} className={classes.noQuestionsToDisplay}>
+          <Typography
+            variant='h5'
+            color='textPrimary'
+            className={classes.subjectTitle}
+          >
+            Sorry, there are no questions to display.
+          </Typography>
+        </Grid>
+      );
+    }
     return questionsToRender.map((question, index) => {
       return (
         <Fragment key={index + 100}>
           <Grid item xs={10}>
-            <p>
+            <p className={classes.noBottomSpacing}>
               {index + 1}.&nbsp;{question.question}
             </p>
-            <p>
+            <p className={classes.optionsContainer}>
               {question.options.map((option, idx) => {
                 return (
                   <Fragment key={idx}>
                     <span>
-                      {option.is_correct === "Yes" ? (
+                      {option.is_correct === true ? (
                         <DoneIcon className={classes.correctAnswer} />
                       ) : (
                         ""
@@ -273,52 +308,64 @@ class QuestionBankCategory extends Component {
 
   render() {
     const { classes, fetching, deleting, history } = this.props;
-    const { selected, subject } = this.state;
+    const { selected, subject, editQuestionComponent } = this.state;
 
     return (
-      <PageContainer maxWidth='lg'>
-        {this.renderRedirect()}
-        <Grid container spacing={3} className={classes.bottomSpacing}>
-          <Grid item xs={12} sm={8} className={classes.relativeContainer}>
-            <Typography
-              variant='h4'
-              color='textPrimary'
-              className={classes.subjectTitle}
-            >
-              {subject} Questions
-              <FlatButton
-                variant='contained'
-                color='primary'
-                className={classes.buttonStyles}
-                size='medium'
-                onClick={() => history.push("/dashboard/question-bank/create")}
-              >
-                Add New
-                <AddIcon className={classes.buttonIcon} />
-              </FlatButton>
-            </Typography>
+      <Fragment>
+        {!editQuestionComponent && (
+          <PageContainer maxWidth='lg'>
+            {this.renderRedirect()}
+            <Grid container spacing={3} className={classes.bottomSpacing}>
+              <Grid item xs={12} sm={8} className={classes.relativeContainer}>
+                <Typography
+                  variant='h4'
+                  color='textPrimary'
+                  className={classes.subjectTitle}
+                >
+                  {subject} Questions
+                  <FlatButton
+                    variant='contained'
+                    color='primary'
+                    className={classes.buttonStyles}
+                    size='medium'
+                    onClick={() =>
+                      history.push("/dashboard/question-bank/create")
+                    }
+                  >
+                    Add New
+                    <AddIcon className={classes.buttonIcon} />
+                  </FlatButton>
+                </Typography>
 
-            {/* <FullBodyLoader active={fetching || deleting} /> */}
-          </Grid>
-          <Divider className={classes.root} />
-        </Grid>
-        <Grid container spacing={2} className={classes.questionContainer}>
-          <CustomSmallPaper className={classes.questionWrapper}>
-            <CardContent className={classes.cardContent}>
-              <Grid container className={classes.root}>
-                {this.renderQuestions()}
+                {/* <FullBodyLoader active={fetching || deleting} /> */}
               </Grid>
-            </CardContent>
-          </CustomSmallPaper>
-        </Grid>
-        <ConfirmDialog
-          title='Confirm Delete?'
-          description='Do You Really Want to Delete this Question?'
-          active={this.state.confirm}
-          onClose={this.onModalClose}
-          onSubmit={this.onDeleteSubmit}
-        />
-      </PageContainer>
+              <Divider className={classes.root} />
+            </Grid>
+            <Grid container spacing={2} className={classes.questionContainer}>
+              <CustomSmallPaper className={classes.questionWrapper}>
+                <CardContent className={classes.cardContent}>
+                  <Grid container className={classes.root}>
+                    {this.renderQuestions()}
+                  </Grid>
+                </CardContent>
+              </CustomSmallPaper>
+            </Grid>
+            <ConfirmDialog
+              title='Confirm Delete?'
+              description='Do You Really Want to Delete this Question?'
+              active={this.state.confirm}
+              onClose={this.onModalClose}
+              onSubmit={this.onDeleteSubmit}
+            />
+          </PageContainer>
+        )}
+        {editQuestionComponent && (
+          <EditQuestion
+            selectedQuestion={selected}
+            onEditClose={this.handleCloseComponent}
+          />
+        )}
+      </Fragment>
     );
   }
 }
