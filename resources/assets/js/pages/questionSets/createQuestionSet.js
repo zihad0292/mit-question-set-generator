@@ -8,11 +8,11 @@ import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import Icon from "@material-ui/core/Icon";
 
-import {
-  addNewOffice,
-  fetchOfficeList,
-  updateOfficeInfo
-} from "../../actions/officeActions";
+// import {
+//   addNewOffice,
+//   fetchOfficeList,
+//   updateOfficeInfo
+// } from "../../actions/officeActions";
 import { CustomSmallPaper, FlatButton } from "../../components/utils";
 
 const styles = theme => ({
@@ -32,7 +32,7 @@ const styles = theme => ({
   }
 });
 
-class AddNewForm extends Component {
+class CreateQuestionSet extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -46,11 +46,10 @@ class AddNewForm extends Component {
   }
 
   componentDidMount() {
-    const { type } = this.props;
-
-    if (type == "update") {
-      this.populateStateVal();
-    }
+    // const { type } = this.props;
+    // if (type == "update") {
+    //   this.populateStateVal();
+    // }
   }
 
   populateStateVal() {
@@ -145,7 +144,7 @@ class AddNewForm extends Component {
   }
 }
 
-AddNewForm.propTypes = {
+CreateQuestionSet.propTypes = {
   classes: PropTypes.object.isRequired,
   type: PropTypes.oneOf(["add", "update"]),
   selectedDbConfig: PropTypes.object,
@@ -174,4 +173,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withStyles(styles)(AddNewForm));
+)(withStyles(styles)(CreateQuestionSet));

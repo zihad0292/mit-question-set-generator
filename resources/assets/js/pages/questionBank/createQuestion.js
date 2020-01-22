@@ -366,7 +366,7 @@ class CreateQuestion extends Component {
                         value={rearrange_locked}
                       />
                     }
-                    label='Options can be rearranged?'
+                    label='Options can be rearranged when question set is generated?'
                   />
                 </FormGroup>
               </Grid>

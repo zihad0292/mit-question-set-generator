@@ -10,18 +10,22 @@ import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import MaterialTable, { MTableToolbar } from "material-table";
 import { MessagePopUp } from "../../components/messagePopUps";
-
-import { fetchOfficeList, deleteOfficeInfo } from "../../actions/officeActions";
+import Divider from "@material-ui/core/Divider";
+import AddIcon from "@material-ui/icons/Add";
+import {
+  fetchQuestionSets,
+  deleteQuestionSet
+} from "../../actions/questionSetActions";
 import {
   PageContainer,
   CustomSmallPaper,
   WidgetTitle,
   FullBodyLoader,
-  ConfirmDialog
+  ConfirmDialog,
+  FlatButton
 } from "../../components/utils";
 
-import AddNewForm from "./addNewForm";
-import UpdateOffice from "./updateOffice";
+// import AddNewForm from "./addNewForm";
 
 const styles = theme => ({
   tableTitle: {
@@ -69,13 +73,22 @@ const styles = theme => ({
     backgroundImage: "url('/images/index-relation-banner.png')",
     minHeight: 140,
     backgroundSize: "cover"
+  },
+  buttonStyles: {
+    padding: "8px 15px 6px",
+    marginLeft: "10px"
+  },
+  buttonIcon: {
+    position: "relative",
+    top: "-3px"
   }
 });
 
-class Office extends Component {
+class QuestionSet extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      questionSets: [],
       showUpdate: false,
       selected: null,
       confirm: false,
@@ -84,32 +97,43 @@ class Office extends Component {
     };
 
     this.onModalClose = this.onModalClose.bind(this);
-    this.onEditClick = this.onEditClick.bind(this);
+    this.onViewClick = this.onViewClick.bind(this);
     this.onDeleteClick = this.onDeleteClick.bind(this);
     this.onDeleteSubmit = this.onDeleteSubmit.bind(this);
     this.handleMessageClose = this.handleMessageClose.bind(this);
   }
 
   componentDidMount() {
-    if (this.props.offices.length == 0) {
-      this.props.fetchOfficeList();
-    }
+    // if (this.props.offices.length == 0) {
+    //   this.props.fetchOfficeList();
+    // }
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.message && nextProps.message.length > 0) {
-      this.setState({
-        message: nextProps.message,
-        showMessage: true
-      });
+    // if (nextProps.message && nextProps.message.length > 0) {
+    //   this.setState({
+    //     message: nextProps.message,
+    //     showMessage: true
+    //   });
+    // }
+    // if (this.props.deleted != nextProps.deleted && nextProps.deleted) {
+    //   this.props.fetchOfficeList();
+    //   this.setState({
+    //     deleted: true
+    //   });
+    // }
+  }
+
+  onViewClick(selectedIndex, officeId = null) {
+    if (officeId) {
+      const { offices } = this.props;
+      selectedIndex = offices.findIndex(x => x._id === officeId);
     }
 
-    if (this.props.deleted != nextProps.deleted && nextProps.deleted) {
-      this.props.fetchOfficeList();
-      this.setState({
-        deleted: true
-      });
-    }
+    this.setState({
+      selected: selectedIndex,
+      confirm: true
+    });
   }
 
   onDeleteClick(selectedIndex, officeId = null) {
@@ -135,18 +159,6 @@ class Office extends Component {
     });
   }
 
-  onEditClick(selectedIndex, officeId = null) {
-    if (officeId) {
-      const { offices } = this.props;
-      selectedIndex = offices.findIndex(x => x._id === officeId);
-    }
-
-    this.setState({
-      selected: selectedIndex,
-      showUpdate: true
-    });
-  }
-
   onModalClose() {
     this.setState({
       showUpdate: false,
@@ -160,72 +172,18 @@ class Office extends Component {
     });
   }
 
-  renderOfficeRow() {
-    const { offices, classes } = this.props;
-
-    if (offices.length > 0) {
-      return offices.map((office, idx) => {
-        return (
-          <CustomSmallPaper
-            key={"office-item-" + idx}
-            elevation={2}
-            className={classes.dbCardRow}
-          >
-            <Grid
-              container
-              direction='row'
-              justify='space-between'
-              alignItems='center'
-            >
-              <Grid item xs={1}>
-                <img
-                  src='/images/database.png'
-                  className={classes.dbRowImage}
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <Typography variant='body1'>{office.name}</Typography>
-              </Grid>
-              <Grid item xs={3}>
-                <Typography variant='caption'>{office.location}</Typography>
-              </Grid>
-              <Grid item xs={2}>
-                <Grid container direction='row' justify='flex-end'>
-                  <IconButton
-                    aria-label='edit'
-                    size='small'
-                    onClick={() => this.onEditClick(idx)}
-                  >
-                    <Icon>edit</Icon>
-                  </IconButton>
-                  <IconButton
-                    aria-label='delete'
-                    size='small'
-                    onClick={() => this.onDeleteClick(idx)}
-                  >
-                    <Icon>delete</Icon>
-                  </IconButton>
-                </Grid>
-              </Grid>
-            </Grid>
-          </CustomSmallPaper>
-        );
-      });
-    }
-  }
-
-  renderOfficeTable() {
-    const { offices, classes } = this.props;
+  renderQuestionSets() {
+    const { questionSets, classes } = this.props;
 
     const columns = [
       {
         title: "Name",
-        field: "name",
+        field: "question_set_name",
         sorting: false
       },
       {
-        title: "Location",
-        field: "location",
+        title: "Created on",
+        field: "created_at",
         sorting: false
       }
     ];
@@ -247,16 +205,15 @@ class Office extends Component {
 
     const actions = [
       {
-        icon: "edit",
-        tooltip: "Edit Index",
+        icon: "visibility",
+        tooltip: "View",
         onClick: (event, rowData) => {
-          //history.push('/dashboard/index_relation/' + rowData._id + "/edit");
-          this.onEditClick(null, rowData._id);
+          this.onViewClick(null, rowData._id);
         }
       },
       {
         icon: "delete",
-        tooltip: "Delete Index",
+        tooltip: "Delete this Set",
         onClick: (event, rowData) => {
           this.onDeleteClick(null, rowData._id);
         }
@@ -273,9 +230,9 @@ class Office extends Component {
 
     return (
       <MaterialTable
-        title='Created Office List'
+        title='Question sets'
         columns={columns}
-        data={offices}
+        data={questionSets}
         actions={actions}
         options={options}
         components={components}
@@ -285,48 +242,55 @@ class Office extends Component {
   }
 
   render() {
-    const { classes, fetching, deleting, offices } = this.props;
+    const { classes, fetching, deleting, questionSets } = this.props;
     const { selected, showMessage, message } = this.state;
 
     return (
       <PageContainer maxWidth='lg'>
-        <Grid container spacing={3}>
+        <Grid container spacing={3} className={classes.statFirstRow}>
           <Grid item xs={12} sm={8} className={classes.relativeContainer}>
-            <WidgetTitle>All Office List</WidgetTitle>
-            {this.renderOfficeTable()}
-            <FullBodyLoader active={fetching || deleting} />
+            <Typography
+              variant='h4'
+              color='textPrimary'
+              className={classes.subjectTitle}
+            >
+              All Question Sets
+              <FlatButton
+                variant='contained'
+                color='primary'
+                className={classes.buttonStyles}
+                size='medium'
+                onClick={() =>
+                  history.push("/dashboard/question-sets/generate-new")
+                }
+              >
+                Generate New
+                <AddIcon className={classes.buttonIcon} />
+              </FlatButton>
+            </Typography>
           </Grid>
-          <Grid item xs={12} sm={4}>
-            <WidgetTitle>Add New Office</WidgetTitle>
-            <AddNewForm />
+          <Divider className={classes.root} />
+        </Grid>
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={10} className={classes.relativeContainer}>
+            {this.renderQuestionSets()}
+            {/* <FullBodyLoader active={fetching || deleting} /> */}
           </Grid>
         </Grid>
-        <Modal
-          aria-labelledby='office-edit-modal'
-          aria-describedby='office-edit-modal'
-          disableAutoFocus={true}
-          open={this.state.showUpdate}
-          onClose={this.onModalClose}
-        >
-          <UpdateOffice
-            selectedOffice={offices[selected]}
-            onUpdateComplete={this.onModalClose}
-          />
-        </Modal>
         <ConfirmDialog
           title='Confirm Delete?'
-          description="Do You Really Want to Delete this Office? This means all of the users from this office won't be able to log in and do activity in future."
+          description='Do You Really Want to Delete this Question Set?'
           active={this.state.confirm}
           onClose={this.onModalClose}
           onSubmit={this.onDeleteSubmit}
         />
 
-        <MessagePopUp
+        {/* <MessagePopUp
           visible={showMessage}
           variant='success'
           onClose={this.handleMessageClose}
           message={message}
-        />
+        /> */}
       </PageContainer>
     );
   }
@@ -334,19 +298,16 @@ class Office extends Component {
 
 function mapStateToProps(store) {
   return {
-    ...store.officeInfo,
-    userType: store.userInfo.type,
-    offices: store.officeInfo.offices,
-    office: store.userInfo.office_id
+    ...store.questionSetInfo,
+    questionSets: store.questionSetInfo.questionSets
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  // return bindActionCreators({ fetchDBConfigList, setDBConfigToken, deleteDBConfig, fetchOfficeList }, dispatch)
-  return bindActionCreators({ fetchOfficeList, deleteOfficeInfo }, dispatch);
+  return bindActionCreators({ fetchQuestionSets, deleteQuestionSet }, dispatch);
 }
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withStyles(styles)(Office));
+)(withStyles(styles)(QuestionSet));
