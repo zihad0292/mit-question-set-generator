@@ -13,9 +13,9 @@ routes.post("/question-bank/edit", questionBankController.updateQuestion);
 routes.delete("/question-bank/delete", questionBankController.deleteQuestion);
 
 // Question Set CRUD
-routes.get("/question-set/list", questionSetController.questionSets);
-routes.post("/question-set/new", questionSetController.createQuestionSet);
-routes.delete("/question-set/delete", questionSetController.deleteQuestionSet);
+// routes.get("/question-set/list", questionSetController.questionSets);
+// routes.post("/question-set/new", questionSetController.createQuestionSet);
+// routes.delete("/question-set/delete", questionSetController.deleteQuestionSet);
 
 // Stat
 // routes.get("/stats", console.log("Retrieving stat from backend"));

@@ -13,7 +13,6 @@ export function fetchQuestions(subject) {
       .get(`${baseUrl}list?subject=${subject}`)
       .then(resp => {
         const d = resp.data;
-        console.log(d);
         if (d.success) {
           dispatch({
             type: ACTION_STRING,

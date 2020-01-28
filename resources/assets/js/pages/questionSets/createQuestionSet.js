@@ -4,18 +4,31 @@ import { bindActionCreators } from "redux";
 import PropTypes from "prop-types";
 
 import { withStyles } from "@material-ui/core/styles";
+import Grid from "@material-ui/core/Grid";
+import Checkbox from "@material-ui/core/Checkbox";
+import FormGroup from "@material-ui/core/FormGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import Icon from "@material-ui/core/Icon";
+import Divider from "@material-ui/core/Divider";
 
-// import {
-//   addNewOffice,
-//   fetchOfficeList,
-//   updateOfficeInfo
-// } from "../../actions/officeActions";
-import { CustomSmallPaper, FlatButton } from "../../components/utils";
+import { generateQuestionSet } from "../../actions/questionSetActions";
+import {
+  PageContainer,
+  CustomSmallPaper,
+  FlatButton
+} from "../../components/utils";
+
+import { shuffleArray } from "../../utilityFunctions";
 
 const styles = theme => ({
+  root: {
+    width: "100%"
+  },
+  titleRow: {
+    marginBottom: theme.spacing(3)
+  },
   tableTitle: {
     margin: theme.spacing(2),
     marginBottom: theme.spacing(1)
@@ -36,12 +49,14 @@ class CreateQuestionSet extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: "",
-      location: "",
+      questionSetName: "",
+      optionsLocked: false,
+      subjectsLocked: false,
       showMessage: false
     };
     this.populateStateVal = this.populateStateVal.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -50,6 +65,7 @@ class CreateQuestionSet extends Component {
     // if (type == "update") {
     //   this.populateStateVal();
     // }
+    console.log("kkkkk");
   }
 
   populateStateVal() {
@@ -63,20 +79,26 @@ class CreateQuestionSet extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (
-      (this.props.added != nextProps.added && nextProps.added) ||
-      (this.props.updated != nextProps.updated && nextProps.updated)
-    ) {
-      this.props.fetchOfficeList();
-      // console.log(nextProps);
-      this.setState({
-        name: "",
-        location: ""
-      });
-    }
-    if (this.props.onComplete) {
-      this.props.onComplete();
-    }
+    // if (
+    //   (this.props.generated != nextProps.generated && nextProps.generated) ||
+    //   (this.props.updated != nextProps.updated && nextProps.updated)
+    // ) {
+    //   this.props.fetchOfficeList();
+    //   // console.log(nextProps);
+    //   this.setState({
+    //     name: "",
+    //     location: ""
+    //   });
+    // }
+    // if (this.props.onComplete) {
+    //   this.props.onComplete();
+    // }
+  }
+
+  handleCheckboxChange(event) {
+    this.setState({
+      [event.target.name]: event.target.checked
+    });
   }
 
   handleChange(event) {
@@ -86,8 +108,14 @@ class CreateQuestionSet extends Component {
   }
 
   handleSubmit() {
-    const { name, location } = this.state;
-    const { type, selectedOffice, addNewOffice, updateOfficeInfo } = this.props;
+    const { questionSetName, subjectsLocked, optionsLocked } = this.state;
+    const {
+      englishQuestions,
+      mathQuestions,
+      physicsQuestions,
+      chemistryQuestions,
+      generateQuestionSet
+    } = this.props;
 
     if (name.length > 0) {
       if (type == "update") {
@@ -99,75 +127,115 @@ class CreateQuestionSet extends Component {
   }
 
   render() {
-    const { classes, adding, updating, type } = this.props;
+    const { classes, generating, updating, type } = this.props;
+    const { questionSetName, optionsLocked, subjectsLocked } = this.state;
 
     return (
-      <CustomSmallPaper>
-        <div className={classes.cardContent}>
-          <TextField
-            required
-            id='office-name'
-            name='name'
-            label='Office Name'
-            value={this.state.name}
-            margin='normal'
-            variant='outlined'
-            fullWidth
-            onChange={this.handleChange}
-          />
-          <TextField
-            required
-            id='office-location'
-            name='location'
-            label='Office location'
-            value={this.state.location}
-            margin='normal'
-            variant='outlined'
-            fullWidth
-            onChange={this.handleChange}
-          />
-          <FlatButton
-            variant='contained'
-            color='primary'
-            disabled={adding || updating}
-            className={classes.submitButton}
-            size='large'
-            fullWidth
-            onClick={this.handleSubmit}
-          >
-            {type === "update" ? "Update" : "Save"}
-            <Icon className={classes.rightIcon}>save</Icon>
-          </FlatButton>
-        </div>
-      </CustomSmallPaper>
+      <PageContainer maxWidth='lg'>
+        <Grid container spacing={3} className={classes.titleRow}>
+          <Grid item xs={12} sm={8} className={classes.relativeContainer}>
+            <Typography
+              variant='h4'
+              color='textPrimary'
+              className={classes.subjectTitle}
+            >
+              Generate New Question Set
+            </Typography>
+          </Grid>
+          <Divider className={classes.root} />
+        </Grid>
+        <Grid container spacing={3}>
+          <Grid item xs={10}>
+            <CustomSmallPaper>
+              <div className={classes.cardContent}>
+                <Grid container spacing={3}>
+                  <Grid item sm={12}>
+                    <TextField
+                      required
+                      id='questionSetName'
+                      name='questionSetName'
+                      label='Question Set Name'
+                      value={this.state.questionSetName}
+                      margin='normal'
+                      variant='outlined'
+                      fullWidth
+                      onChange={this.handleChange}
+                    />
+                  </Grid>
+                  <Grid item sm={6}>
+                    <FormGroup>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            name='subjectsLocked'
+                            checked={subjectsLocked}
+                            onChange={this.handleCheckboxChange}
+                            value={subjectsLocked}
+                          />
+                        }
+                        label='Should the Subject be rearranged?'
+                      />
+                    </FormGroup>
+                  </Grid>
+                  <Grid item sm={6}>
+                    <FormGroup>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            name='optionsLocked'
+                            checked={optionsLocked}
+                            onChange={this.handleCheckboxChange}
+                            value={optionsLocked}
+                          />
+                        }
+                        label='Should the Options be rearranged?'
+                      />
+                    </FormGroup>
+                  </Grid>
+                </Grid>
+
+                <FlatButton
+                  variant='contained'
+                  color='primary'
+                  disabled={generating}
+                  className={classes.submitButton}
+                  size='large'
+                  fullWidth
+                  onClick={this.handleSubmit}
+                >
+                  Generate
+                  <Icon className={classes.rightIcon}>casino</Icon>
+                </FlatButton>
+              </div>
+            </CustomSmallPaper>
+          </Grid>
+        </Grid>
+      </PageContainer>
     );
   }
 }
 
 CreateQuestionSet.propTypes = {
   classes: PropTypes.object.isRequired,
-  type: PropTypes.oneOf(["add", "update"]),
-  selectedDbConfig: PropTypes.object,
   onComplete: PropTypes.func
 };
 
 function mapStateToProps(store) {
   return {
-    added: store.officeInfo.added,
-    adding: store.officeInfo.adding,
-    updating: store.officeInfo.updating,
-    updated: store.officeInfo.updated,
-    offices: store.officeInfo.offices,
-    userType: store.userInfo.type,
-    office: store.userInfo.office_id
+    generating: store.questionSetInfo.generating,
+    generated: store.questionSetInfo.generated,
+    deleting: store.questionSetInfo.deleting,
+    deleted: store.questionSetInfo.deleted,
+    englishQuestions: store.questionBankInfo.englishQuestions,
+    mathQuestions: store.questionBankInfo.mathQuestions,
+    physicsQuestions: store.questionBankInfo.physicsQuestions,
+    chemistryQuestions: store.questionBankInfo.chemistryQuestions,
+    questionSets: store.questionSetInfo.questionSets
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    { addNewOffice, fetchOfficeList, updateOfficeInfo },
-    dispatch
-  );
+  return bindActionCreators({ generateQuestionSet }, dispatch);
 }
 
 export default connect(

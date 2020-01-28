@@ -12,8 +12,8 @@ const initialState = {
   message: "",
   fetching: false,
   fetched: false,
-  adding: false,
-  added: false,
+  generating: false,
+  generated: false,
   deleting: false,
   deleted: false,
   error: null
@@ -42,23 +42,23 @@ export default function reducer(state = initialState, action) {
         ...state,
         fetching: false,
         fetched: true,
-        adding: false,
-        added: false,
+        generating: false,
+        generated: false,
         deleting: false,
         deleted: false,
         error: action.payload
       };
-    case "ADDING_QUESTION_SET":
+    case "GENERATING_QUESTION_SET":
       return {
         ...state,
-        adding: true,
-        added: false
+        generating: true,
+        generated: false
       };
-    case "ADDING_QUESTION_SET_FULFILLED":
+    case "GENERATING_QUESTION_SET_FULFILLED":
       return {
         ...state,
-        adding: false,
-        added: true,
+        generating: false,
+        generated: true,
         message: action.payload
       };
     case "REMOVE_QUESTION_SETS_ERROR":
@@ -66,8 +66,8 @@ export default function reducer(state = initialState, action) {
         ...state,
         fetching: false,
         fetched: false,
-        adding: false,
-        added: false,
+        generating: false,
+        generated: false,
         error: null
       };
     case "QUESTION_SET_ERROR":
@@ -75,8 +75,8 @@ export default function reducer(state = initialState, action) {
         ...state,
         fetching: false,
         fetched: false,
-        adding: false,
-        added: false,
+        generating: false,
+        generated: false,
         updating: false,
         updated: false,
         deleting: false,

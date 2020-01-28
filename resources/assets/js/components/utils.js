@@ -192,13 +192,3 @@ ConfirmDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired
 };
-
-export function numberToAlphabet(index) {
-  const alphabets = "ABCDEF";
-
-  return alphabets[index];
-}
-
-numberToAlphabet.propTypes = {
-  index: PropTypes.number
-};

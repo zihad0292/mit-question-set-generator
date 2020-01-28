@@ -31,9 +31,10 @@ import {
   WidgetTitle,
   FlatButton,
   FullBodyLoader,
-  ConfirmDialog,
-  numberToAlphabet
+  ConfirmDialog
 } from "../../components/utils";
+
+import { numberToAlphabet } from "../../utilityFunctions";
 
 import EditQuestion from "./editQuestion";
 

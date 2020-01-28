@@ -16,6 +16,7 @@ import {
   fetchQuestionSets,
   deleteQuestionSet
 } from "../../actions/questionSetActions";
+import { fetchQuestions } from "../../actions/questionBankActions";
 import {
   PageContainer,
   CustomSmallPaper,
@@ -28,6 +29,12 @@ import {
 // import AddNewForm from "./addNewForm";
 
 const styles = theme => ({
+  root: {
+    width: "100%"
+  },
+  titleRow: {
+    marginBottom: theme.spacing(3)
+  },
   tableTitle: {
     margin: theme.spacing(2),
     marginBottom: theme.spacing(1)
@@ -104,9 +111,27 @@ class QuestionSet extends Component {
   }
 
   componentDidMount() {
-    // if (this.props.offices.length == 0) {
-    //   this.props.fetchOfficeList();
-    // }
+    const {
+      englishQuestions,
+      mathQuestions,
+      physicsQuestions,
+      chemistryQuestions,
+      fetchQuestions
+    } = this.props;
+
+    // Fetch questions only if respective question state is empty
+    if (englishQuestions.length === 0) {
+      fetchQuestions("english");
+    }
+    if (mathQuestions.length === 0) {
+      fetchQuestions("math");
+    }
+    if (physicsQuestions.length === 0) {
+      fetchQuestions("physics");
+    }
+    if (chemistryQuestions.length === 0) {
+      fetchQuestions("chemistry");
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -242,12 +267,12 @@ class QuestionSet extends Component {
   }
 
   render() {
-    const { classes, fetching, deleting, questionSets } = this.props;
+    const { classes, fetching, deleting, questionSets, history } = this.props;
     const { selected, showMessage, message } = this.state;
 
     return (
       <PageContainer maxWidth='lg'>
-        <Grid container spacing={3} className={classes.statFirstRow}>
+        <Grid container spacing={3} className={classes.titleRow}>
           <Grid item xs={12} sm={8} className={classes.relativeContainer}>
             <Typography
               variant='h4'
@@ -299,12 +324,19 @@ class QuestionSet extends Component {
 function mapStateToProps(store) {
   return {
     ...store.questionSetInfo,
+    englishQuestions: store.questionBankInfo.englishQuestions,
+    mathQuestions: store.questionBankInfo.mathQuestions,
+    physicsQuestions: store.questionBankInfo.physicsQuestions,
+    chemistryQuestions: store.questionBankInfo.chemistryQuestions,
     questionSets: store.questionSetInfo.questionSets
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ fetchQuestionSets, deleteQuestionSet }, dispatch);
+  return bindActionCreators(
+    { fetchQuestions, fetchQuestionSets, deleteQuestionSet },
+    dispatch
+  );
 }
 
 export default connect(

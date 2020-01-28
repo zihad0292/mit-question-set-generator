@@ -17,7 +17,7 @@ import Landing from "./pages/landing";
 import QuestionBank from "./pages/questionBank/";
 import QuestionBankCategory from "./pages/questionBank/category";
 import CreateQuestion from "./pages/questionBank/createQuestion";
-import EditQuestion from "./pages/questionBank/editQuestion";
+// import EditQuestion from "./pages/questionBank/editQuestion";
 import QuestionSets from "./pages/questionSets";
 import CreateQuestionSet from "./pages/questionSets/createQuestionSet";
 import NotFound from "./pages/notfound";
@@ -93,24 +93,29 @@ class Layout extends Component {
           <Switch>
             <Route exact path='/dashboard' component={Landing} />
             <Route
-              path='/dashboard/question-bank/allsubjects/:subject'
-              component={QuestionBankCategory}
-            />
-            <Route
+              exact
               path='/dashboard/question-bank/allsubjects'
               component={QuestionBank}
+            />
+            <Route
+              path='/dashboard/question-bank/allsubjects/:subject'
+              component={QuestionBankCategory}
             />
             <Route
               path='/dashboard/question-bank/create'
               component={CreateQuestion}
             />
-            <Route
-              path='/dashboard/question-bank/edit/'
+            {/* <Route
+              path='/dashboard/question-bank/edit'
               component={EditQuestion}
-            />
-            <Route path='/dashboard/question-sets' component={QuestionSets} />
+            /> */}
             <Route
-              path='/question-sets/generate-new'
+              exact
+              path='/dashboard/question-sets'
+              component={QuestionSets}
+            />
+            <Route
+              path='/dashboard/question-sets/generate-new'
               component={CreateQuestionSet}
             />
             <Route component={NotFound} />
