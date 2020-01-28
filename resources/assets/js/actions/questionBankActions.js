@@ -28,13 +28,13 @@ export function fetchQuestions(subject) {
   };
 }
 
-export function addNewQuestion(subject, question, options, rearrange_locked) {
+export function addNewQuestion(subject, question, options, optionsReorder) {
   return function(dispatch) {
     dispatch({ type: "ADDING_NEW_QUESTION" });
 
     axios
       .post(
-        `${baseUrl}create?subject=${subject}&question=${question}&options=${options}&rearrange_locked=${rearrange_locked}`
+        `${baseUrl}create?subject=${subject}&question=${question}&options=${options}&optionsReorder=${optionsReorder}`
       )
       .then(response => {
         const d = response.data;
@@ -64,11 +64,11 @@ export function editQuestion(
   oldSubject,
   question,
   options,
-  rearrange_locked
+  optionsReorder
 ) {
   return function(dispatch) {
     dispatch({ type: "UPDATING_QUESTION" });
-    const updateUrl = `${baseUrl}edit?id=${id}&subject=${subject}&question=${question}&options=${options}&rearrange_locked=${rearrange_locked}`;
+    const updateUrl = `${baseUrl}edit?id=${id}&subject=${subject}&question=${question}&options=${options}&optionsReorder=${optionsReorder}`;
     axios
       .post(updateUrl)
       .then(resp => {

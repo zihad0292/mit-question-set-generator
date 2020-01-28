@@ -17,7 +17,7 @@ var questionBankSchema = new Schema(
         is_correct: Boolean
       }
     ],
-    rearrange_locked: {
+    optionsReorder: {
       type: Boolean
     }
   },

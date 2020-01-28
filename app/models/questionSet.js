@@ -1,64 +1,43 @@
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
-var dataTypeSchema = new Schema(
+var questionSetSchema = new Schema(
   {
-    dataType: {
+    questionSetName: {
       type: String,
-      required: [true, "Data Type Name Can't be empty"]
+      required: [true, "QuestionSet Name Can't be empty"]
     },
-    enabled: { type: Boolean, default: true },
-    hasCredentials: { type: Boolean, default: false }
-  },
-  {
-    collection: "DataTypes",
-    timestamps: { createdAt: "created_at", updatedAt: "updated_at" }
-  }
-);
-
-var dataType = mongoose.model("dataType", dataTypeSchema);
-
-var fileCredSchema = new Schema(
-  {
-    protocol: {
-      type: String,
-      required: [true, "Protocol Type Name Can't be empty"]
-    },
-    username: { type: String },
-    password: { type: String },
-    port: { type: String },
-    key: { type: String }
+    questionSet: [
+      {
+        subject: String,
+        questions: [
+          {
+            question: String,
+            options: [{ option: String }]
+          }
+        ]
+      }
+    ]
   },
   {
     timestamps: { createdAt: "created_at", updatedAt: "updated_at" }
   }
 );
 
-var fileCred = mongoose.model("fileCred", fileCredSchema);
-
-var encryptionCredSchema = new Schema(
-  {
-    title: { type: String, required: [true, "Encryption title Can't be empty"] }
-  },
-  {
-    timestamps: { createdAt: "created_at", updatedAt: "updated_at" }
-  }
-);
-
-var encryptionCred = mongoose.model("encryptionCred", encryptionCredSchema);
+var QuestionSet = mongoose.model("questionSets", questionSetSchema);
 
 module.exports = {
-  model: dataType,
+  model: QuestionSet,
 
   create: function(params, result) {
-    var dataTypeInfo = new dataType(params);
+    var questionSetInfo = new QuestionSet(params);
 
-    var error = dataTypeInfo.validateSync();
+    var error = questionSetInfo.validateSync();
 
     if (error) {
       result(error, null);
     } else {
-      dataTypeInfo.save(function(err) {
+      questionSetInfo.save(function(err) {
         if (err) {
           result(err, null);
         } else {
@@ -68,33 +47,18 @@ module.exports = {
     }
   },
 
-  getAll: function(showAll, result) {
-    dataType.find({}).exec(function(err, types) {
+  getAll: function(result) {
+    QuestionSet.find({}).exec(function(err, results) {
       if (err) {
         result(err, null);
       } else {
-        result(null, types);
+        result(null, results);
       }
     });
   },
 
-  update: function(id, params, result) {
-    dataType.findOneAndUpdate(
-      { _id: id },
-      params,
-      { runValidators: false },
-      function(err) {
-        if (err) {
-          result(err, null);
-        } else {
-          result(null, true);
-        }
-      }
-    );
-  },
-
   delete: function(id, result) {
-    dataType.deleteOne({ _id: id }, function(err) {
+    QuestionSet.deleteOne({ _id: id }, function(err) {
       if (err) {
         result(err, null);
       } else {

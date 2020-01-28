@@ -13,6 +13,7 @@ import TextField from "@material-ui/core/TextField";
 import Icon from "@material-ui/core/Icon";
 import Divider from "@material-ui/core/Divider";
 
+import { fetchQuestions } from "../../actions/questionBankActions";
 import { generateQuestionSet } from "../../actions/questionSetActions";
 import {
   PageContainer,
@@ -50,8 +51,8 @@ class CreateQuestionSet extends Component {
     super(props);
     this.state = {
       questionSetName: "",
-      optionsLocked: false,
-      subjectsLocked: false,
+      optionsReorder: false,
+      subjectsReorder: false,
       showMessage: false
     };
     this.populateStateVal = this.populateStateVal.bind(this);
@@ -61,11 +62,27 @@ class CreateQuestionSet extends Component {
   }
 
   componentDidMount() {
-    // const { type } = this.props;
-    // if (type == "update") {
-    //   this.populateStateVal();
-    // }
-    console.log("kkkkk");
+    const {
+      englishQuestions,
+      mathQuestions,
+      physicsQuestions,
+      chemistryQuestions,
+      fetchQuestions
+    } = this.props;
+
+    // Fetch questions only if respective question state is empty
+    if (englishQuestions.length === 0) {
+      fetchQuestions("english");
+    }
+    if (mathQuestions.length === 0) {
+      fetchQuestions("math");
+    }
+    if (physicsQuestions.length === 0) {
+      fetchQuestions("physics");
+    }
+    if (chemistryQuestions.length === 0) {
+      fetchQuestions("chemistry");
+    }
   }
 
   populateStateVal() {
@@ -108,7 +125,7 @@ class CreateQuestionSet extends Component {
   }
 
   handleSubmit() {
-    const { questionSetName, subjectsLocked, optionsLocked } = this.state;
+    const { questionSetName, subjectsReorder, optionsReorder } = this.state;
     const {
       englishQuestions,
       mathQuestions,
@@ -117,18 +134,64 @@ class CreateQuestionSet extends Component {
       generateQuestionSet
     } = this.props;
 
-    if (name.length > 0) {
-      if (type == "update") {
-        updateOfficeInfo(selectedOffice._id, name, location);
-      } else {
-        addNewOffice(name, location);
-      }
+    if (questionSetName === "") {
+      alert("Please give a name to the question set");
     }
+
+    let randomEnglishQuestions = shuffleArray(englishQuestions);
+    randomEnglishQuestions.splice(10);
+    let randomMathQuestions = shuffleArray(mathQuestions);
+    randomMathQuestions.splice(20);
+    let randomPhysicsQuestions = shuffleArray(physicsQuestions);
+    randomPhysicsQuestions.splice(20);
+    let randomChemistryQuestions = shuffleArray(chemistryQuestions);
+    randomChemistryQuestions.splice(20);
+
+    let finalArray = [
+      {
+        subject: "english",
+        questions: randomEnglishQuestions
+      },
+      {
+        subject: "math",
+        questions: randomMathQuestions
+      },
+      {
+        subject: "physics",
+        questions: randomPhysicsQuestions
+      },
+      {
+        subject: "chemistry",
+        questions: randomChemistryQuestions
+      }
+    ];
+
+    if (subjectsReorder) {
+      finalArray = shuffleArray(finalArray);
+    }
+
+    if (optionsReorder) {
+      finalArray = finalArray.map(item => {
+        return {
+          subject: item.subject,
+          questions: item.questions.map(subitem => {
+            return {
+              question: subitem.question,
+              options: subitem.optionsReorder
+                ? shuffleArray(subitem.options)
+                : subitem.options
+            };
+          })
+        };
+      });
+    }
+
+    generateQuestionSet(questionSetName, JSON.stringify(finalArray));
   }
 
   render() {
     const { classes, generating, updating, type } = this.props;
-    const { questionSetName, optionsLocked, subjectsLocked } = this.state;
+    const { questionSetName, optionsReorder, subjectsReorder } = this.state;
 
     return (
       <PageContainer maxWidth='lg'>
@@ -167,13 +230,13 @@ class CreateQuestionSet extends Component {
                       <FormControlLabel
                         control={
                           <Checkbox
-                            name='subjectsLocked'
-                            checked={subjectsLocked}
+                            name='subjectsReorder'
+                            checked={subjectsReorder}
                             onChange={this.handleCheckboxChange}
-                            value={subjectsLocked}
+                            value={subjectsReorder}
                           />
                         }
-                        label='Should the Subject be rearranged?'
+                        label='Change the Subjects order?'
                       />
                     </FormGroup>
                   </Grid>
@@ -182,10 +245,10 @@ class CreateQuestionSet extends Component {
                       <FormControlLabel
                         control={
                           <Checkbox
-                            name='optionsLocked'
-                            checked={optionsLocked}
+                            name='optionsReorder'
+                            checked={optionsReorder}
                             onChange={this.handleCheckboxChange}
-                            value={optionsLocked}
+                            value={optionsReorder}
                           />
                         }
                         label='Should the Options be rearranged?'
@@ -235,7 +298,7 @@ function mapStateToProps(store) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ generateQuestionSet }, dispatch);
+  return bindActionCreators({ fetchQuestions, generateQuestionSet }, dispatch);
 }
 
 export default connect(

@@ -116,9 +116,14 @@ class QuestionSet extends Component {
       mathQuestions,
       physicsQuestions,
       chemistryQuestions,
-      fetchQuestions
+      fetchQuestions,
+      questionSets
     } = this.props;
 
+    // Fetch question set only if respective questionSet state is empty
+    if (questionSets.length === 0) {
+      fetchQuestionSets();
+    }
     // Fetch questions only if respective question state is empty
     if (englishQuestions.length === 0) {
       fetchQuestions("english");
@@ -203,7 +208,7 @@ class QuestionSet extends Component {
     const columns = [
       {
         title: "Name",
-        field: "question_set_name",
+        field: "questionSetName",
         sorting: false
       },
       {

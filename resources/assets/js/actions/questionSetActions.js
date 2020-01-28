@@ -1,73 +1,86 @@
 import axios from "axios";
+import { fetchQuestions } from "./questionBankActions";
 
 const baseUrl = "/api/question-set/";
 
 export function fetchQuestionSets() {
   return function(dispatch) {
     console.log("Fetching question sets");
-    // dispatch({ type: "FETCHING_OFFICE_LIST" });
-    // const fetchURL = office ? `${baseUrl}list?oid=${office}` : `${baseUrl}list`;
-    // axios
-    //   .get(fetchURL)
-    //   .then(response => {
-    //     const d = response.data;
-    //     dispatch({ type: "REMOVE_OFFICE_LIST_ERROR" });
-    //     dispatch({
-    //       type: "FETCHING_OFFICE_LIST_FULFILLED",
-    //       payload: d
-    //     });
-    //   })
-    //   .catch(err => {
-    //     dispatch({ type: "FETCHING_OFFICE_LIST_FAILED", payload: err });
-    //   });
+    dispatch({ type: "FETCHING_QUESTION_SETS" });
+    const fetchURL = `${baseUrl}list`;
+    axios
+      .get(fetchURL)
+      .then(response => {
+        const d = response.data;
+
+        if (d.success) {
+          dispatch({ type: "REMOVE_QUESTION_SETS_ERROR" });
+          dispatch({
+            type: "FETCHING_QUESTION_SETS_FULFILLED",
+            payload: d
+          });
+        } else {
+          dispatch({ type: "QUESTION_SET_ERROR", payload: d.message });
+        }
+      })
+      .catch(err => {
+        dispatch({ type: "FETCHING_QUESTION_SETS_FAILED", payload: err });
+      });
   };
 }
 
-export function generateQuestionSet(name, location) {
+export function generateQuestionSet(questionSetName, questionSet) {
   console.log("Generating new question set");
-  // return function(dispatch) {
-  //   dispatch({ type: "ADDING_NEW_OFFICE" });
+  return function(dispatch) {
+    dispatch({ type: "GENERATING_QUESTION_SET" });
 
-  //   axios
-  //     .post(`${baseUrl}new?n=${name}&l=${location}`)
-  //     .then(response => {
-  //       const d = response.data;
+    axios
+      .post(
+        `${baseUrl}generate?questionSetName=${questionSetName}&questionSet=${questionSet}`
+      )
+      .then(response => {
+        const d = response.data;
 
-  //       if (d.success) {
-  //         dispatch({ type: "ADDING_NEW_OFFICE_FULFILLED", payload: d.message });
-  //       } else {
-  //         dispatch({ type: "FETCHING_OFFICE_LIST_FAILED", payload: d.error });
-  //       }
-  //     })
-  //     .catch(err => {
-  //       dispatch({ type: "FETCHING_OFFICE_LIST_FAILED", payload: err });
-  //     });
-  // };
+        if (d.success) {
+          dispatch({
+            type: "GENERATING_QUESTION_SET_FULFILLED",
+            payload: d.message
+          });
+          dispatch(fetchQuestionSets());
+        } else {
+          dispatch({ type: "FETCHING_QUESTION_SETS_FAILED", payload: d.error });
+        }
+      })
+      .catch(err => {
+        dispatch({ type: "FETCHING_QUESTION_SETS_FAILED", payload: err });
+      });
+  };
 }
 
 export function deleteQuestionSet(id) {
   return function(dispatch) {
     console.log("Delete question set");
-    // dispatch({ type: "DELETE_OFFICE_INFO" });
+    dispatch({ type: "DELETE_QUESTION_SET" });
 
-    // axios
-    //   .delete(`${baseUrl}delete?id=${id}`)
-    //   .then(resp => {
-    //     const d = resp.data;
+    axios
+      .delete(`${baseUrl}delete?id=${id}`)
+      .then(resp => {
+        const d = resp.data;
 
-    //     if (d.success) {
-    //       dispatch(fetchDBConfigList());
-    //       dispatch(fetchUserList());
-    //       dispatch({
-    //         type: "DELETE_OFFICE_INFO_FULFILLED",
-    //         payload: d.message
-    //       });
-    //     } else {
-    //       dispatch({ type: "FETCHING_OFFICE_LIST_FAILED", payload: d.error });
-    //     }
-    //   })
-    //   .catch(err => {
-    //     dispatch({ type: "FETCHING_OFFICE_LIST_FAILED", payload: err.message });
-    //   });
+        if (d.success) {
+          dispatch({
+            type: "DELETE_QUESTION_SET_FULFILLED",
+            payload: d.message
+          });
+        } else {
+          dispatch({ type: "FETCHING_QUESTION_SETS_FAILED", payload: d.error });
+        }
+      })
+      .catch(err => {
+        dispatch({
+          type: "FETCHING_QUESTION_SETS_FAILED",
+          payload: err.message
+        });
+      });
   };
 }

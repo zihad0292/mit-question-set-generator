@@ -1,14 +1,5 @@
 const initialState = {
-  questionSets: [
-    {
-      question_set_name: "Set 1",
-      created_at: "2 January 2020"
-    },
-    {
-      question_set_name: "Set 2",
-      created_at: "6 January 2019"
-    }
-  ],
+  questionSets: [],
   message: "",
   fetching: false,
   fetched: false,
@@ -77,8 +68,6 @@ export default function reducer(state = initialState, action) {
         fetched: false,
         generating: false,
         generated: false,
-        updating: false,
-        updated: false,
         deleting: false,
         deleted: false,
         error: action.payload
