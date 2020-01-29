@@ -9,10 +9,6 @@ module.exports = {
     var url_parts = url.parse(req.url, true);
     var query = url_parts.query;
 
-    var params = {
-      subject: query.subject
-    };
-
     var response = {
       success: true,
       status: 200

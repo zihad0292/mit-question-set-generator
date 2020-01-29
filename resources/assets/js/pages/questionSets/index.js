@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
@@ -12,11 +12,14 @@ import MaterialTable, { MTableToolbar } from "material-table";
 import { MessagePopUp } from "../../components/messagePopUps";
 import Divider from "@material-ui/core/Divider";
 import AddIcon from "@material-ui/icons/Add";
+
 import {
   fetchQuestionSets,
   deleteQuestionSet
 } from "../../actions/questionSetActions";
+
 import { fetchQuestions } from "../../actions/questionBankActions";
+
 import {
   PageContainer,
   CustomSmallPaper,
@@ -26,7 +29,7 @@ import {
   FlatButton
 } from "../../components/utils";
 
-// import AddNewForm from "./addNewForm";
+import ViewQuestionSet from "./viewQuestionSet";
 
 const styles = theme => ({
   root: {
@@ -100,7 +103,9 @@ class QuestionSet extends Component {
       selected: null,
       confirm: false,
       message: "",
-      showMessage: false
+      showMessage: false,
+      viewSet: false,
+      viewSetId: null
     };
 
     this.onModalClose = this.onModalClose.bind(this);
@@ -117,6 +122,7 @@ class QuestionSet extends Component {
       physicsQuestions,
       chemistryQuestions,
       fetchQuestions,
+      fetchQuestionSets,
       questionSets
     } = this.props;
 
@@ -154,24 +160,15 @@ class QuestionSet extends Component {
     // }
   }
 
-  onViewClick(selectedIndex, officeId = null) {
-    if (officeId) {
-      const { offices } = this.props;
-      selectedIndex = offices.findIndex(x => x._id === officeId);
-    }
-
+  onViewClick(selectedIndex) {
     this.setState({
-      selected: selectedIndex,
-      confirm: true
+      viewSetId: selectedIndex,
+      viewSet: true
     });
   }
 
-  onDeleteClick(selectedIndex, officeId = null) {
-    if (officeId) {
-      const { offices } = this.props;
-      selectedIndex = offices.findIndex(x => x._id === officeId);
-    }
-
+  onDeleteClick(selectedIndex) {
+    console.log(selectedIndex);
     this.setState({
       selected: selectedIndex,
       confirm: true
@@ -179,10 +176,9 @@ class QuestionSet extends Component {
   }
 
   onDeleteSubmit() {
-    const { offices } = this.props;
     const { selected } = this.state;
 
-    this.props.deleteOfficeInfo(offices[selected]._id);
+    this.props.deleteQuestionSet(selected);
 
     this.setState({
       confirm: false
@@ -205,6 +201,29 @@ class QuestionSet extends Component {
   renderQuestionSets() {
     const { questionSets, classes } = this.props;
 
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ];
+
+    let questionSetsToRender = questionSets.map(questionSet => {
+      let d = new Date(questionSet.created_at);
+      return {
+        ...questionSet,
+        date: `${d.getDate()} ${monthNames[d.getMonth()]} ${d.getFullYear()}`
+      };
+    });
+
     const columns = [
       {
         title: "Name",
@@ -213,7 +232,7 @@ class QuestionSet extends Component {
       },
       {
         title: "Created on",
-        field: "created_at",
+        field: "date",
         sorting: false
       }
     ];
@@ -238,14 +257,14 @@ class QuestionSet extends Component {
         icon: "visibility",
         tooltip: "View",
         onClick: (event, rowData) => {
-          this.onViewClick(null, rowData._id);
+          this.onViewClick(rowData._id);
         }
       },
       {
         icon: "delete",
         tooltip: "Delete this Set",
         onClick: (event, rowData) => {
-          this.onDeleteClick(null, rowData._id);
+          this.onDeleteClick(rowData._id);
         }
       }
     ];
@@ -262,7 +281,7 @@ class QuestionSet extends Component {
       <MaterialTable
         title='Question sets'
         columns={columns}
-        data={questionSets}
+        data={questionSetsToRender}
         actions={actions}
         options={options}
         components={components}
@@ -273,55 +292,59 @@ class QuestionSet extends Component {
 
   render() {
     const { classes, fetching, deleting, questionSets, history } = this.props;
-    const { selected, showMessage, message } = this.state;
-
+    const { selected, showMessage, message, viewSet } = this.state;
     return (
-      <PageContainer maxWidth='lg'>
-        <Grid container spacing={3} className={classes.titleRow}>
-          <Grid item xs={12} sm={8} className={classes.relativeContainer}>
-            <Typography
-              variant='h4'
-              color='textPrimary'
-              className={classes.subjectTitle}
-            >
-              All Question Sets
-              <FlatButton
-                variant='contained'
-                color='primary'
-                className={classes.buttonStyles}
-                size='medium'
-                onClick={() =>
-                  history.push("/dashboard/question-sets/generate-new")
-                }
-              >
-                Generate New
-                <AddIcon className={classes.buttonIcon} />
-              </FlatButton>
-            </Typography>
-          </Grid>
-          <Divider className={classes.root} />
-        </Grid>
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={10} className={classes.relativeContainer}>
-            {this.renderQuestionSets()}
-            {/* <FullBodyLoader active={fetching || deleting} /> */}
-          </Grid>
-        </Grid>
-        <ConfirmDialog
-          title='Confirm Delete?'
-          description='Do You Really Want to Delete this Question Set?'
-          active={this.state.confirm}
-          onClose={this.onModalClose}
-          onSubmit={this.onDeleteSubmit}
-        />
+      <Fragment>
+        {!viewSet && (
+          <PageContainer maxWidth='lg'>
+            <Grid container spacing={3} className={classes.titleRow}>
+              <Grid item xs={12} sm={8} className={classes.relativeContainer}>
+                <Typography
+                  variant='h4'
+                  color='textPrimary'
+                  className={classes.subjectTitle}
+                >
+                  All Question Sets
+                  <FlatButton
+                    variant='contained'
+                    color='primary'
+                    className={classes.buttonStyles}
+                    size='medium'
+                    onClick={() =>
+                      history.push("/dashboard/question-sets/generate-new")
+                    }
+                  >
+                    Generate New
+                    <AddIcon className={classes.buttonIcon} />
+                  </FlatButton>
+                </Typography>
+              </Grid>
+              <Divider className={classes.root} />
+            </Grid>
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={10} className={classes.relativeContainer}>
+                {this.renderQuestionSets()}
+                {/* <FullBodyLoader active={fetching || deleting} /> */}
+              </Grid>
+            </Grid>
+            <ConfirmDialog
+              title='Confirm Delete?'
+              description='Do You Really Want to Delete this Question Set?'
+              active={this.state.confirm}
+              onClose={this.onModalClose}
+              onSubmit={this.onDeleteSubmit}
+            />
 
-        {/* <MessagePopUp
+            {/* <MessagePopUp
           visible={showMessage}
           variant='success'
           onClose={this.handleMessageClose}
           message={message}
         /> */}
-      </PageContainer>
+          </PageContainer>
+        )}
+        {viewSet && <ViewQuestionSet id={this.state.viewSetId} />}
+      </Fragment>
     );
   }
 }

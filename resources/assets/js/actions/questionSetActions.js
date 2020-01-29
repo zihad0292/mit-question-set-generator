@@ -72,6 +72,7 @@ export function deleteQuestionSet(id) {
             type: "DELETE_QUESTION_SET_FULFILLED",
             payload: d.message
           });
+          dispatch(fetchQuestionSets());
         } else {
           dispatch({ type: "FETCHING_QUESTION_SETS_FAILED", payload: d.error });
         }

@@ -3,7 +3,6 @@ var QuestionSet = require("../models/questionSet");
 
 module.exports = {
   getAllQuestionSets: function(req, res, next) {
-    var url_parts = url.parse(req.url, true);
     var response = {
       success: true,
       status: 200
