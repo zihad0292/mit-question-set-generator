@@ -13,7 +13,7 @@ var questionSetSchema = new Schema(
         questions: [
           {
             question: String,
-            options: [{ option: String }]
+            options: [{ option: String, is_correct: Boolean }]
           }
         ]
       }
@@ -53,6 +53,16 @@ module.exports = {
         result(err, null);
       } else {
         result(null, results);
+      }
+    });
+  },
+
+  findOne: function(params, response) {
+    QuestionSet.findOne(params, function(err, question) {
+      if (err) {
+        response(err, null);
+      } else {
+        response(null, question);
       }
     });
   },

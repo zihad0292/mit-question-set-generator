@@ -1,4 +1,5 @@
 const initialState = {
+  singleQuestionSet: [],
   questionSets: [],
   message: "",
   fetching: false,
@@ -23,6 +24,15 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         questionSets: action.payload.results,
+        fetching: false,
+        fetched: true,
+        error: null,
+        message: ""
+      };
+    case "FETCH_SINGLE_QUESTION_SET_FULFILLED":
+      return {
+        ...state,
+        singleQuestionSet: action.payload.results,
         fetching: false,
         fetched: true,
         error: null,

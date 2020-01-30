@@ -343,7 +343,7 @@ class QuestionSet extends Component {
         /> */}
           </PageContainer>
         )}
-        {viewSet && <ViewQuestionSet id={this.state.viewSetId} />}
+        {viewSet && <ViewQuestionSet setId={this.state.viewSetId} />}
       </Fragment>
     );
   }

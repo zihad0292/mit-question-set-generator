@@ -5,7 +5,6 @@ const baseUrl = "/api/question-set/";
 
 export function fetchQuestionSets() {
   return function(dispatch) {
-    console.log("Fetching question sets");
     dispatch({ type: "FETCHING_QUESTION_SETS" });
     const fetchURL = `${baseUrl}list`;
     axios
@@ -57,6 +56,33 @@ export function generateQuestionSet(questionSetName, questionSet) {
   };
 }
 
+export function fetchQuestionSet(id) {
+  return function(dispatch) {
+    console.log("Fetch question set");
+    dispatch({ type: "FETCHING_QUESTION_SETS" });
+
+    axios
+      .get(`${baseUrl}questionset?id=${id}`)
+      .then(resp => {
+        const d = resp.data;
+
+        if (d.success) {
+          dispatch({
+            type: "FETCH_SINGLE_QUESTION_SET_FULFILLED",
+            payload: d
+          });
+        } else {
+          dispatch({ type: "FETCHING_QUESTION_SETS_FAILED", payload: d.error });
+        }
+      })
+      .catch(err => {
+        dispatch({
+          type: "FETCHING_QUESTION_SETS_FAILED",
+          payload: err.message
+        });
+      });
+  };
+}
 export function deleteQuestionSet(id) {
   return function(dispatch) {
     console.log("Delete question set");

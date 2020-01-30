@@ -1,11 +1,12 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+
 import { withStyles, ThemeProvider } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 
-import DeleteIcon from "@material-ui/icons/Delete";
-import EditIcon from "@material-ui/icons/Edit";
 import DoneIcon from "@material-ui/icons/Done";
 import {
   PageContainer,
@@ -16,9 +17,9 @@ import {
   ConfirmDialog
 } from "../../components/utils";
 
-import { numberToAlphabet } from "../../utilityFunctions";
+import { fetchQuestionSet } from "../../actions/questionSetActions";
 
-import EditQuestion from "./editQuestion";
+import { numberToAlphabet } from "../../utilityFunctions";
 
 const styles = theme => ({
   root: {
@@ -85,10 +86,16 @@ const styles = theme => ({
     backgroundSize: "cover"
   },
   subjectTitle: {
-    textTransform: "capitalize"
+    width: "100%",
+    display: "block",
+    textTransform: "uppercase",
+    marginBottom: "10px"
+  },
+  mainContainer: {
+    marginTop: "20px"
   },
   questionContainer: {
-    marginTop: "20px"
+    margin: "0"
   },
   questionWrapper: {
     width: "100%",
@@ -116,7 +123,7 @@ export class viewQuestionSet extends Component {
   }
 
   componentDidMount() {
-    console.log("component mounted");
+    this.props.fetchQuestionSet(this.props.setId);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -124,48 +131,103 @@ export class viewQuestionSet extends Component {
   }
 
   renderQuestions() {
-    const { classes } = this.props;
-
-    return this.state.questionSet.map((question, index) => {
-      return (
-        <Fragment key={index + 100}>
-          <Grid item xs={12}>
-            <p className={classes.noBottomSpacing}>
-              {index + 1}.&nbsp;{question.question}
-            </p>
-            <p className={classes.optionsContainer}>
-              {question.options.map((option, idx) => {
-                return (
-                  <Fragment key={idx}>
-                    <span>
-                      {option.is_correct === true ? (
-                        <DoneIcon className={classes.correctAnswer} />
-                      ) : (
-                        ""
-                      )}
-                      ({numberToAlphabet(idx)})&nbsp;
-                      {option.option}
-                    </span>
-                    &nbsp; &nbsp; &nbsp;
-                  </Fragment>
-                );
-              })}
-            </p>
-          </Grid>
-        </Fragment>
-      );
-    });
+    const { classes, singleQuestionSet } = this.props;
+    if (
+      singleQuestionSet.questionSet &&
+      singleQuestionSet.questionSet.length > 0
+    ) {
+      return singleQuestionSet.questionSet.map((subject, index) => {
+        return (
+          <Fragment>
+            <h3 className={classes.subjectTitle}>{subject.subject}</h3>
+            {subject.questions.map((question, idx) => {
+              return (
+                <Grid item xs={12} key={index + 100}>
+                  <p className={classes.questionContainer}>
+                    {idx + 1}.&nbsp;{question.question}
+                  </p>
+                  <p className={classes.optionsContainer}>
+                    {question.options &&
+                      question.options.map((option, i) => {
+                        return (
+                          <Fragment key={i}>
+                            <span>
+                              ({numberToAlphabet(i)})&nbsp;
+                              {option.option}
+                            </span>
+                            &nbsp; &nbsp; &nbsp;
+                          </Fragment>
+                        );
+                      })}
+                  </p>
+                </Grid>
+              );
+            })}
+          </Fragment>
+        );
+      });
+    }
   }
 
+  renderAnswers() {
+    const { classes, singleQuestionSet } = this.props;
+    if (
+      singleQuestionSet.questionSet &&
+      singleQuestionSet.questionSet.length > 0
+    ) {
+      return singleQuestionSet.questionSet.map((subject, index) => {
+        return (
+          <Fragment>
+            <h3 className={classes.subjectTitle}>{subject.subject}</h3>
+            {subject.questions.map((question, idx) => {
+              console.log(question);
+              return (
+                <Grid item xs={12} key={index + 100}>
+                  <p className={classes.optionsContainer}>
+                    {idx + 1}.&nbsp;
+                    {question.options &&
+                      question.options.map((option, i) => {
+                        return (
+                          <Fragment key={i}>
+                            <span>
+                              {option.is_correct ? (
+                                <Fragment>{numberToAlphabet(i)}&nbsp;</Fragment>
+                              ) : (
+                                ""
+                              )}
+                            </span>
+                          </Fragment>
+                        );
+                      })}
+                  </p>
+                </Grid>
+              );
+            })}
+          </Fragment>
+        );
+      });
+    }
+  }
   render() {
+    const { classes } = this.props;
+
     return (
       <PageContainer maxWidth='lg'>
-        <Grid container spacing={2} className={classes.questionContainer}>
-          {/* <FullBodyLoader active={fetching || deleting} /> */}
+        {/* <FullBodyLoader active={fetching || deleting} /> */}
+        <Grid container spacing={2} className={classes.mainContainer}>
           <CustomSmallPaper className={classes.questionWrapper}>
             <CardContent className={classes.cardContent}>
               <Grid container className={classes.root}>
                 {this.renderQuestions()}
+              </Grid>
+            </CardContent>
+          </CustomSmallPaper>
+        </Grid>
+        <Grid container spacing={2} className={classes.mainContainer}>
+          <CustomSmallPaper className={classes.questionWrapper}>
+            <CardContent className={classes.cardContent}>
+              <Grid container className={classes.root}>
+                {this.renderAnswers()}
               </Grid>
             </CardContent>
           </CustomSmallPaper>
@@ -175,4 +237,18 @@ export class viewQuestionSet extends Component {
   }
 }
 
-export default withStyles(styles)(viewQuestionSet);
+function mapStateToProps(store) {
+  return {
+    ...store.questionSetInfo,
+    singleQuestionSet: store.questionSetInfo.singleQuestionSet
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ fetchQuestionSet }, dispatch);
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(viewQuestionSet));

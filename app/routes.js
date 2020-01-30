@@ -14,6 +14,7 @@ routes.delete("/question-bank/delete", questionBankController.deleteQuestion);
 
 // Question Set CRUD
 routes.get("/question-set/list", questionSetController.getAllQuestionSets);
+routes.get("/question-set/questionset", questionSetController.findQuestionSet);
 routes.post("/question-set/generate", questionSetController.createQuestionSet);
 routes.delete("/question-set/delete", questionSetController.deleteQuestionSet);
 
