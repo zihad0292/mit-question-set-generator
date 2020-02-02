@@ -71,6 +71,16 @@ module.exports = {
     });
   },
 
+  count: function(params, response) {
+    QuestionBank.count(params, function(err, questionCount) {
+      if (err) {
+        response(err, null);
+      } else {
+        response(null, questionCount);
+      }
+    });
+  },
+
   findOne: function(params, response) {
     QuestionBank.findOne(params, function(err, question) {
       if (err) {

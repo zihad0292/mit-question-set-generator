@@ -330,7 +330,7 @@ class QuestionBankCategory extends Component {
                     className={classes.buttonStyles}
                     size='medium'
                     onClick={() =>
-                      history.push("/dashboard/question-bank/create")
+                      history.push(`/dashboard/question-bank/create/${subject}`)
                     }
                   >
                     Add New

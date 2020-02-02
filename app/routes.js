@@ -11,6 +11,7 @@ routes.get("/question-bank/list", questionBankController.getAllQuestions);
 routes.post("/question-bank/create", questionBankController.createQuestion);
 routes.post("/question-bank/edit", questionBankController.updateQuestion);
 routes.delete("/question-bank/delete", questionBankController.deleteQuestion);
+routes.get("/question-bank/stats", questionBankController.countQuestions);
 
 // Question Set CRUD
 routes.get("/question-set/list", questionSetController.getAllQuestionSets);

@@ -115,9 +115,13 @@ class CreateQuestion extends Component {
   }
 
   componentDidMount() {
-    const { type } = this.props;
+    const { type, history } = this.props;
     if (type == "edit") {
       this.populateStateVal();
+    } else {
+      this.setState({
+        subject: this.props.match.params.subject
+      });
     }
   }
 

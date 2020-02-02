@@ -1,29 +1,29 @@
 import axios from "axios";
 
-const baseUrl = "/api/stats/";
+const baseUrl = "/api/question-bank/";
 
 export function retrieveStats() {
   return function(dispatch) {
-    console.log("Trying to retrieve stats from the actions");
-    dispatch({ type: "TEST_FETCHING_FULFILLED" });
+    dispatch({ type: "FETCHING_QUESTIONS_COUNT" });
 
-    // axios
-    //   .get(`${indexBase}list?db=${dbConfigID}`)
-    //   .then(response => {
-    //     const d = response.data;
-    //     if (d.success) {
-    //       dispatch({ type: "REMOVE_INDEX_ERROR" });
-    //       dispatch({
-    //         type: "FETCHING_INDEX_LIST_FULFILLED",
-    //         payload: d.results
-    //       });
-    //     } else {
-    //       dispatch({ type: "INDEX_RELATION_ERROR", payload: d.error });
-    //     }
-    //   })
-    //   .catch(err => {
-    //     dispatch({ type: "INDEX_RELATION_ERROR", payload: err });
-    //   });
+    console.log("statFetsrfswrfdsfched");
+    axios
+      .get(`${baseUrl}stats`)
+      .then(response => {
+        const d = response.data;
+        if (d.success) {
+          console.log("000");
+          dispatch({
+            type: "FETCHING_ALL_QUESTIONS_COUNT_FULFILLED",
+            payload: d.results
+          });
+        } else {
+          dispatch({ type: "QUESTION_COUNT_ERROR", payload: d.error });
+        }
+      })
+      .catch(err => {
+        dispatch({ type: "QUESTION_COUNT_ERROR", payload: err });
+      });
   };
 }
 

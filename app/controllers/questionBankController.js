@@ -33,6 +33,25 @@ module.exports = {
       QuestionBank.getAll(cb);
     }
   },
+  countQuestions: function(req, res) {
+    var response = {
+      success: true,
+      status: 200
+    };
+    console.log("counting");
+    var cb = function(err, result) {
+      if (err) {
+        response.success = false;
+        response.status = 401;
+        response.error = err;
+      } else {
+        response.results = result;
+      }
+      res.json(response);
+    };
+
+    QuestionBank.count({ subject: "english" }, cb);
+  },
 
   createQuestion: function(req, res) {
     var url_parts = url.parse(req.url, true);

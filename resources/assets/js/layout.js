@@ -53,9 +53,9 @@ class Layout extends Component {
   }
 
   componentDidMount() {
-    const { statFetched } = this.props;
+    const { statFetched, retrieveStats } = this.props;
     if (!statFetched) {
-      this.props.retrieveStats();
+      retrieveStats();
     } else {
       this.setState({
         fetching: false
@@ -102,7 +102,7 @@ class Layout extends Component {
               component={QuestionBankCategory}
             />
             <Route
-              path='/dashboard/question-bank/create'
+              path='/dashboard/question-bank/create/:subject'
               component={CreateQuestion}
             />
             {/* <Route

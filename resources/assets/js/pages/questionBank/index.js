@@ -75,25 +75,14 @@ class QuestionBank extends Component {
   }
 
   componentDidMount() {
-    // const {
-    //   offices,
-    //   dbConfigs,
-    //   totalIndex,
-    //   type,
-    //   office_id,
-    //   fetchOfficeList
-    // } = this.props;
-    // if (offices.length == 0) {
-    //   if (type == "admin") {
-    //     fetchOfficeList(office_id);
-    //   } else {
-    //     fetchOfficeList();
-    //   }
+    // const { statFetched, allQuestionsCount, retrieveStats } = this.props;
+    // if (!statFetched) {
+    //   retrieveStats();
     // }
   }
 
   render() {
-    const { classes, history } = this.props;
+    const { classes, history, allQuestionsCount } = this.props;
 
     return (
       <PageContainer maxWidth='lg'>
@@ -122,7 +111,9 @@ class QuestionBank extends Component {
                 <Typography color='primary' variant='h5'>
                   English
                 </Typography>
-                <Typography variant='subtitle1'>54 Questions</Typography>
+                <Typography variant='subtitle1'>
+                  {allQuestionsCount.english}
+                </Typography>
               </CardContent>
             </CustomSmallPaper>
           </Grid>
@@ -137,7 +128,9 @@ class QuestionBank extends Component {
                 <Typography color='primary' variant='h5'>
                   Math
                 </Typography>
-                <Typography variant='subtitle1'>54 Questions</Typography>
+                <Typography variant='subtitle1'>
+                  {allQuestionsCount.math}
+                </Typography>
               </CardContent>
             </CustomSmallPaper>
           </Grid>
@@ -152,7 +145,9 @@ class QuestionBank extends Component {
                 <Typography color='primary' variant='h5'>
                   Physics
                 </Typography>
-                <Typography variant='subtitle1'>54 Questions</Typography>
+                <Typography variant='subtitle1'>
+                  {allQuestionsCount.physics}
+                </Typography>
               </CardContent>
             </CustomSmallPaper>
           </Grid>
@@ -167,7 +162,9 @@ class QuestionBank extends Component {
                 <Typography color='primary' variant='h5'>
                   Chemistry
                 </Typography>
-                <Typography variant='subtitle1'>54 Questions</Typography>
+                <Typography variant='subtitle1'>
+                  {allQuestionsCount.chemistry}
+                </Typography>
               </CardContent>
             </CustomSmallPaper>
           </Grid>
@@ -179,7 +176,8 @@ class QuestionBank extends Component {
 
 function mapStateToProps(store) {
   return {
-    fetched: store.statsInfo.fetched
+    statFetched: store.statsInfo.statFetched,
+    allQuestionsCount: store.statsInfo.allQuestionsCount
   };
 }
 

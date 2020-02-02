@@ -6,8 +6,10 @@ import { withStyles, ThemeProvider } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
+import IconButton from "@material-ui/core/IconButton";
 
-import DoneIcon from "@material-ui/icons/Done";
+import GetAppIcon from "@material-ui/icons/GetApp";
+
 import {
   PageContainer,
   CustomSmallPaper,
@@ -20,6 +22,7 @@ import {
 import { fetchQuestionSet } from "../../actions/questionSetActions";
 
 import { numberToAlphabet } from "../../utilityFunctions";
+import { func } from "prop-types";
 
 const styles = theme => ({
   root: {
@@ -111,6 +114,14 @@ const styles = theme => ({
   buttonIcon: {
     position: "relative",
     top: "-3px"
+  },
+  textRight: {
+    textAlign: "right",
+    width: "100%",
+    marginRight: "50px"
+  },
+  buttonBg: {
+    backgroundColor: "rgba(0, 0, 0, 0.08)"
   }
 });
 
@@ -120,6 +131,7 @@ export class viewQuestionSet extends Component {
     this.state = {
       questionSet: []
     };
+    this.export2Doc = this.export2Doc.bind(this);
   }
 
   componentDidMount() {
@@ -130,21 +142,55 @@ export class viewQuestionSet extends Component {
     // console.log(nextProps);
   }
 
+  export2Doc(element, filename = "") {
+    var downloadLink = document.createElement("a");
+
+    function initiateDownload(callback) {
+      var preHtml =
+        "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Export HTML To Doc</title></head><body>";
+      var postHtml = "</body></html>";
+      var html =
+        preHtml + document.getElementById(element).innerHTML + postHtml;
+
+      var url =
+        "data:application/vnd.ms-word;charset=utf-8," +
+        encodeURIComponent(html);
+
+      filename = filename ? filename + ".docx" : "document.docx";
+      downloadLink.href = url;
+      downloadLink.download = filename;
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+
+      callback();
+    }
+
+    function removeDownloadLink() {
+      document.body.removeChild(downloadLink);
+    }
+
+    initiateDownload(removeDownloadLink);
+  }
+
   renderQuestions() {
     const { classes, singleQuestionSet } = this.props;
     if (
       singleQuestionSet.questionSet &&
       singleQuestionSet.questionSet.length > 0
     ) {
+      var i = 1;
       return singleQuestionSet.questionSet.map((subject, index) => {
         return (
           <Fragment>
-            <h3 className={classes.subjectTitle}>{subject.subject}</h3>
+            {/* <h3 className={classes.subjectTitle}>{subject.subject}</h3> */}
             {subject.questions.map((question, idx) => {
               return (
                 <Grid item xs={12} key={index + 100}>
-                  <p className={classes.questionContainer}>
-                    {idx + 1}.&nbsp;{question.question}
+                  <p
+                    className={classes.questionContainer}
+                    onClick={() => this.export2Doc("downloadQuestions")}
+                  >
+                    {i++}.&nbsp;{question.question}
                   </p>
                   <p className={classes.optionsContainer}>
                     {question.options &&
@@ -175,16 +221,15 @@ export class viewQuestionSet extends Component {
       singleQuestionSet.questionSet &&
       singleQuestionSet.questionSet.length > 0
     ) {
+      var i = 1;
       return singleQuestionSet.questionSet.map((subject, index) => {
         return (
           <Fragment>
-            <h3 className={classes.subjectTitle}>{subject.subject}</h3>
             {subject.questions.map((question, idx) => {
-              console.log(question);
               return (
                 <Grid item xs={12} key={index + 100}>
                   <p className={classes.optionsContainer}>
-                    {idx + 1}.&nbsp;
+                    {i++}.&nbsp;
                     {question.options &&
                       question.options.map((option, i) => {
                         return (
@@ -218,7 +263,17 @@ export class viewQuestionSet extends Component {
           <CustomSmallPaper className={classes.questionWrapper}>
             <CardContent className={classes.cardContent}>
               <Grid container className={classes.root}>
-                {this.renderQuestions()}
+                <p id='downloadQuestions' className={classes.textRight}>
+                  <IconButton
+                    color='primary'
+                    aria-label='Download'
+                    className={classes.buttonBg}
+                    onClick={() => this.export2Doc("questionDownload")}
+                  >
+                    <GetAppIcon />
+                  </IconButton>
+                </p>
+                <div id='questionDownload'>{this.renderQuestions()}</div>
               </Grid>
             </CardContent>
           </CustomSmallPaper>
@@ -227,7 +282,20 @@ export class viewQuestionSet extends Component {
           <CustomSmallPaper className={classes.questionWrapper}>
             <CardContent className={classes.cardContent}>
               <Grid container className={classes.root}>
-                {this.renderAnswers()}
+                <p id='downloadQuestions' className={classes.textRight}>
+                  <IconButton
+                    color='primary'
+                    aria-label='Download'
+                    className={classes.buttonBg}
+                    onClick={() => this.export2Doc("answerDownload")}
+                  >
+                    <GetAppIcon />
+                  </IconButton>
+                </p>
+                <div id='answerDownload'>
+                  <h3 className={classes.subjectTitle}>Answers</h3>
+                  {this.renderAnswers()}
+                </div>
               </Grid>
             </CardContent>
           </CustomSmallPaper>
