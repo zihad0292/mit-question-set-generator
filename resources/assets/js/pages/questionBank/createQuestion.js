@@ -9,11 +9,13 @@ import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Icon from "@material-ui/core/Icon";
 import Checkbox from "@material-ui/core/Checkbox";
+import Switch from "@material-ui/core/Switch";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Divider from "@material-ui/core/Divider";
 import IndeterminateCheckBoxIcon from "@material-ui/icons/IndeterminateCheckBox";
 
+import AvroInput from "../../avro/AvroInput";
 import {
   addNewQuestion,
   editQuestion
@@ -74,6 +76,15 @@ const styles = theme => ({
   },
   capitalizeWord: {
     textTransform: "capitalize"
+  },
+  avroInputWrapper: {
+    position: "relative"
+  },
+  toggleButtonHolder: {
+    position: "absolute",
+    top: "10px",
+    zIndex: "100",
+    right: "2px"
   }
 });
 
@@ -84,6 +95,7 @@ class CreateQuestion extends Component {
       oldSubject: "",
       subject: "",
       question: "",
+      bn: true,
       options: [
         {
           option: "",
@@ -112,6 +124,8 @@ class CreateQuestion extends Component {
     );
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
     this.onSubjectSelect = this.onSubjectSelect.bind(this);
+    this.toggleInputLanguage = this.toggleInputLanguage.bind(this);
+    this.renderToggleButton = this.renderToggleButton.bind(this);
   }
 
   componentDidMount() {
@@ -159,15 +173,16 @@ class CreateQuestion extends Component {
     });
   }
 
-  handleQuestionChange(event) {
+  handleQuestionChange(question) {
     this.setState({
-      [event.target.name]: [event.target.value]
+      question: question
     });
   }
 
-  handleOptionChange(index, event) {
+  handleOptionChange(index, option) {
     let oldOptions = this.state.options;
-    oldOptions[index].option = event.target.value;
+    oldOptions[index].option = option;
+    console.log(oldOptions);
     this.setState({
       options: oldOptions
     });
@@ -216,6 +231,7 @@ class CreateQuestion extends Component {
       rearrange_locked
     } = this.state;
     const { type, selectedQuestion, addNewQuestion, editQuestion } = this.props;
+
     if (question.length > 0) {
       if (type == "edit") {
         editQuestion(
@@ -236,6 +252,32 @@ class CreateQuestion extends Component {
         );
       }
     }
+  }
+
+  toggleInputLanguage() {
+    this.setState({
+      bn: !this.state.bn
+    });
+  }
+
+  renderToggleButton() {
+    return (
+      <div className={this.props.classes.toggleButtonHolder}>
+        <FormGroup>
+          <FormControlLabel
+            control={
+              <Switch
+                color='primary'
+                checked={this.state.bn}
+                onChange={this.toggleInputLanguage}
+                value='bn'
+              />
+            }
+            label='BN'
+          />
+        </FormGroup>
+      </div>
+    );
   }
 
   render() {
@@ -271,17 +313,22 @@ class CreateQuestion extends Component {
             ) : (
               ""
             )}
-            <TextField
-              required
-              id={"option-" + index}
-              name={"option-" + index}
-              label='Option'
-              value={options[index].option}
-              margin='normal'
-              variant='outlined'
-              fullWidth
-              onChange={event => this.handleOptionChange(index, event)}
-            />
+
+            <div className={classes.avroInputWrapper}>
+              <AvroInput
+                required
+                id={"option-" + index}
+                name={"option-" + index}
+                label='Option'
+                value={options[index].option}
+                type='textarea'
+                placeholder='Option'
+                className='form-control avroInput'
+                rows='1'
+                bangla={this.state.bn}
+                onChange={option => this.handleOptionChange(index, option)}
+              />
+            </div>
           </Grid>
           <Grid item xs={2} className={classes.alignCenter}>
             <FormGroup>
@@ -341,19 +388,21 @@ class CreateQuestion extends Component {
                 )}
               </Grid>
               <Grid item xs={12}>
-                <TextField
-                  required
-                  id='question'
-                  name='question'
-                  label='Question'
-                  value={question}
-                  multiline={true}
-                  rows='3'
-                  margin='normal'
-                  variant='outlined'
-                  fullWidth
-                  onChange={this.handleQuestionChange}
-                />
+                <div className={classes.avroInputWrapper}>
+                  <AvroInput
+                    required
+                    id='question'
+                    name='question'
+                    type='textarea'
+                    placeholder='Question'
+                    value={question}
+                    className='form-control avroInput'
+                    rows='4'
+                    bangla={this.state.bn}
+                    onChange={question => this.handleQuestionChange(question)}
+                  />
+                  {this.renderToggleButton()}
+                </div>
               </Grid>
             </Grid>
             {optionsToPrint}

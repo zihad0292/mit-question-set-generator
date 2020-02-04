@@ -19,19 +19,31 @@ module.exports = {
         exclude: /node_modules/,
         loader: "babel-loader"
       },
+      // {
+      //   test: /\.scss$/,
+      //   use: [
+      //     {
+      //       loader: MiniCssExtractPlugin.loader
+      //     },
+      //     "sass-loader",
+      //     {
+      //       loader: "css-loader",
+      //       options: {
+      //         sourceMap: true,
+      //         modules: true
+      //       }
+      //     }
+      //   ]
+      // }
+
       {
-        test: /\.scss$/,
+        test: /\.s[ac]ss$/i,
         use: [
-          {
-            loader: MiniCssExtractPlugin.loader
-          },
-          {
-            loader: "css-loader",
-            options: {
-              sourceMap: true,
-              modules: true
-            }
-          },
+          // Creates `style` nodes from JS strings
+          "style-loader",
+          // Translates CSS into CommonJS
+          "css-loader",
+          // Compiles Sass to CSS
           "sass-loader"
         ]
       }

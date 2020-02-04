@@ -57,6 +57,16 @@ module.exports = {
     });
   },
 
+  count: function(params, response) {
+    QuestionSet.count(params, function(err, questionSetCount) {
+      if (err) {
+        response(err, null);
+      } else {
+        response(null, questionSetCount);
+      }
+    });
+  },
+
   findOne: function(params, response) {
     QuestionSet.findOne(params, function(err, question) {
       if (err) {

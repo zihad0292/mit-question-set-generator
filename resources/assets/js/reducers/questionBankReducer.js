@@ -1,13 +1,9 @@
 const initialState = {
   allQuestions: [],
   englishQuestions: [],
-  countEnglishQuestions: 0,
   mathQuestions: [],
-  countMathQuestions: 0,
   physicsQuestions: [],
-  countPhysicsQuestions: 0,
   chemistryQuestions: [],
-  countChemistryQuestions: 0,
   fetching: false,
   fetched: false,
   adding: false,

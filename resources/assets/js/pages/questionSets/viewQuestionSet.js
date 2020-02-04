@@ -186,10 +186,7 @@ export class viewQuestionSet extends Component {
             {subject.questions.map((question, idx) => {
               return (
                 <Grid item xs={12} key={index + 100}>
-                  <p
-                    className={classes.questionContainer}
-                    onClick={() => this.export2Doc("downloadQuestions")}
-                  >
+                  <p className={classes.questionContainer}>
                     {i++}.&nbsp;{question.question}
                   </p>
                   <p className={classes.optionsContainer}>
@@ -268,7 +265,9 @@ export class viewQuestionSet extends Component {
                     color='primary'
                     aria-label='Download'
                     className={classes.buttonBg}
-                    onClick={() => this.export2Doc("questionDownload")}
+                    onClick={() =>
+                      this.export2Doc("questionDownload", "questionSet")
+                    }
                   >
                     <GetAppIcon />
                   </IconButton>
@@ -287,7 +286,9 @@ export class viewQuestionSet extends Component {
                     color='primary'
                     aria-label='Download'
                     className={classes.buttonBg}
-                    onClick={() => this.export2Doc("answerDownload")}
+                    onClick={() =>
+                      this.export2Doc("answerDownload", "answerSheet")
+                    }
                   >
                     <GetAppIcon />
                   </IconButton>

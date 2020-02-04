@@ -75,14 +75,14 @@ class QuestionBank extends Component {
   }
 
   componentDidMount() {
-    // const { statFetched, allQuestionsCount, retrieveStats } = this.props;
+    // const { statFetched, countStat, retrieveStats } = this.props;
     // if (!statFetched) {
     //   retrieveStats();
     // }
   }
 
   render() {
-    const { classes, history, allQuestionsCount } = this.props;
+    const { classes, history, countStat } = this.props;
 
     return (
       <PageContainer maxWidth='lg'>
@@ -100,7 +100,7 @@ class QuestionBank extends Component {
           <Divider className={classes.root} />
         </Grid>
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={3}>
             <CustomSmallPaper
               className={`${classes.homeWidget} ${classes.alignItemsCenter}`}
               onClick={() =>
@@ -112,12 +112,14 @@ class QuestionBank extends Component {
                   English
                 </Typography>
                 <Typography variant='subtitle1'>
-                  {allQuestionsCount.english}
+                  {countStat.englishCount > 1
+                    ? `${countStat.englishCount} Questions`
+                    : `${countStat.englishCount} Question`}
                 </Typography>
               </CardContent>
             </CustomSmallPaper>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={3}>
             <CustomSmallPaper
               className={`${classes.homeWidget} ${classes.alignItemsCenter}`}
               onClick={() =>
@@ -129,12 +131,14 @@ class QuestionBank extends Component {
                   Math
                 </Typography>
                 <Typography variant='subtitle1'>
-                  {allQuestionsCount.math}
+                  {countStat.mathCount > 1
+                    ? `${countStat.mathCount} Questions`
+                    : `${countStat.mathCount} Question`}
                 </Typography>
               </CardContent>
             </CustomSmallPaper>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={3}>
             <CustomSmallPaper
               className={`${classes.homeWidget} ${classes.alignItemsCenter}`}
               onClick={() =>
@@ -146,12 +150,14 @@ class QuestionBank extends Component {
                   Physics
                 </Typography>
                 <Typography variant='subtitle1'>
-                  {allQuestionsCount.physics}
+                  {countStat.physicsCount > 1
+                    ? `${countStat.physicsCount} Questions`
+                    : `${countStat.physicsCount} Question`}
                 </Typography>
               </CardContent>
             </CustomSmallPaper>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={3}>
             <CustomSmallPaper
               className={`${classes.homeWidget} ${classes.alignItemsCenter}`}
               onClick={() =>
@@ -163,7 +169,9 @@ class QuestionBank extends Component {
                   Chemistry
                 </Typography>
                 <Typography variant='subtitle1'>
-                  {allQuestionsCount.chemistry}
+                  {countStat.chemistryCount > 1
+                    ? `${countStat.chemistryCount} Questions`
+                    : `${countStat.chemistryCount} Question`}
                 </Typography>
               </CardContent>
             </CustomSmallPaper>
@@ -177,7 +185,7 @@ class QuestionBank extends Component {
 function mapStateToProps(store) {
   return {
     statFetched: store.statsInfo.statFetched,
-    allQuestionsCount: store.statsInfo.allQuestionsCount
+    countStat: store.statsInfo.countStat
   };
 }
 

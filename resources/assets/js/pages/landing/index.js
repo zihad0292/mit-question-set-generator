@@ -18,13 +18,6 @@ import {
   WidgetTitle
 } from "../../components/utils";
 
-// import {
-//   fetchDBConfigList,
-//   setDBConfigToken
-// } from "../../actions/dbConfigActions";
-// import { fetchOfficeList } from "../../actions/officeActions";
-// import { fetchIndexRelationCount } from "../../actions/userActions";
-
 // Actions
 import { retrieveStats } from "../../actions/statsActions";
 
@@ -76,26 +69,14 @@ class Landing extends Component {
   }
 
   componentDidMount() {
-    // const {
-    //   offices,
-    //   dbConfigs,
-    //   totalIndex,
-    //   type,
-    //   office_id,
-    //   fetchOfficeList
-    // } = this.props;
-    // if (offices.length == 0) {
-    //   if (type == "admin") {
-    //     fetchOfficeList(office_id);
-    //   } else {
-    //     fetchOfficeList();
-    //   }
-    // }
+    const { statFetched, retrieveStats } = this.props;
+    if (!statFetched) {
+      retrieveStats();
+    }
   }
 
   render() {
-    const { classes, history } = this.props;
-
+    const { classes, history, countStat } = this.props;
     return (
       <PageContainer maxWidth='lg'>
         <Grid container spacing={3} className={classes.statFirstRow}>
@@ -122,7 +103,11 @@ class Landing extends Component {
                   <Typography variant='h4' color='primary'>
                     Question Sets
                   </Typography>
-                  <Typography variant='h5'>5 Sets available</Typography>
+                  <Typography variant='h5'>
+                    {countStat.questionSetCount > 1
+                      ? `${countStat.questionSetCount} Sets`
+                      : `${countStat.questionSetCount} Set`}
+                  </Typography>
                 </div>
               </CardContent>
             </CustomSmallPaper>
@@ -140,7 +125,11 @@ class Landing extends Component {
                 <Typography color='primary' variant='h5'>
                   English
                 </Typography>
-                <Typography variant='subtitle1'>54 Questions</Typography>
+                <Typography variant='subtitle1'>
+                  {countStat.englishCount > 1
+                    ? `${countStat.englishCount} Questions`
+                    : `${countStat.englishCount} Question`}
+                </Typography>
               </CardContent>
             </CustomSmallPaper>
           </Grid>
@@ -155,7 +144,11 @@ class Landing extends Component {
                 <Typography color='primary' variant='h5'>
                   Math
                 </Typography>
-                <Typography variant='subtitle1'>54 Questions</Typography>
+                <Typography variant='subtitle1'>
+                  {countStat.mathCount > 1
+                    ? `${countStat.mathCount} Questions`
+                    : `${countStat.mathCount} Question`}
+                </Typography>
               </CardContent>
             </CustomSmallPaper>
           </Grid>
@@ -170,7 +163,11 @@ class Landing extends Component {
                 <Typography color='primary' variant='h5'>
                   Physics
                 </Typography>
-                <Typography variant='subtitle1'>54 Questions</Typography>
+                <Typography variant='subtitle1'>
+                  {countStat.physicsCount > 1
+                    ? `${countStat.physicsCount} Questions`
+                    : `${countStat.physicsCount} Question`}
+                </Typography>
               </CardContent>
             </CustomSmallPaper>
           </Grid>
@@ -185,7 +182,11 @@ class Landing extends Component {
                 <Typography color='primary' variant='h5'>
                   Chemistry
                 </Typography>
-                <Typography variant='subtitle1'>54 Questions</Typography>
+                <Typography variant='subtitle1'>
+                  {countStat.chemistryCount > 1
+                    ? `${countStat.chemistryCount} Questions`
+                    : `${countStat.chemistryCount} Question`}
+                </Typography>
               </CardContent>
             </CustomSmallPaper>
           </Grid>
@@ -197,7 +198,8 @@ class Landing extends Component {
 
 function mapStateToProps(store) {
   return {
-    fetched: store.statsInfo.fetched
+    statFetched: store.statsInfo.statFetched,
+    countStat: store.statsInfo.countStat
   };
 }
 

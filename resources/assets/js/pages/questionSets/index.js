@@ -80,9 +80,10 @@ const styles = theme => ({
     margin: theme.spacing(0.5)
   },
   toolbarStyle: {
-    backgroundImage: "url('/images/index-relation-banner.png')",
+    backgroundImage: "url('/images/banner.jpg')",
     minHeight: 140,
-    backgroundSize: "cover"
+    backgroundSize: "cover",
+    backgroundPosition: "center"
   },
   buttonStyles: {
     padding: "8px 15px 6px",

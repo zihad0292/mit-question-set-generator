@@ -87,7 +87,11 @@ const styles = theme => ({
   optionsContainer: {
     fontSize: ".8em",
     lineHeight: "1.7",
-    marginTop: 0
+    marginTop: 0,
+    marginBottom: 0
+  },
+  singleOption: {
+    marginRight: "10px"
   },
   correctAnswer: {
     color: "green",
@@ -271,16 +275,14 @@ class QuestionBankCategory extends Component {
               {question.options.map((option, idx) => {
                 return (
                   <Fragment key={idx}>
-                    <span>
+                    <span className={classes.singleOption}>
                       {option.is_correct === true ? (
                         <DoneIcon className={classes.correctAnswer} />
                       ) : (
                         ""
                       )}
-                      ({numberToAlphabet(idx)})&nbsp;
-                      {option.option}
+                      ({numberToAlphabet(idx)}) {option.option}
                     </span>
-                    &nbsp; &nbsp; &nbsp;
                   </Fragment>
                 );
               })}

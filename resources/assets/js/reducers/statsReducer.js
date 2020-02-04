@@ -1,10 +1,5 @@
 const initialState = {
-  allQuestionsCount: {
-    english: 0,
-    math: 0,
-    physics: 0,
-    chemistry: 0
-  },
+  countStat: {},
   statFetching: false,
   statFetched: false,
   error: null,
@@ -25,7 +20,7 @@ export default function reducer(state = initialState, action) {
         statFetching: false,
         statFetched: true,
         error: null,
-        allQuestionsCount: action.payload,
+        countStat: action.payload,
         message: ""
       };
     case "QUESTION_COUNT_ERROR":

@@ -1,5 +1,6 @@
 import axios from "axios";
 import { fetchQuestions } from "./questionBankActions";
+import retrieveStats from "./statsActions";
 
 const baseUrl = "/api/question-set/";
 
@@ -46,6 +47,7 @@ export function generateQuestionSet(questionSetName, questionSet) {
             payload: d.message
           });
           dispatch(fetchQuestionSets());
+          dispatch(retrieveStats());
         } else {
           dispatch({ type: "FETCHING_QUESTION_SETS_FAILED", payload: d.error });
         }

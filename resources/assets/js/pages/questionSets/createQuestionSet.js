@@ -185,7 +185,6 @@ class CreateQuestionSet extends Component {
         };
       });
     }
-    console.log(finalArray);
     generateQuestionSet(questionSetName, JSON.stringify(finalArray));
   }
 

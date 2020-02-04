@@ -1,5 +1,6 @@
 import axios from "axios";
 import generateActionString from "./generateActionString";
+import retrieveStats from "./statsActions";
 
 const baseUrl = "/api/question-bank/";
 
@@ -45,6 +46,7 @@ export function addNewQuestion(subject, question, options, optionsReorder) {
             payload: d.message
           });
           dispatch(fetchQuestions(subject));
+          dispatch(retrieveStats());
         } else {
           dispatch({
             type: "QUESTION_ERROR",
