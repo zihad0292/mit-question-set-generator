@@ -169,7 +169,6 @@ class QuestionSet extends Component {
   }
 
   onDeleteClick(selectedIndex) {
-    console.log(selectedIndex);
     this.setState({
       selected: selectedIndex,
       confirm: true

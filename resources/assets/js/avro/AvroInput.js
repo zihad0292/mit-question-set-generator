@@ -4,8 +4,11 @@
 
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import axios from "axios";
 
 import avro from "./avro-lib";
+
+const AVRO_SUGGESTION_URL = "/api/avro-suggestion";
 
 class AvroInput extends Component {
   constructor(props) {
@@ -25,6 +28,10 @@ class AvroInput extends Component {
     this.handleBlurChange = this.handleBlurChange.bind(this);
     this.renderAvroSuggestion = this.renderAvroSuggestion.bind(this);
     this.updateSuggestionPos = this.updateSuggestionPos.bind(this);
+    this.setSuggestions = this.setSuggestions.bind(this);
+    this.fetchAvroSuggestion = this.fetchAvroSuggestion.bind(this);
+    this.hideSuggestions = this.hideSuggestions.bind(this);
+    this.onItemClickHandler = this.onItemClickHandler.bind(this);
   }
 
   componentDidMount() {
@@ -35,70 +42,83 @@ class AvroInput extends Component {
     this.updateSuggestionPos();
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.value !== this.props.value) {
+      this.setState({
+        value: nextProps.value
+      });
+    }
+  }
+
+  fetchAvroSuggestion() {
+    let { stack } = this.state;
+
+    if (stack.length > 2) {
+      axios
+        .get(`${AVRO_SUGGESTION_URL}?q=${stack}`)
+        .then(response => {
+          let d = response.data;
+          if (d.status === 200) {
+            let tempSuggestions = d.result.words;
+            let sliced = tempSuggestions.slice(0, 9);
+            sliced.push(stack);
+            this.setState({
+              suggestionList: sliced
+            });
+          }
+        })
+        .catch(error => {
+          console.log("URL Not Available");
+        });
+    }
+  }
+
   handleChange(event) {
     let currentVal = event.target.value;
     let tempSuggestions = this.state.suggestionList;
     tempSuggestions[0] = avro.parse(this.state.stack);
 
-    this.setState({
-      value: currentVal,
-      //suggestion: avro.parse(this.state.stack),
-      suggestionList: tempSuggestions
-    });
+    this.setState(
+      {
+        value: currentVal,
+        //suggestion: avro.parse(this.state.stack),
+        suggestionList: tempSuggestions
+      },
+      () => {
+        if (this.props.onChange) {
+          this.props.onChange(this.state.value);
+        }
+      }
+    );
 
     if (this.state.value === "") {
       this.updateSuggestionPos();
     }
   }
 
-  handleKeyPress(bangla, event) {
+  handleKeyPress(event) {
     let { stack, value, suggestionList, selectedIndex } = this.state;
-    if (bangla && !event.ctrlKey && !event.altKey) {
+
+    if (this.props.enabled && !event.ctrlKey && !event.altKey) {
       if (
         (event.keyCode >= 48 && event.keyCode <= 90) ||
         (event.keyCode >= 186 && event.keyCode <= 222)
       ) {
-        this.setState({
-          stack:
-            this.getCurrentStack(value, this.textInput.selectionStart) +
-            event.key
-        });
-      } else if (event.keyCode === 32 || event.keyCode === 13) {
-        let tempSelection = this.textInput.selectionStart;
-        let end = this.getStackRange(stack, value, tempSelection);
-
-        let finalVal = "";
-
-        if (stack.length > 0 && stack !== " ") {
-          let firstSection = value.substring(0, tempSelection);
-          let valWithoutStack = firstSection.slice(0, -stack.length);
-          let lastSection = value.substr(tempSelection, value.length);
-          finalVal =
-            valWithoutStack + suggestionList[selectedIndex] + lastSection;
-          end = valWithoutStack.length + suggestionList[selectedIndex].length;
-        } else {
-          finalVal = avro.parse(value);
-        }
-
-        let tempSuggestions = this.state.suggestionList;
-        tempSuggestions[0] = "";
-
         this.setState(
           {
-            value: finalVal,
-            stack: "",
-            selectedIndex: 0,
-            suggestionList: tempSuggestions
+            stack:
+              this.getCurrentStack(value, this.textInput.selectionStart) +
+              event.key
           },
-          () => {
-            this.textInput.selectionStart = this.textInput.selectionEnd = end;
-          }
+          () => this.fetchAvroSuggestion()
         );
-
-        this.updateSuggestionPos();
-        if (this.props.onChange) this.props.onChange(this.state.value);
-
-        if (event.keyCode === 13) event.preventDefault();
+      } else if (event.keyCode === 32 || event.keyCode === 13) {
+        if (stack.length > 0) {
+          this.setSuggestions();
+          if (event.keyCode === 13 && stack.length > 0) {
+            event.preventDefault();
+          }
+        }
       } else if (
         suggestionList.length > 1 &&
         (event.keyCode === 38 || event.keyCode === 40)
@@ -116,6 +136,7 @@ class AvroInput extends Component {
             this.setState({ selectedIndex: selectedIndex + 1 });
           }
         }
+        if (stack.length > 0) event.preventDefault();
       } else if (event.keyCode === 8) {
         this.setState({
           stack: stack.slice(0, -1)
@@ -127,6 +148,47 @@ class AvroInput extends Component {
   }
 
   handleBlurChange(event) {
+    setTimeout(this.hideSuggestions, 250);
+  }
+
+  setSuggestions() {
+    let { stack, value, suggestionList, selectedIndex } = this.state;
+
+    let tempSelection = this.textInput.selectionStart;
+    let end = this.getStackRange(stack, value, tempSelection);
+
+    let finalVal = "";
+
+    if (stack.length > 0 && stack !== " ") {
+      let firstSection = value.substring(0, tempSelection);
+      let valWithoutStack = firstSection.slice(0, -stack.length);
+      let lastSection = value.substr(tempSelection, value.length);
+      finalVal = valWithoutStack + suggestionList[selectedIndex] + lastSection;
+      end = valWithoutStack.length + suggestionList[selectedIndex].length;
+    } else {
+      finalVal = avro.parse(value);
+    }
+
+    let tempSuggestions = this.state.suggestionList;
+    tempSuggestions[0] = "";
+
+    this.setState(
+      {
+        value: finalVal,
+        stack: "",
+        selectedIndex: 0,
+        suggestionList: tempSuggestions
+      },
+      () => {
+        this.textInput.selectionStart = this.textInput.selectionEnd = end;
+        if (this.props.onChange) this.props.onChange(this.state.value);
+      }
+    );
+
+    this.updateSuggestionPos();
+  }
+
+  hideSuggestions() {
     let tempSuggestions = this.state.suggestionList;
     tempSuggestions[0] = "";
 
@@ -154,14 +216,25 @@ class AvroInput extends Component {
     }
   }
 
+  onItemClickHandler(item, index) {
+    this.setState(
+      {
+        selectedIndex: index
+      },
+      () => this.setSuggestions()
+    );
+  }
+
   updateSuggestionPos() {
     let { x, y } = getCursorXY(this.textInput, this.textInput.selectionStart);
-    let offsetY = -10;
+    let offsetY = 10;
+
     if (x > this.textInput.offsetWidth) x = this.textInput.offsetWidth;
     if (y > this.textInput.offsetHeight) y = this.textInput.offsetHeight;
+
     this.setState({
       suggestionLeft: x,
-      suggestionTop: offsetY
+      suggestionTop: y + this.textInput.offsetTop + offsetY
     });
   }
 
@@ -174,15 +247,23 @@ class AvroInput extends Component {
     } = this.state;
 
     let renderSuggestionList = () => {
-      return suggestionList.map((item, idx) => {
-        let itemStyle =
-          idx === selectedIndex ? styles.suggestionActiveStyle : {};
-        return (
-          <li key={idx} style={{ ...styles.suggestionListItem, ...itemStyle }}>
-            {item}
-          </li>
-        );
-      });
+      return suggestionList
+        .filter((item, idx) => {
+          if (idx < 10) return item;
+        })
+        .map((item, idx) => {
+          let itemStyle =
+            idx === selectedIndex ? styles.suggestionActiveStyle : {};
+          return (
+            <li
+              key={idx}
+              style={{ ...styles.suggestionListItem, ...itemStyle }}
+              onClick={() => this.onItemClickHandler(this, idx)}
+            >
+              {item}
+            </li>
+          );
+        });
     };
 
     if (suggestionList[0].length > 0) {
@@ -203,14 +284,14 @@ class AvroInput extends Component {
 
   render() {
     let input;
-    let { suggestionStyle, bangla, ...othersProp } = this.props;
+    let { suggestionStyle, enabled, ...othersProp } = this.props;
     if (othersProp.type === "textarea") {
       input = (
         <textarea
           {...othersProp}
           value={this.state.value}
           placeholder={othersProp.placeholder}
-          onKeyDown={e => this.handleKeyPress(this.props.bangla, e)}
+          onKeyDown={this.handleKeyPress}
           onChange={this.handleChange}
           ref={input => {
             this.textInput = input;
@@ -240,7 +321,7 @@ class AvroInput extends Component {
       <div style={styles.inputHolder}>
         {input}
         <br />
-        {this.props.bangla && this.renderAvroSuggestion()}
+        {this.renderAvroSuggestion()}
       </div>
     );
   }
@@ -249,8 +330,8 @@ class AvroInput extends Component {
 AvroInput.propTypes = {
   type: PropTypes.oneOf(["text", "textarea"]),
   placeholder: PropTypes.string,
+  enabled: PropTypes.bool,
   value: PropTypes.string,
-  bangla: PropTypes.bool,
   onChange: PropTypes.func,
   style: PropTypes.object,
   suggestionStyle: PropTypes.object
@@ -265,6 +346,10 @@ AvroInput.defaultProps = {
 };
 
 const styles = {
+  inputHolder: {
+    position: "relative",
+    overflow: "visible"
+  },
   inputStyle: {
     width: "100%",
     overflow: "hidden",
@@ -283,8 +368,10 @@ const styles = {
     position: "absolute",
     background: "#efefef",
     padding: "0",
+    marginTop: "13px",
     fontSize: "13px",
-    zIndex: 1001
+    zIndex: 1001,
+    boxShadow: "0 0 2px rgba(0,0,0,.2)"
   },
   suggestionListStyle: {
     listStyle: "none",
@@ -293,10 +380,13 @@ const styles = {
   },
   suggestionListItem: {
     textAlign: "left",
-    padding: "5px 8px"
+    padding: "5px 15px",
+    fontSize: "14px",
+    cursor: "pointer"
   },
   suggestionActiveStyle: {
-    background: "#ffa544"
+    background: "#8cc152",
+    color: "#ffffff"
   }
 };
 

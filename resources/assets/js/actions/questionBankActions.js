@@ -1,6 +1,6 @@
 import axios from "axios";
 import generateActionString from "./generateActionString";
-import retrieveStats from "./statsActions";
+import { retrieveStats } from "./statsActions";
 
 const baseUrl = "/api/question-bank/";
 
@@ -96,7 +96,6 @@ export function editQuestion(
 }
 
 export function deleteQuestion(id, subject) {
-  console.log(id, subject);
   return function(dispatch) {
     dispatch({ type: "DELETE_QUESTION" });
 
@@ -111,6 +110,7 @@ export function deleteQuestion(id, subject) {
             payload: d.message
           });
           dispatch(fetchQuestions(subject));
+          dispatch(retrieveStats());
         } else {
           dispatch({
             type: "QUESTION_ERROR",

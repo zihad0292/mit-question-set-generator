@@ -1,6 +1,6 @@
 import axios from "axios";
 import { fetchQuestions } from "./questionBankActions";
-import retrieveStats from "./statsActions";
+import { retrieveStats } from "./statsActions";
 
 const baseUrl = "/api/question-set/";
 
@@ -30,7 +30,6 @@ export function fetchQuestionSets() {
 }
 
 export function generateQuestionSet(questionSetName, questionSet) {
-  console.log("Generating new question set");
   return function(dispatch) {
     dispatch({ type: "GENERATING_QUESTION_SET" });
 
@@ -87,7 +86,6 @@ export function fetchQuestionSet(id) {
 }
 export function deleteQuestionSet(id) {
   return function(dispatch) {
-    console.log("Delete question set");
     dispatch({ type: "DELETE_QUESTION_SET" });
 
     axios
@@ -101,6 +99,7 @@ export function deleteQuestionSet(id) {
             payload: d.message
           });
           dispatch(fetchQuestionSets());
+          dispatch(retrieveStats());
         } else {
           dispatch({ type: "FETCHING_QUESTION_SETS_FAILED", payload: d.error });
         }

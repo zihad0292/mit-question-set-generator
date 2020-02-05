@@ -182,7 +182,6 @@ class CreateQuestion extends Component {
   handleOptionChange(index, option) {
     let oldOptions = this.state.options;
     oldOptions[index].option = option;
-    console.log(oldOptions);
     this.setState({
       options: oldOptions
     });
@@ -325,7 +324,7 @@ class CreateQuestion extends Component {
                 placeholder='Option'
                 className='form-control avroInput'
                 rows='1'
-                bangla={this.state.bn}
+                enabled={this.state.bn}
                 onChange={option => this.handleOptionChange(index, option)}
               />
             </div>
@@ -398,7 +397,7 @@ class CreateQuestion extends Component {
                     value={question}
                     className='form-control avroInput'
                     rows='4'
-                    bangla={this.state.bn}
+                    enabled={this.state.bn}
                     onChange={question => this.handleQuestionChange(question)}
                   />
                   {this.renderToggleButton()}
