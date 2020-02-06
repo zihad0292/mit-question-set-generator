@@ -82,6 +82,7 @@ export function editQuestion(
             payload: d.message
           });
           dispatch(fetchQuestions(subject));
+          dispatch(retrieveStats());
           if (subject !== oldSubject) {
             dispatch(fetchQuestions(oldSubject));
           }
