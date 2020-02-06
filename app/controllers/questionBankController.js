@@ -105,7 +105,7 @@ module.exports = {
       subject: query.subject,
       question: query.question,
       options: JSON.parse(query.options),
-      rearrange_locked: query.rearrange_locked
+      optionsReorder: query.optionsReorder
     };
 
     var response = {
@@ -140,7 +140,7 @@ module.exports = {
       question: query.question,
       subject: query.subject,
       options: JSON.parse(query.options),
-      rearrange_locked: query.rearrange_locked
+      optionsReorder: query.optionsReorder
     };
 
     QuestionBank.update(query.id, params, function(err, success) {

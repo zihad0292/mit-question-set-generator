@@ -110,7 +110,7 @@ class CreateQuestion extends Component {
           is_correct: false
         }
       ],
-      rearrange_locked: true,
+      optionsReorder: true,
       optionsCount: 3
     };
     this.populateStateVal = this.populateStateVal.bind(this);
@@ -146,7 +146,7 @@ class CreateQuestion extends Component {
       subject: selectedQuestion.subject,
       question: selectedQuestion.question,
       options: selectedQuestion.options,
-      rearrange_locked: selectedQuestion.rearrange_locked,
+      optionsReorder: selectedQuestion.optionsReorder,
       optionsCount: selectedQuestion.options.length
     });
   }
@@ -196,8 +196,9 @@ class CreateQuestion extends Component {
   }
 
   handleCheckboxChange(event) {
+    console.log("object");
     this.setState({
-      [event.target.name]: !this.state.rearrange_locked
+      optionsReorder: !this.state.optionsReorder
     });
   }
   handleAddOption() {
@@ -227,7 +228,7 @@ class CreateQuestion extends Component {
       options,
       subject,
       oldSubject,
-      rearrange_locked
+      optionsReorder
     } = this.state;
     const { type, selectedQuestion, addNewQuestion, editQuestion } = this.props;
 
@@ -239,7 +240,7 @@ class CreateQuestion extends Component {
           oldSubject,
           question,
           JSON.stringify(options),
-          rearrange_locked
+          optionsReorder
         );
         this.props.onEditClose();
       } else {
@@ -247,7 +248,7 @@ class CreateQuestion extends Component {
           subject,
           question,
           JSON.stringify(options),
-          rearrange_locked
+          optionsReorder
         );
       }
     }
@@ -285,7 +286,7 @@ class CreateQuestion extends Component {
       subject,
       question,
       options,
-      rearrange_locked,
+      optionsReorder,
       optionsCount
     } = this.state;
 
@@ -412,10 +413,10 @@ class CreateQuestion extends Component {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        name='rearrange_locked'
-                        checked={rearrange_locked}
+                        name='optionsReorder'
+                        checked={optionsReorder}
                         onChange={this.handleCheckboxChange}
-                        value={rearrange_locked}
+                        value={optionsReorder}
                       />
                     }
                     label='Options can be rearranged when question set is generated?'
