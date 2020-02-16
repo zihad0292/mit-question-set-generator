@@ -20,6 +20,9 @@ import {
   addNewQuestion,
   editQuestion
 } from "../../actions/questionBankActions";
+
+import { fetchSubjectList } from "../../actions/subjectActions";
+
 import {
   PageContainer,
   CustomSmallPaper,
@@ -129,7 +132,12 @@ class CreateQuestion extends Component {
   }
 
   componentDidMount() {
-    const { type, history } = this.props;
+    const { type, subjects, history } = this.props;
+
+    if (subjects.length === 0) {
+      this.props.fetchSubjectList();
+    }
+
     if (type == "edit") {
       this.populateStateVal();
     } else {
@@ -281,7 +289,7 @@ class CreateQuestion extends Component {
   }
 
   render() {
-    const { classes, type } = this.props;
+    const { classes, type, subjects } = this.props;
     const {
       subject,
       question,
@@ -290,12 +298,12 @@ class CreateQuestion extends Component {
       optionsCount
     } = this.state;
 
-    const subjectList = [
-      { value: "english", label: "english" },
-      { value: "math", label: "math" },
-      { value: "physics", label: "physics" },
-      { value: "chemistry", label: "chemistry" }
-    ];
+    const subjectList = subjects.map(subject => {
+      return {
+        value: subject.subject,
+        label: subject.subject
+      };
+    });
 
     var selectedSubj = { value: `${subject}`, label: `${subject}` };
 
@@ -466,6 +474,7 @@ CreateQuestion.propTypes = {
 
 function mapStateToProps(store) {
   return {
+    subjects: store.subjectsInfo.subjects,
     added: store.questionBankInfo.added,
     adding: store.questionBankInfo.adding,
     updating: store.questionBankInfo.updating,
@@ -474,7 +483,10 @@ function mapStateToProps(store) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ addNewQuestion, editQuestion }, dispatch);
+  return bindActionCreators(
+    { addNewQuestion, editQuestion, fetchSubjectList },
+    dispatch
+  );
 }
 
 export default connect(

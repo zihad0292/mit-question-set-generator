@@ -14,6 +14,7 @@ import Sidebar from "./components/sidebar";
 
 // Page components
 import Landing from "./pages/landing";
+import AllSubjects from "./pages/subjects/";
 import QuestionBank from "./pages/questionBank/";
 import QuestionBankCategory from "./pages/questionBank/category";
 import CreateQuestion from "./pages/questionBank/createQuestion";
@@ -97,6 +98,16 @@ class Layout extends Component {
               path='/dashboard/question-bank/allsubjects'
               component={QuestionBank}
             />
+            <Route
+              exact
+              path='/dashboard/allsubjects'
+              component={AllSubjects}
+            />
+            {/* <Route
+              exact
+              path='/dashboard/base-questions'
+              component={BaseQuestions}
+            /> */}
             <Route
               path='/dashboard/question-bank/allsubjects/:subject'
               component={QuestionBankCategory}

@@ -113,9 +113,12 @@ class CreateQuestionSet extends Component {
   }
 
   handleCheckboxChange(event) {
-    this.setState({
-      [event.target.name]: event.target.checked
-    });
+    this.setState(
+      {
+        [event.target.name]: event.target.checked
+      },
+      () => console.log(this.state)
+    );
   }
 
   handleChange(event) {
@@ -185,13 +188,14 @@ class CreateQuestionSet extends Component {
         };
       });
     }
+    console.log(JSON.stringify(finalArray));
     generateQuestionSet(questionSetName, JSON.stringify(finalArray));
   }
 
   render() {
     const { classes, generating, updating, type } = this.props;
     const { questionSetName, optionsReorder, subjectsReorder } = this.state;
-
+    console.log(this.props.englishQuestions);
     return (
       <PageContainer maxWidth='lg'>
         <Grid container spacing={3} className={classes.titleRow}>

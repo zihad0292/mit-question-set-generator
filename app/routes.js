@@ -5,6 +5,12 @@ var routes = express.Router();
 
 var questionBankController = require("./controllers/questionBankController");
 var questionSetController = require("./controllers/questionSetController");
+var subjectsController = require("./controllers/subjectsController");
+
+// Subjects CRUD
+routes.get("/subjects/list", subjectsController.getAllSubjects);
+routes.post("/subjects/create", subjectsController.createSubject);
+routes.delete("/subjects/delete", subjectsController.deleteSubject);
 
 // Question Bank CRUD
 routes.get("/question-bank/list", questionBankController.getAllQuestions);

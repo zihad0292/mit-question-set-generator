@@ -64,8 +64,18 @@ const Pages = [
     icon: "home"
   },
   {
+    title: "Subjects",
+    url: "/allsubjects",
+    icon: "collections_icon"
+  },
+  {
     title: "Question Bank",
     url: "/question-bank/allsubjects",
+    icon: "collections_icon"
+  },
+  {
+    title: "Base Questions",
+    url: "/base-questions",
     icon: "collections_icon"
   },
   {
