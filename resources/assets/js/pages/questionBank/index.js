@@ -27,6 +27,7 @@ import {
 
 // Actions
 import { retrieveStats } from "../../actions/statsActions";
+import { fetchSubjectList } from "../../actions/subjectActions";
 
 const styles = theme => ({
   root: {
@@ -75,14 +76,14 @@ class QuestionBank extends Component {
   }
 
   componentDidMount() {
-    // const { statFetched, countStat, retrieveStats } = this.props;
-    // if (!statFetched) {
-    //   retrieveStats();
-    // }
+    const { statFetched, countStat, subjects } = this.props;
+    if (subjects.length === 0) {
+      this.props.fetchSubjectList();
+    }
   }
 
   render() {
-    const { classes, history, countStat } = this.props;
+    const { classes, history, countStat, subjects } = this.props;
 
     return (
       <PageContainer maxWidth='lg'>
@@ -100,82 +101,31 @@ class QuestionBank extends Component {
           <Divider className={classes.root} />
         </Grid>
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={3}>
-            <CustomSmallPaper
-              className={`${classes.homeWidget} ${classes.alignItemsCenter}`}
-              onClick={() =>
-                history.push("/dashboard/question-bank/allsubjects/english")
-              }
-            >
-              <CardContent className={classes.cardContent}>
-                <Typography color='primary' variant='h5'>
-                  English
-                </Typography>
-                <Typography variant='subtitle1'>
+          {subjects.map(subject => {
+            return (
+              <Grid item xs={12} sm={3} key={subject._id}>
+                <CustomSmallPaper
+                  className={`${classes.homeWidget} ${classes.alignItemsCenter}`}
+                  onClick={() =>
+                    history.push(
+                      `/dashboard/question-bank/allsubjects/${subject.subject}`
+                    )
+                  }
+                >
+                  <CardContent className={classes.cardContent}>
+                    <Typography color='primary' variant='h5'>
+                      {subject.subject}
+                    </Typography>
+                    {/* <Typography variant='subtitle1'>
                   {countStat.englishCount > 1
                     ? `${countStat.englishCount} Questions`
                     : `${countStat.englishCount} Question`}
-                </Typography>
-              </CardContent>
-            </CustomSmallPaper>
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <CustomSmallPaper
-              className={`${classes.homeWidget} ${classes.alignItemsCenter}`}
-              onClick={() =>
-                history.push("/dashboard/question-bank/allsubjects/math")
-              }
-            >
-              <CardContent className={classes.cardContent}>
-                <Typography color='primary' variant='h5'>
-                  Math
-                </Typography>
-                <Typography variant='subtitle1'>
-                  {countStat.mathCount > 1
-                    ? `${countStat.mathCount} Questions`
-                    : `${countStat.mathCount} Question`}
-                </Typography>
-              </CardContent>
-            </CustomSmallPaper>
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <CustomSmallPaper
-              className={`${classes.homeWidget} ${classes.alignItemsCenter}`}
-              onClick={() =>
-                history.push("/dashboard/question-bank/allsubjects/physics")
-              }
-            >
-              <CardContent className={classes.cardContent}>
-                <Typography color='primary' variant='h5'>
-                  Physics
-                </Typography>
-                <Typography variant='subtitle1'>
-                  {countStat.physicsCount > 1
-                    ? `${countStat.physicsCount} Questions`
-                    : `${countStat.physicsCount} Question`}
-                </Typography>
-              </CardContent>
-            </CustomSmallPaper>
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <CustomSmallPaper
-              className={`${classes.homeWidget} ${classes.alignItemsCenter}`}
-              onClick={() =>
-                history.push("/dashboard/question-bank/allsubjects/chemistry")
-              }
-            >
-              <CardContent className={classes.cardContent}>
-                <Typography color='primary' variant='h5'>
-                  Chemistry
-                </Typography>
-                <Typography variant='subtitle1'>
-                  {countStat.chemistryCount > 1
-                    ? `${countStat.chemistryCount} Questions`
-                    : `${countStat.chemistryCount} Question`}
-                </Typography>
-              </CardContent>
-            </CustomSmallPaper>
-          </Grid>
+                </Typography> */}
+                  </CardContent>
+                </CustomSmallPaper>
+              </Grid>
+            );
+          })}
         </Grid>
       </PageContainer>
     );
@@ -184,13 +134,14 @@ class QuestionBank extends Component {
 
 function mapStateToProps(store) {
   return {
+    subjects: store.subjectsInfo.subjects,
     statFetched: store.statsInfo.statFetched,
     countStat: store.statsInfo.countStat
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ retrieveStats }, dispatch);
+  return bindActionCreators({ retrieveStats, fetchSubjectList }, dispatch);
 }
 
 export default connect(

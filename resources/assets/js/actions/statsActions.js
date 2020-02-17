@@ -6,12 +6,36 @@ export function retrieveStats() {
   return function(dispatch) {
     dispatch({ type: "FETCHING_QUESTIONS_COUNT" });
     axios
-      .get(`${baseUrl}stats`)
+      .get(`${baseUrl}/stats`)
       .then(response => {
         const d = response.data;
         if (d.success) {
+          console.log("FETCHING_ALL_QUESTIONS_COUNT_FULFILLED");
           dispatch({
             type: "FETCHING_ALL_QUESTIONS_COUNT_FULFILLED",
+            payload: d.results
+          });
+        } else {
+          dispatch({ type: "QUESTION_COUNT_ERROR", payload: d.error });
+        }
+      })
+      .catch(err => {
+        dispatch({ type: "QUESTION_COUNT_ERROR", payload: err });
+      });
+  };
+}
+
+export function retrieveQuestionSetStats() {
+  return function(dispatch) {
+    dispatch({ type: "FETCHING_QUESTIONS_COUNT" });
+    axios
+      .get("/api/question-set/stats/")
+      .then(response => {
+        const d = response.data;
+        if (d.success) {
+          console.log("FETCHING_QUESTION_SET_COUNT_FULFILLED");
+          dispatch({
+            type: "FETCHING_QUESTION_SET_COUNT_FULFILLED",
             payload: d.results
           });
         } else {

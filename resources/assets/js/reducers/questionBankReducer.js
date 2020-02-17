@@ -33,40 +33,15 @@ export default function reducer(state = initialState, action) {
         allQuestions: action.payload.questions,
         message: ""
       };
-    case "FETCHING_ENGLISH_QUESTIONS_FULFILLED":
+    case "FETCHING_QUESTIONS_FULFILLED":
+      let tempQuestions = { ...state.allQuestions };
+      tempQuestions.push(action.payload);
       return {
         ...state,
         fetching: false,
         fetched: true,
         error: null,
-        englishQuestions: action.payload,
-        message: ""
-      };
-    case "FETCHING_MATH_QUESTIONS_FULFILLED":
-      return {
-        ...state,
-        fetching: false,
-        fetched: true,
-        error: null,
-        mathQuestions: action.payload,
-        message: ""
-      };
-    case "FETCHING_PHYSICS_QUESTIONS_FULFILLED":
-      return {
-        ...state,
-        fetching: false,
-        fetched: true,
-        error: null,
-        physicsQuestions: action.payload,
-        message: ""
-      };
-    case "FETCHING_CHEMISTRY_QUESTIONS_FULFILLED":
-      return {
-        ...state,
-        fetching: false,
-        fetched: true,
-        error: null,
-        chemistryQuestions: action.payload,
+        allQuestions: tempQuestions,
         message: ""
       };
     case "QUESTION_ERROR":

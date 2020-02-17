@@ -65,7 +65,7 @@ const Pages = [
   },
   {
     title: "Subjects",
-    url: "/allsubjects",
+    url: "/subjects",
     icon: "collections_icon"
   },
   {

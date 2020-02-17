@@ -4,7 +4,6 @@ var Async = require("async");
 
 var url = require("url");
 var QuestionBank = require("../models/questionBank");
-var QuestionSet = require("../models/questionSet");
 
 module.exports = {
   getAllQuestions: function(req, res) {
@@ -23,7 +22,7 @@ module.exports = {
         response.status = 401;
         response.error = err;
       } else {
-        response.results = result;
+        response.results = { subject: query.subject, results: result };
       }
 
       res.json(response);
@@ -36,63 +35,27 @@ module.exports = {
     }
   },
   countQuestions: function(req, res) {
+    var url_parts = url.parse(req.url, true);
+    var query = url_parts.query;
+
+    console.log(query);
     var response = {
       success: true,
       status: 200
     };
 
-    // QuestionBank.count({ subject: "english" }, cb);
-    var countObject = {
-      englishCount: function(callback) {
-        QuestionBank.count({ subject: "english" }, function(err, data) {
-          // if there is an error retrieving, send the error. nothing after res.send(err) will execute
-          if (err) return callback(err);
-
-          callback(null, data);
-        });
-      },
-      mathCount: function(callback) {
-        QuestionBank.count({ subject: "math" }, function(err, data) {
-          // if there is an error retrieving, send the error. nothing after res.send(err) will execute
-          if (err) return callback(err);
-
-          callback(null, data);
-        });
-      },
-      physicsCount: function(callback) {
-        QuestionBank.count({ subject: "physics" }, function(err, data) {
-          // if there is an error retrieving, send the error. nothing after res.send(err) will execute
-          if (err) return callback(err);
-
-          callback(null, data);
-        });
-      },
-      chemistryCount: function(callback) {
-        QuestionBank.count({ subject: "chemistry" }, function(err, data) {
-          // if there is an error retrieving, send the error. nothing after res.send(err) will execute
-          if (err) return callback(err);
-
-          callback(null, data);
-        });
-      },
-      questionSetCount: function(callback) {
-        QuestionSet.count({}, function(err, data) {
-          // if there is an error retrieving, send the error. nothing after res.send(err) will execute
-          if (err) return callback(err);
-
-          callback(null, data);
-        });
-      }
-    };
-
-    Async.parallel(countObject, function(err, results) {
+    QuestionBank.count({}, function(err, result) {
       if (err) {
+        //next(err);
+        console.log("error from question bank  controller for stat count");
         response.success = false;
         response.status = 401;
         response.error = err;
       } else {
-        response.results = results;
+        console.log("no error  from question bank  controller for stat count");
+        response.results = { subject: query.subject, results: result };
       }
+
       res.json(response);
     });
   },

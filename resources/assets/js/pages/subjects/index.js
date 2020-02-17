@@ -14,6 +14,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import MaterialTable, { MTableToolbar } from "material-table";
 import { MessagePopUp } from "../../components/messagePopUps";
+import Divider from "@material-ui/core/Divider";
 
 import { fetchSubjectList, deleteSubject } from "../../actions/subjectActions";
 import {
@@ -27,6 +28,9 @@ import {
 import AddNewForm from "./addNewForm";
 
 const styles = theme => ({
+  root: {
+    width: "100%"
+  },
   tableTitle: {
     margin: theme.spacing(2),
     marginBottom: theme.spacing(1)
@@ -212,10 +216,17 @@ class AllSubjects extends Component {
       <PageContainer maxWidth='lg'>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={8} className={classes.relativeContainer}>
-            <WidgetTitle>All Subjects</WidgetTitle>
+            <Typography
+              variant='h4'
+              color='textPrimary'
+              className={classes.subjectTitle}
+            >
+              All Subjects
+            </Typography>
             {this.renderSubjectsTable()}
             <FullBodyLoader active={fetching || deleting} />
           </Grid>
+          <Divider className={classes.root} />
           <Grid item xs={12} sm={4}>
             <WidgetTitle>Add New Subject</WidgetTitle>
             <AddNewForm />

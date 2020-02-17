@@ -1,12 +1,9 @@
 import axios from "axios";
-import generateActionString from "./generateActionString";
 import { retrieveStats } from "./statsActions";
 
 const baseUrl = "/api/question-bank/";
 
 export function fetchQuestions(subject) {
-  const ACTION_STRING = generateActionString(subject);
-
   return function(dispatch) {
     dispatch({ type: "FETCHING_QUESTIONS" });
 
@@ -16,7 +13,7 @@ export function fetchQuestions(subject) {
         const d = resp.data;
         if (d.success) {
           dispatch({
-            type: ACTION_STRING,
+            type: "FETCHING_QUESTIONS_FULFILLED",
             payload: d.results
           });
         } else {

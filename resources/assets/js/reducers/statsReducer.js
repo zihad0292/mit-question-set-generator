@@ -1,5 +1,6 @@
 const initialState = {
-  countStat: {},
+  countStat: null,
+  countSetStat: null,
   statFetching: false,
   statFetched: false,
   error: null,
@@ -21,6 +22,23 @@ export default function reducer(state = initialState, action) {
         statFetched: true,
         error: null,
         countStat: action.payload,
+        message: ""
+      };
+
+    case "FETCHING_QUESTION_SET_COUNT":
+      return {
+        ...state,
+        statFetching: true,
+        statFetched: false
+      };
+
+    case "FETCHING_QUESTION_SET_COUNT_FULFILLED":
+      return {
+        ...state,
+        statFetching: false,
+        statFetched: true,
+        error: null,
+        countSetStat: action.payload,
         message: ""
       };
     case "QUESTION_COUNT_ERROR":

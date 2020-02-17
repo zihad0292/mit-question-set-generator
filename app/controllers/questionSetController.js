@@ -47,6 +47,29 @@ module.exports = {
     });
   },
 
+  countQuestionSet: function(req, res) {
+    var url_parts = url.parse(req.url, true);
+    var query = url_parts.query;
+
+    var response = {
+      success: true,
+      status: 200
+    };
+
+    QuestionSet.count({}, function(err, result) {
+      if (err) {
+        //next(err);
+        response.success = false;
+        response.status = 401;
+        response.error = err;
+      } else {
+        response.results = result;
+      }
+
+      res.json(response);
+    });
+  },
+
   findQuestionSet: function(req, res) {
     var url_parts = url.parse(req.url, true);
     var query = url_parts.query;

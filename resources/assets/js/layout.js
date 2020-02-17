@@ -24,7 +24,11 @@ import CreateQuestionSet from "./pages/questionSets/createQuestionSet";
 import NotFound from "./pages/notfound";
 
 // Actions
-import { retrieveStats } from "./actions/statsActions";
+import { fetchSubjectList } from "./actions/subjectActions";
+import {
+  retrieveStats,
+  retrieveQuestionSetStats
+} from "./actions/statsActions";
 
 const styles = theme => ({
   toolbar: theme.mixins.toolbar,
@@ -38,9 +42,20 @@ class Layout extends Component {
     super(props);
 
     this.state = {
-      fetching: true,
+      // fetching: true,
       openMenu: true
     };
+  }
+
+  componentDidMount() {
+    const { statFetched, retrieveStats, subjects } = this.props;
+    if (subjects.length === 0) {
+      console.log("once");
+      this.props.fetchSubjectList();
+    }
+    retrieveStats();
+    retrieveQuestionSetStats();
+    console.log(subjects);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -52,18 +67,6 @@ class Layout extends Component {
       });
     }
   }
-
-  componentDidMount() {
-    const { statFetched, retrieveStats } = this.props;
-    if (!statFetched) {
-      retrieveStats();
-    } else {
-      this.setState({
-        fetching: false
-      });
-    }
-  }
-
   render() {
     const { fetching, openMenu } = this.state;
     const { classes } = this.props;
@@ -98,11 +101,7 @@ class Layout extends Component {
               path='/dashboard/question-bank/allsubjects'
               component={QuestionBank}
             />
-            <Route
-              exact
-              path='/dashboard/allsubjects'
-              component={AllSubjects}
-            />
+            <Route exact path='/dashboard/subjects' component={AllSubjects} />
             {/* <Route
               exact
               path='/dashboard/base-questions'
@@ -139,12 +138,16 @@ class Layout extends Component {
 
 function mapStateToProps(store) {
   return {
+    subjects: store.subjectsInfo.subjects,
     statFetched: store.statsInfo.statFetched
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ retrieveStats }, dispatch);
+  return bindActionCreators(
+    { retrieveStats, retrieveQuestionSetStats, fetchSubjectList },
+    dispatch
+  );
 }
 
 export default connect(

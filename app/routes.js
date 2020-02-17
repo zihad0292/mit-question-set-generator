@@ -17,13 +17,14 @@ routes.get("/question-bank/list", questionBankController.getAllQuestions);
 routes.post("/question-bank/create", questionBankController.createQuestion);
 routes.post("/question-bank/edit", questionBankController.updateQuestion);
 routes.delete("/question-bank/delete", questionBankController.deleteQuestion);
-routes.get("/question-bank/stats", questionBankController.countQuestions);
+routes.get("/question-bank/stats/", questionBankController.countQuestions);
 
 // Question Set CRUD
 routes.get("/question-set/list", questionSetController.getAllQuestionSets);
 routes.get("/question-set/questionset", questionSetController.findQuestionSet);
 routes.post("/question-set/generate", questionSetController.createQuestionSet);
 routes.delete("/question-set/delete", questionSetController.deleteQuestionSet);
+routes.get("/question-set/stats/", questionSetController.countQuestionSet);
 
 // Stat
 // routes.get("/stats", console.log("Retrieving stat from backend"));

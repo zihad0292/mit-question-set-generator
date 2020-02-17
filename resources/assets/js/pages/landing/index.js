@@ -19,7 +19,11 @@ import {
 } from "../../components/utils";
 
 // Actions
-import { retrieveStats } from "../../actions/statsActions";
+import { fetchSubjectList } from "../../actions/subjectActions";
+import {
+  retrieveStats,
+  retrieveQuestionSetStats
+} from "../../actions/statsActions";
 
 const styles = theme => ({
   root: {
@@ -69,14 +73,17 @@ class Landing extends Component {
   }
 
   componentDidMount() {
-    const { statFetched, retrieveStats } = this.props;
-    if (!statFetched) {
-      retrieveStats();
+    const { statFetched, retrieveStats, subjects } = this.props;
+    if (subjects.length === 0) {
+      console.log("again");
+      this.props.fetchSubjectList();
     }
+    retrieveStats();
+    retrieveQuestionSetStats();
   }
 
   render() {
-    const { classes, history, countStat } = this.props;
+    const { classes, history, countSetStat } = this.props;
     return (
       <PageContainer maxWidth='lg'>
         <Grid container spacing={3} className={classes.statFirstRow}>
@@ -104,9 +111,9 @@ class Landing extends Component {
                     Question Sets
                   </Typography>
                   <Typography variant='h5'>
-                    {countStat.questionSetCount > 1
-                      ? `${countStat.questionSetCount} Sets`
-                      : `${countStat.questionSetCount} Set`}
+                    {countSetStat > 1
+                      ? `${countSetStat} Sets`
+                      : `${countSetStat} Set`}
                   </Typography>
                 </div>
               </CardContent>
@@ -126,9 +133,9 @@ class Landing extends Component {
                   English
                 </Typography>
                 <Typography variant='subtitle1'>
-                  {countStat.englishCount > 1
-                    ? `${countStat.englishCount} Questions`
-                    : `${countStat.englishCount} Question`}
+                  {countSetStat > 1
+                    ? `${countSetStat} Questions`
+                    : `${countSetStat} Question`}
                 </Typography>
               </CardContent>
             </CustomSmallPaper>
@@ -145,9 +152,9 @@ class Landing extends Component {
                   Math
                 </Typography>
                 <Typography variant='subtitle1'>
-                  {countStat.mathCount > 1
-                    ? `${countStat.mathCount} Questions`
-                    : `${countStat.mathCount} Question`}
+                  {countSetStat > 1
+                    ? `${countSetStat} Questions`
+                    : `${countSetStat} Question`}
                 </Typography>
               </CardContent>
             </CustomSmallPaper>
@@ -164,9 +171,9 @@ class Landing extends Component {
                   Physics
                 </Typography>
                 <Typography variant='subtitle1'>
-                  {countStat.physicsCount > 1
-                    ? `${countStat.physicsCount} Questions`
-                    : `${countStat.physicsCount} Question`}
+                  {countSetStat > 1
+                    ? `${countSetStat} Questions`
+                    : `${countSetStat} Question`}
                 </Typography>
               </CardContent>
             </CustomSmallPaper>
@@ -183,9 +190,9 @@ class Landing extends Component {
                   Chemistry
                 </Typography>
                 <Typography variant='subtitle1'>
-                  {countStat.chemistryCount > 1
-                    ? `${countStat.chemistryCount} Questions`
-                    : `${countStat.chemistryCount} Question`}
+                  {countSetStat > 1
+                    ? `${countSetStat} Questions`
+                    : `${countSetStat} Question`}
                 </Typography>
               </CardContent>
             </CustomSmallPaper>
@@ -198,13 +205,14 @@ class Landing extends Component {
 
 function mapStateToProps(store) {
   return {
+    subjects: store.subjectsInfo.subjects,
     statFetched: store.statsInfo.statFetched,
-    countStat: store.statsInfo.countStat
+    countSetStat: store.statsInfo.countSetStat
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ retrieveStats }, dispatch);
+  return bindActionCreators({ retrieveStats, fetchSubjectList }, dispatch);
 }
 
 export default connect(
