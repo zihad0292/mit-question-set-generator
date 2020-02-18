@@ -3,7 +3,6 @@ import axios from "axios";
 const baseUrl = "/api/subjects/";
 
 export function fetchSubjectList() {
-  console.log("fetching subjects");
   return function(dispatch) {
     dispatch({ type: "FETCHING_SUBJECTS" });
     axios

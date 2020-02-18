@@ -6,7 +6,6 @@ const baseUrl = "/api/question-bank/";
 export function fetchQuestions(subject) {
   return function(dispatch) {
     dispatch({ type: "FETCHING_QUESTIONS" });
-
     axios
       .get(`${baseUrl}list?subject=${subject}`)
       .then(resp => {

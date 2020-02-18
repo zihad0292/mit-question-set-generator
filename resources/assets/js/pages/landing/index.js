@@ -20,6 +20,7 @@ import {
 
 // Actions
 import { fetchSubjectList } from "../../actions/subjectActions";
+import { fetchQuestions } from "../../actions/questionBankActions";
 import {
   retrieveStats,
   retrieveQuestionSetStats
@@ -73,17 +74,22 @@ class Landing extends Component {
   }
 
   componentDidMount() {
-    const { statFetched, retrieveStats, subjects } = this.props;
+    const {
+      fetchSubjectList,
+      retrieveStats,
+      retrieveQuestionSetStats,
+      fetchQuestions,
+      subjects
+    } = this.props;
     if (subjects.length === 0) {
-      console.log("again");
-      this.props.fetchSubjectList();
+      fetchSubjectList();
     }
     retrieveStats();
     retrieveQuestionSetStats();
   }
 
   render() {
-    const { classes, history, countSetStat } = this.props;
+    const { classes, history, countSetStat, countStat, subjects } = this.props;
     return (
       <PageContainer maxWidth='lg'>
         <Grid container spacing={3} className={classes.statFirstRow}>
@@ -103,97 +109,50 @@ class Landing extends Component {
           <Grid item xs={12} sm={4}>
             <CustomSmallPaper
               className={`${classes.homeWidget} ${classes.questionSetCard} ${classes.alignItemsCenter}`}
-              onClick={() => history.push("/dashboard/question-sets")}
+              onClick={() => history.push("/dashboard/subjects")}
             >
               <CardContent className={classes.cardContent}>
                 <div>
                   <Typography variant='h4' color='primary'>
-                    Question Sets
-                  </Typography>
-                  <Typography variant='h5'>
-                    {countSetStat > 1
-                      ? `${countSetStat} Sets`
-                      : `${countSetStat} Set`}
+                    {subjects.length > 1
+                      ? `${subjects.length} Subjects`
+                      : `${subjects.length} Subject`}
                   </Typography>
                 </div>
               </CardContent>
             </CustomSmallPaper>
           </Grid>
-        </Grid>
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={3}>
+          <Grid item xs={12} sm={4}>
             <CustomSmallPaper
-              className={`${classes.homeWidget} ${classes.alignItemsCenter}`}
+              className={`${classes.homeWidget} ${classes.questionSetCard} ${classes.alignItemsCenter}`}
               onClick={() =>
-                history.push("/dashboard/question-bank/allsubjects/english")
+                history.push("/dashboard/question-bank/allsubjects/")
               }
             >
               <CardContent className={classes.cardContent}>
-                <Typography color='primary' variant='h5'>
-                  English
-                </Typography>
-                <Typography variant='subtitle1'>
-                  {countSetStat > 1
-                    ? `${countSetStat} Questions`
-                    : `${countSetStat} Question`}
-                </Typography>
+                <div>
+                  <Typography variant='h4' color='primary'>
+                    {countStat > 1
+                      ? `${countStat} Questions`
+                      : `${countStat} Question`}
+                  </Typography>
+                </div>
               </CardContent>
             </CustomSmallPaper>
           </Grid>
-          <Grid item xs={12} sm={3}>
+          <Grid item xs={12} sm={4}>
             <CustomSmallPaper
-              className={`${classes.homeWidget} ${classes.alignItemsCenter}`}
-              onClick={() =>
-                history.push("/dashboard/question-bank/allsubjects/math")
-              }
+              className={`${classes.homeWidget} ${classes.questionSetCard} ${classes.alignItemsCenter}`}
+              onClick={() => history.push("/dashboard/question-sets")}
             >
               <CardContent className={classes.cardContent}>
-                <Typography color='primary' variant='h5'>
-                  Math
-                </Typography>
-                <Typography variant='subtitle1'>
-                  {countSetStat > 1
-                    ? `${countSetStat} Questions`
-                    : `${countSetStat} Question`}
-                </Typography>
-              </CardContent>
-            </CustomSmallPaper>
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <CustomSmallPaper
-              className={`${classes.homeWidget} ${classes.alignItemsCenter}`}
-              onClick={() =>
-                history.push("/dashboard/question-bank/allsubjects/physics")
-              }
-            >
-              <CardContent className={classes.cardContent}>
-                <Typography color='primary' variant='h5'>
-                  Physics
-                </Typography>
-                <Typography variant='subtitle1'>
-                  {countSetStat > 1
-                    ? `${countSetStat} Questions`
-                    : `${countSetStat} Question`}
-                </Typography>
-              </CardContent>
-            </CustomSmallPaper>
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <CustomSmallPaper
-              className={`${classes.homeWidget} ${classes.alignItemsCenter}`}
-              onClick={() =>
-                history.push("/dashboard/question-bank/allsubjects/chemistry")
-              }
-            >
-              <CardContent className={classes.cardContent}>
-                <Typography color='primary' variant='h5'>
-                  Chemistry
-                </Typography>
-                <Typography variant='subtitle1'>
-                  {countSetStat > 1
-                    ? `${countSetStat} Questions`
-                    : `${countSetStat} Question`}
-                </Typography>
+                <div>
+                  <Typography variant='h4' color='primary'>
+                    {countSetStat > 1
+                      ? `${countSetStat} Sets`
+                      : `${countSetStat} Set`}
+                  </Typography>
+                </div>
               </CardContent>
             </CustomSmallPaper>
           </Grid>
@@ -207,12 +166,21 @@ function mapStateToProps(store) {
   return {
     subjects: store.subjectsInfo.subjects,
     statFetched: store.statsInfo.statFetched,
+    countStat: store.statsInfo.countStat,
     countSetStat: store.statsInfo.countSetStat
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ retrieveStats, fetchSubjectList }, dispatch);
+  return bindActionCreators(
+    {
+      retrieveStats,
+      retrieveQuestionSetStats,
+      fetchSubjectList,
+      fetchQuestions
+    },
+    dispatch
+  );
 }
 
 export default connect(

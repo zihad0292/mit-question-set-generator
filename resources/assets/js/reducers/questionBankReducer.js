@@ -1,9 +1,5 @@
 const initialState = {
   allQuestions: [],
-  englishQuestions: [],
-  mathQuestions: [],
-  physicsQuestions: [],
-  chemistryQuestions: [],
   fetching: false,
   fetched: false,
   adding: false,
@@ -34,7 +30,7 @@ export default function reducer(state = initialState, action) {
         message: ""
       };
     case "FETCHING_QUESTIONS_FULFILLED":
-      let tempQuestions = { ...state.allQuestions };
+      let tempQuestions = [...state.allQuestions];
       tempQuestions.push(action.payload);
       return {
         ...state,

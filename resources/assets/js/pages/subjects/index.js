@@ -223,10 +223,10 @@ class AllSubjects extends Component {
             >
               All Subjects
             </Typography>
+            {/* <Divider className={classes.root} /> */}
             {this.renderSubjectsTable()}
             <FullBodyLoader active={fetching || deleting} />
           </Grid>
-          <Divider className={classes.root} />
           <Grid item xs={12} sm={4}>
             <WidgetTitle>Add New Subject</WidgetTitle>
             <AddNewForm />

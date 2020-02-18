@@ -26,6 +26,7 @@ import {
 // import { fetchIndexRelationCount } from "../../actions/userActions";
 
 // Actions
+import { fetchQuestions } from "../../actions/questionBankActions";
 import { retrieveStats } from "../../actions/statsActions";
 import { fetchSubjectList } from "../../actions/subjectActions";
 
@@ -76,9 +77,20 @@ class QuestionBank extends Component {
   }
 
   componentDidMount() {
-    const { statFetched, countStat, subjects } = this.props;
+    const {
+      statFetched,
+      countStat,
+      fetchQuestions,
+      subjects,
+      allQuestions
+    } = this.props;
     if (subjects.length === 0) {
       this.props.fetchSubjectList();
+    }
+    if (allQuestions.length === 0) {
+      for (var i = 0; i < subjects.length; i++) {
+        fetchQuestions(`${subjects[i].subject}`);
+      }
     }
   }
 
@@ -116,11 +128,6 @@ class QuestionBank extends Component {
                     <Typography color='primary' variant='h5'>
                       {subject.subject}
                     </Typography>
-                    {/* <Typography variant='subtitle1'>
-                  {countStat.englishCount > 1
-                    ? `${countStat.englishCount} Questions`
-                    : `${countStat.englishCount} Question`}
-                </Typography> */}
                   </CardContent>
                 </CustomSmallPaper>
               </Grid>
@@ -134,6 +141,7 @@ class QuestionBank extends Component {
 
 function mapStateToProps(store) {
   return {
+    allQuestions: store.questionBankInfo.allQuestions,
     subjects: store.subjectsInfo.subjects,
     statFetched: store.statsInfo.statFetched,
     countStat: store.statsInfo.countStat
@@ -141,7 +149,10 @@ function mapStateToProps(store) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ retrieveStats, fetchSubjectList }, dispatch);
+  return bindActionCreators(
+    { retrieveStats, fetchSubjectList, fetchQuestions },
+    dispatch
+  );
 }
 
 export default connect(

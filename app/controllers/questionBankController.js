@@ -4,6 +4,7 @@ var Async = require("async");
 
 var url = require("url");
 var QuestionBank = require("../models/questionBank");
+var Subjects = require("../models/subjects");
 
 module.exports = {
   getAllQuestions: function(req, res) {
@@ -14,46 +15,41 @@ module.exports = {
       success: true,
       status: 200
     };
-
-    var cb = function(err, result) {
+    QuestionBank.find({ subject: query.subject }, function(err, result) {
       if (err) {
-        console.log(err);
         response.success = false;
         response.status = 401;
         response.error = err;
       } else {
-        response.results = { subject: query.subject, results: result };
+        response.results = {
+          subject: query.subject,
+          questions: result
+        };
       }
-
       res.json(response);
-    };
+    });
 
-    if (query.subject) {
-      QuestionBank.find({ subject: query.subject }, cb);
-    } else {
-      QuestionBank.getAll(cb);
-    }
+    // if (query.subject) {
+    //   QuestionBank.find({ subject: query.subject }, cb);
+    // } else {
+    //   QuestionBank.getAll(cb);
+    // }
   },
   countQuestions: function(req, res) {
     var url_parts = url.parse(req.url, true);
     var query = url_parts.query;
-
-    console.log(query);
     var response = {
       success: true,
       status: 200
     };
-
     QuestionBank.count({}, function(err, result) {
       if (err) {
         //next(err);
-        console.log("error from question bank  controller for stat count");
         response.success = false;
         response.status = 401;
         response.error = err;
       } else {
-        console.log("no error  from question bank  controller for stat count");
-        response.results = { subject: query.subject, results: result };
+        response.results = result;
       }
 
       res.json(response);

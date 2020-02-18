@@ -48,14 +48,17 @@ class Layout extends Component {
   }
 
   componentDidMount() {
-    const { statFetched, retrieveStats, subjects } = this.props;
+    const {
+      fetchSubjectList,
+      retrieveStats,
+      retrieveQuestionSetStats,
+      subjects
+    } = this.props;
     if (subjects.length === 0) {
-      console.log("once");
-      this.props.fetchSubjectList();
+      fetchSubjectList();
     }
     retrieveStats();
     retrieveQuestionSetStats();
-    console.log(subjects);
   }
 
   componentWillReceiveProps(nextProps) {

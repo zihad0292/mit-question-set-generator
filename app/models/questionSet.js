@@ -60,10 +60,8 @@ module.exports = {
   count: function(params, response) {
     QuestionSet.count(params, function(err, questionSetCount) {
       if (err) {
-        console.log(params);
         response(err, null);
       } else {
-        console.log("else executed from question set");
         response(null, questionSetCount);
       }
     });

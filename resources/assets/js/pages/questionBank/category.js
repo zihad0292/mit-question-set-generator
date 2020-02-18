@@ -149,49 +149,32 @@ class QuestionBankCategory extends Component {
   }
 
   componentDidMount() {
-    const subject = this.props.match.params.subject;
+    const { fetchQuestions, subjects, allQuestions } = this.props;
 
-    if (
-      subject !== "english" &&
-      subject !== "math" &&
-      subject !== "physics" &&
-      subject !== "chemistry"
-    ) {
-      this.setState({
-        redirect: true
-      });
+    if (subjects.length === 0) {
+      this.props.fetchSubjectList();
     }
-    this.setState({
-      subject: subject
-    });
 
-    // Fetch questions only if respective question state is empty
-    if (subject === "english" && this.props.englishQuestions.length === 0) {
-      this.props.fetchQuestions(subject);
-    } else if (subject === "math" && this.props.mathQuestions.length === 0) {
-      this.props.fetchQuestions(subject);
-    } else if (
-      subject === "physics" &&
-      this.props.physicsQuestions.length === 0
-    ) {
-      this.props.fetchQuestions(subject);
-    } else if (
-      subject === "chemistry" &&
-      this.props.chemistryQuestions.length === 0
-    ) {
-      this.props.fetchQuestions(subject);
+    // this.setState({
+    //   subject: subject
+    // });
+
+    if (allQuestions.length === 0) {
+      for (var i = 0; i < subjects.length; i++) {
+        fetchQuestions(`${subjects[i].subject}`);
+      }
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    // console.log(nextProps);
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   console.log(nextProps);
+  // }
 
-  renderRedirect = () => {
-    if (this.state.redirect) {
-      return <Redirect to='/dashboard/question-bank/allsubjects/' />;
-    }
-  };
+  // renderRedirect = () => {
+  //   if (this.state.redirect) {
+  //     return <Redirect to='/dashboard/question-bank/allsubjects/' />;
+  //   }
+  // };
 
   onDeleteClick(selectedIndex) {
     this.setState({
@@ -230,26 +213,16 @@ class QuestionBankCategory extends Component {
   }
 
   renderQuestions() {
-    const {
-      classes,
-      englishQuestions,
-      mathQuestions,
-      physicsQuestions,
-      chemistryQuestions
-    } = this.props;
+    const { classes, allQuestions } = this.props;
+    const subject = this.props.match.params.subject;
 
-    const subject = this.state.subject;
-    let questionsToRender = [];
-
-    if (subject === "english") {
-      questionsToRender = englishQuestions;
-    } else if (subject === "math") {
-      questionsToRender = mathQuestions;
-    } else if (subject === "physics") {
-      questionsToRender = physicsQuestions;
-    } else {
-      questionsToRender = chemistryQuestions;
-    }
+    let questionsToRender = allQuestions.map(singleSubjectQuestions => {
+      console.log(singleSubjectQuestions);
+      console.log(subject);
+      return singleSubjectQuestions.subject === subject
+        ? singleSubjectQuestions.questions
+        : console.log("nai");
+    });
 
     if (questionsToRender.length === 0) {
       return (
@@ -317,7 +290,7 @@ class QuestionBankCategory extends Component {
       <Fragment>
         {!editQuestionComponent && (
           <PageContainer maxWidth='lg'>
-            {this.renderRedirect()}
+            {/* {this.renderRedirect()} */}
             <Grid container spacing={3} className={classes.bottomSpacing}>
               <Grid item xs={12} sm={8} className={classes.relativeContainer}>
                 <Typography
@@ -375,15 +348,12 @@ class QuestionBankCategory extends Component {
 
 function mapStateToProps(store) {
   return {
+    allQuestions: store.questionBankInfo.allQuestions,
     fetched: store.questionBankInfo.fetched,
     fetching: store.questionBankInfo.fetching,
     deleting: store.questionBankInfo.deleting,
     deleted: store.questionBankInfo.deleted,
     questions: store.questionBankInfo.questions,
-    englishQuestions: store.questionBankInfo.englishQuestions,
-    mathQuestions: store.questionBankInfo.mathQuestions,
-    physicsQuestions: store.questionBankInfo.physicsQuestions,
-    chemistryQuestions: store.questionBankInfo.chemistryQuestions,
     message: store.questionBankInfo.message
   };
 }
