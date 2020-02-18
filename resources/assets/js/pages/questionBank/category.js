@@ -25,6 +25,8 @@ import {
   deleteQuestion
 } from "../../actions/questionBankActions";
 
+import { fetchSubjectList } from "../../actions/subjectActions";
+
 import {
   PageContainer,
   CustomSmallPaper,
@@ -149,10 +151,15 @@ class QuestionBankCategory extends Component {
   }
 
   componentDidMount() {
-    const { fetchQuestions, subjects, allQuestions } = this.props;
+    const {
+      fetchQuestions,
+      subjects,
+      allQuestions,
+      fetchSubjectList
+    } = this.props;
 
     if (subjects.length === 0) {
-      this.props.fetchSubjectList();
+      fetchSubjectList();
     }
 
     // this.setState({
@@ -216,13 +223,16 @@ class QuestionBankCategory extends Component {
     const { classes, allQuestions } = this.props;
     const subject = this.props.match.params.subject;
 
-    let questionsToRender = allQuestions.map(singleSubjectQuestions => {
-      console.log(singleSubjectQuestions);
-      console.log(subject);
-      return singleSubjectQuestions.subject === subject
-        ? singleSubjectQuestions.questions
-        : console.log("nai");
-    });
+    let questionsToRender = [];
+    for (let i = 0; i < allQuestions.length; i++) {
+      if (allQuestions[i].subject === subject) {
+        for (let j = 0; j < allQuestions[i].questions.length; j++) {
+          questionsToRender.push(allQuestions[i].questions[j]);
+        }
+      }
+    }
+
+    console.log(questionsToRender);
 
     if (questionsToRender.length === 0) {
       return (
@@ -348,6 +358,7 @@ class QuestionBankCategory extends Component {
 
 function mapStateToProps(store) {
   return {
+    subjects: store.subjectsInfo.subjects,
     allQuestions: store.questionBankInfo.allQuestions,
     fetched: store.questionBankInfo.fetched,
     fetching: store.questionBankInfo.fetching,
@@ -359,7 +370,10 @@ function mapStateToProps(store) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ fetchQuestions, deleteQuestion }, dispatch);
+  return bindActionCreators(
+    { fetchQuestions, deleteQuestion, fetchSubjectList },
+    dispatch
+  );
 }
 
 export default connect(
