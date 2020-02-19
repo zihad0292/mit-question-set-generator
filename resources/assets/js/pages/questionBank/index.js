@@ -106,7 +106,7 @@ class QuestionBank extends Component {
               color='textPrimary'
               className={classes.subjectTitle}
             >
-              All Subjects
+              All Questions
             </Typography>
             {/* <FullBodyLoader active={fetching || deleting} /> */}
           </Grid>

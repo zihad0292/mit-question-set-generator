@@ -162,9 +162,9 @@ class QuestionBankCategory extends Component {
       fetchSubjectList();
     }
 
-    // this.setState({
-    //   subject: subject
-    // });
+    this.setState({
+      subject: this.props.match.params.subject
+    });
 
     if (allQuestions.length === 0) {
       for (var i = 0; i < subjects.length; i++) {
@@ -231,8 +231,6 @@ class QuestionBankCategory extends Component {
         }
       }
     }
-
-    console.log(questionsToRender);
 
     if (questionsToRender.length === 0) {
       return (

@@ -131,19 +131,6 @@ class QuestionSet extends Component {
     if (questionSets.length === 0) {
       fetchQuestionSets();
     }
-    // Fetch questions only if respective question state is empty
-    if (englishQuestions.length === 0) {
-      fetchQuestions("english");
-    }
-    if (mathQuestions.length === 0) {
-      fetchQuestions("math");
-    }
-    if (physicsQuestions.length === 0) {
-      fetchQuestions("physics");
-    }
-    if (chemistryQuestions.length === 0) {
-      fetchQuestions("chemistry");
-    }
   }
 
   componentWillReceiveProps(nextProps) {

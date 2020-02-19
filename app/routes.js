@@ -5,6 +5,7 @@ var routes = express.Router();
 
 var questionBankController = require("./controllers/questionBankController");
 var questionSetController = require("./controllers/questionSetController");
+var baseQuestionController = require("./controllers/baseQuestionController");
 var subjectsController = require("./controllers/subjectsController");
 
 // Subjects CRUD
@@ -18,6 +19,21 @@ routes.post("/question-bank/create", questionBankController.createQuestion);
 routes.post("/question-bank/edit", questionBankController.updateQuestion);
 routes.delete("/question-bank/delete", questionBankController.deleteQuestion);
 routes.get("/question-bank/stats/", questionBankController.countQuestions);
+
+// Base Question CRUD
+routes.get("/base-question/list", baseQuestionController.getAllBaseQuestions);
+routes.get(
+  "/base-question/questionBank",
+  baseQuestionController.findBaseQuestion
+);
+routes.post(
+  "/base-question/generate",
+  baseQuestionController.createBaseQuestion
+);
+routes.delete(
+  "/base-question/delete",
+  baseQuestionController.deleteBaseQuestion
+);
 
 // Question Set CRUD
 routes.get("/question-set/list", questionSetController.getAllQuestionSets);

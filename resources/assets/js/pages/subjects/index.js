@@ -29,11 +29,15 @@ import AddNewForm from "./addNewForm";
 
 const styles = theme => ({
   root: {
-    width: "100%"
+    width: "100%",
+    marginBottom: theme.spacing(3)
   },
   tableTitle: {
     margin: theme.spacing(2),
     marginBottom: theme.spacing(1)
+  },
+  subjectTitle: {
+    padding: "0 12px 12px 0"
   },
   relativeContainer: {
     position: "relative"
@@ -223,7 +227,7 @@ class AllSubjects extends Component {
             >
               All Subjects
             </Typography>
-            {/* <Divider className={classes.root} /> */}
+            <Divider className={classes.root} />
             {this.renderSubjectsTable()}
             <FullBodyLoader active={fetching || deleting} />
           </Grid>

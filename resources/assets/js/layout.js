@@ -18,6 +18,8 @@ import AllSubjects from "./pages/subjects/";
 import QuestionBank from "./pages/questionBank/";
 import QuestionBankCategory from "./pages/questionBank/category";
 import CreateQuestion from "./pages/questionBank/createQuestion";
+import BaseQuestions from "./pages/baseQuestions";
+import CreateBaseQuestion from "./pages/baseQuestions/createBaseQuestion";
 // import EditQuestion from "./pages/questionBank/editQuestion";
 import QuestionSets from "./pages/questionSets";
 import CreateQuestionSet from "./pages/questionSets/createQuestionSet";
@@ -105,11 +107,16 @@ class Layout extends Component {
               component={QuestionBank}
             />
             <Route exact path='/dashboard/subjects' component={AllSubjects} />
-            {/* <Route
+            <Route
               exact
               path='/dashboard/base-questions'
               component={BaseQuestions}
-            /> */}
+            />
+            <Route
+              exact
+              path='/dashboard/base-questions/create-new'
+              component={CreateBaseQuestion}
+            />
             <Route
               path='/dashboard/question-bank/allsubjects/:subject'
               component={QuestionBankCategory}
@@ -118,10 +125,7 @@ class Layout extends Component {
               path='/dashboard/question-bank/create/:subject'
               component={CreateQuestion}
             />
-            {/* <Route
-              path='/dashboard/question-bank/edit'
-              component={EditQuestion}
-            /> */}
+
             <Route
               exact
               path='/dashboard/question-sets'
