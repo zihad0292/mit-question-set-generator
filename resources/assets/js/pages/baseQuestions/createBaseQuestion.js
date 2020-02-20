@@ -59,6 +59,25 @@ const styles = theme => ({
   },
   rightIcon: {
     marginLeft: theme.spacing(1)
+  },
+  buttonContainer: {
+    padding: "20px 0px"
+  },
+  doneButton: {
+    marginRight: "10px"
+  },
+  submitButton: {
+    marginBottom: "15px"
+  },
+  selectedSubjects: {
+    padding: "30px 10px"
+  },
+  dividerSpacing: {
+    marginTop: "10px",
+    marginBottom: "20px"
+  },
+  noTopMargin: {
+    marginTop: "0"
   }
 });
 
@@ -69,6 +88,7 @@ class CreateBaseQuestion extends Component {
       baseQuestionName: "",
       showMessage: false,
       subject: "",
+      allSubjectsAdded: false,
       subjectList: [],
       questionsToRender: [],
       selectedSubjects: [],
@@ -77,7 +97,10 @@ class CreateBaseQuestion extends Component {
     this.onSubjectSelect = this.onSubjectSelect.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
+    this.handleCancel = this.handleCancel.bind(this);
+    this.handleDone = this.handleDone.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleRefresh = this.handleRefresh.bind(this);
     this.handleOptionCheckboxChange = this.handleOptionCheckboxChange.bind(
       this
     );
@@ -149,6 +172,63 @@ class CreateBaseQuestion extends Component {
     });
   }
 
+  handleDone() {
+    const { baseQuestionName } = this.state;
+    const {} = this.props;
+
+    // if (questionSetName === "") {
+    //   alert("Please give a name to the question set");
+    // }
+
+    // generateQuestionSet(questionSetName, JSON.stringify(finalArray));
+  }
+
+  handleCancel() {
+    const { baseQuestionName } = this.state;
+    const {} = this.props;
+
+    // if (questionSetName === "") {
+    //   alert("Please give a name to the question set");
+    // }
+
+    // generateQuestionSet(questionSetName, JSON.stringify(finalArray));
+  }
+
+  handleRefresh() {
+    const { baseQuestionName } = this.state;
+    const {} = this.props;
+
+    // if (questionSetName === "") {
+    //   alert("Please give a name to the question set");
+    // }
+
+    // generateQuestionSet(questionSetName, JSON.stringify(finalArray));
+  }
+
+  handleSubmit() {
+    const { baseQuestionName } = this.state;
+    const {} = this.props;
+
+    // if (questionSetName === "") {
+    //   alert("Please give a name to the question set");
+    // }
+
+    // generateQuestionSet(questionSetName, JSON.stringify(finalArray));
+  }
+
+  renderSelectedSubjects() {
+    if (this.state.selectedSubjects.length === 0) {
+      return <p>No subjects added yet.</p>;
+    }
+    return this.state.selectedSubjects.map((subject, index) => {
+      return (
+        <p key={`${subject}+${index}`}>
+          {index + 1}. {subject}
+        </p>
+      );
+    });
+  }
+
   renderQuestions() {
     const { classes } = this.props;
     const { questionsToRender } = this.state;
@@ -197,17 +277,6 @@ class CreateBaseQuestion extends Component {
     });
   }
 
-  handleSubmit() {
-    const { baseQuestionName } = this.state;
-    const {} = this.props;
-
-    // if (questionSetName === "") {
-    //   alert("Please give a name to the question set");
-    // }
-
-    // generateQuestionSet(questionSetName, JSON.stringify(finalArray));
-  }
-
   render() {
     const {
       classes,
@@ -216,7 +285,7 @@ class CreateBaseQuestion extends Component {
       allQuestions,
       selectedSubjects
     } = this.props;
-    const { baseQuestionName } = this.state;
+    const { baseQuestionName, allSubjectsAdded } = this.state;
 
     const subjectList = subjects.map(subject => {
       return {
@@ -234,7 +303,7 @@ class CreateBaseQuestion extends Component {
               color='textPrimary'
               className={classes.subjectTitle}
             >
-              Generate New Question Set
+              Generate New Base Question
             </Typography>
           </Grid>
           <Divider className={classes.root} />
@@ -249,6 +318,7 @@ class CreateBaseQuestion extends Component {
               label='Base Question Name'
               value={this.state.baseQuestionName}
               margin='normal'
+              className={classes.noTopMargin}
               variant='outlined'
               fullWidth
               onChange={this.handleChange}
@@ -263,7 +333,42 @@ class CreateBaseQuestion extends Component {
 
           <Grid item xs={4}>
             <CustomSmallPaper>
-              <div className={classes.cardContent}>sadd</div>
+              <div
+                className={`${classes.cardContent} ${classes.selectedSubjects}`}
+              >
+                <Typography
+                  variant='h5'
+                  color='textPrimary'
+                  className={classes.subjectTitle}
+                >
+                  Selected Subjects
+                </Typography>
+                <Divider
+                  className={`${classes.root} ${classes.dividerSpacing}`}
+                />
+                {this.renderSelectedSubjects()}
+                <FlatButton
+                  variant='contained'
+                  color='primary'
+                  disabled={!allSubjectsAdded}
+                  className={classes.submitButton}
+                  size='large'
+                  fullWidth
+                  onClick={this.handleSubmit}
+                >
+                  Submit Base Question
+                </FlatButton>
+                <FlatButton
+                  variant='contained'
+                  color='secondary'
+                  disabled={this.state.selectedSubjects.length === 0}
+                  size='large'
+                  fullWidth
+                  onClick={this.handleRefresh}
+                >
+                  Start Again
+                </FlatButton>
+              </div>
             </CustomSmallPaper>
           </Grid>
         </Grid>
@@ -272,18 +377,32 @@ class CreateBaseQuestion extends Component {
             <CustomSmallPaper>
               <div className={classes.cardContent}>
                 {this.renderQuestions()}
-                {/* <FlatButton
-                  variant='contained'
-                  color='primary'
-                  disabled={generating}
-                  className={classes.submitButton}
-                  size='large'
-                  fullWidth
-                  onClick={this.handleSubmit}
-                >
-                  Generate
-                  <Icon className={classes.rightIcon}>casino</Icon>
-                </FlatButton> */}
+                {this.state.subject !== "" ? (
+                  <div className={classes.buttonContainer}>
+                    <FlatButton
+                      variant='contained'
+                      color='primary'
+                      disabled={generating}
+                      className={classes.doneButton}
+                      size='large'
+                      onClick={this.handleDone}
+                    >
+                      Done
+                    </FlatButton>
+                    <FlatButton
+                      variant='contained'
+                      color='primary'
+                      disabled={generating}
+                      className={classes.cancelButton}
+                      size='large'
+                      onClick={this.handleCancel}
+                    >
+                      Cancel
+                    </FlatButton>
+                  </div>
+                ) : (
+                  ""
+                )}
               </div>
             </CustomSmallPaper>
           </Grid>
