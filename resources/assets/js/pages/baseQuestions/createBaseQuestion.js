@@ -92,7 +92,9 @@ class CreateBaseQuestion extends Component {
       subjectList: [],
       questionsToRender: [],
       selectedSubjects: [],
-      selectedQuestions: {}
+      tempSelectedQuestions: [],
+      finalArray: [],
+      count: 0
     };
     this.onSubjectSelect = this.onSubjectSelect.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -101,9 +103,7 @@ class CreateBaseQuestion extends Component {
     this.handleDone = this.handleDone.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleRefresh = this.handleRefresh.bind(this);
-    this.handleOptionCheckboxChange = this.handleOptionCheckboxChange.bind(
-      this
-    );
+    this.handleQuestionSelect = this.handleQuestionSelect.bind(this);
   }
 
   componentDidMount() {
@@ -139,22 +139,36 @@ class CreateBaseQuestion extends Component {
       }
     }
 
-    let tempSelectedSubjects = selectedSubjects;
-    tempSelectedSubjects.push(val.value);
-
-    this.setState(
-      {
-        subject: val.value,
-        questionsToRender: questionsToRender,
-        selectedSubjects: tempSelectedSubjects
-      },
-      () => console.log(this.state)
-    );
+    this.setState({
+      subject: val.value,
+      questionsToRender: questionsToRender
+    });
   }
 
-  handleOptionCheckboxChange(index, event) {
-    console.log(index);
-    console.log(event.target.checked);
+  handleQuestionSelect(id, event) {
+    const { tempSelectedQuestions } = this.state;
+
+    let temp = tempSelectedQuestions;
+    let filtered = [];
+    if (event.target.checked) {
+      temp.push(id);
+      this.setState(
+        {
+          tempSelectedQuestions: temp
+        },
+        () => console.log(this.state)
+      );
+    } else {
+      filtered = temp.filter(function(value, index, arr) {
+        return value !== id;
+      });
+      this.setState(
+        {
+          tempSelectedQuestions: filtered
+        },
+        () => console.log(this.state)
+      );
+    }
   }
 
   handleCheckboxChange(event) {
@@ -173,8 +187,26 @@ class CreateBaseQuestion extends Component {
   }
 
   handleDone() {
-    const { baseQuestionName } = this.state;
-    const {} = this.props;
+    const {
+      selectedSubjects,
+      tempSelectedQuestions,
+      finalArray,
+      subject
+    } = this.state;
+
+    let tempSelectedSubjects = selectedSubjects;
+    tempSelectedSubjects.push(subject);
+
+    let tempFinalArray = finalArray;
+    tempFinalArray.push({
+      subject: subject,
+      questions: tempSelectedQuestions
+    });
+
+    this.setState({
+      selectedSubjects: tempSelectedSubjects,
+      finalArray: tempFinalArray
+    });
 
     // if (questionSetName === "") {
     //   alert("Please give a name to the question set");
@@ -254,7 +286,7 @@ class CreateBaseQuestion extends Component {
               control={
                 <Checkbox
                   onChange={event =>
-                    this.handleOptionCheckboxChange(question._id, event)
+                    this.handleQuestionSelect(question._id, event)
                   }
                 />
               }
@@ -376,6 +408,15 @@ class CreateBaseQuestion extends Component {
           <Grid item xs={12}>
             <CustomSmallPaper>
               <div className={classes.cardContent}>
+                {this.state.subject !== "" ? (
+                  <div style={{ margin: "10px 0 20px 0", color: "green" }}>
+                    {this.state.count > 0
+                      ? `${this.state.count} selected`
+                      : "0 selected"}
+                  </div>
+                ) : (
+                  ""
+                )}
                 {this.renderQuestions()}
                 {this.state.subject !== "" ? (
                   <div className={classes.buttonContainer}>
