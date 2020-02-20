@@ -30,8 +30,7 @@ import {
   FlatButton
 } from "../../components/utils";
 
-import { shuffleArray } from "../../utilityFunctions";
-import { numberToAlphabet } from "../../utilityFunctions";
+import { shuffleArray, numberToAlphabet } from "../../utilityFunctions";
 
 const styles = theme => ({
   root: {

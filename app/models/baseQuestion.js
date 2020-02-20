@@ -7,17 +7,8 @@ var baseQuestionSchema = new Schema(
       type: String,
       required: [true, "BaseQuestion Name Can't be empty"]
     },
-    allQuestions: [
-      {
-        subject: String,
-        questions: [
-          {
-            question: String,
-            options: [{ option: String, is_correct: Boolean }]
-          }
-        ]
-      }
-    ]
+    selectedSubjects: [String],
+    allQuestions: [String]
   },
   {
     timestamps: { createdAt: "created_at", updatedAt: "updated_at" }

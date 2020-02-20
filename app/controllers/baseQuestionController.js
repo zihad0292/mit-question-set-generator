@@ -23,17 +23,19 @@ module.exports = {
     var url_parts = url.parse(req.url, true);
     var query = url_parts.query;
 
-    var BaseQuestionRequest = {
-      baseQuestionName: query.BaseQuestionName,
+    var baseQuestionRequest = {
+      baseQuestionName: query.baseQuestionName,
+      selectedSubjects: JSON.parse(query.selectedSubjects),
       allQuestions: JSON.parse(query.allQuestions)
     };
 
+    console.log(baseQuestionRequest);
     var response = {
       success: true,
       status: 200
     };
 
-    BaseQuestion.create(BaseQuestionRequest, function(err, result) {
+    BaseQuestion.create(baseQuestionRequest, function(err, result) {
       if (err) {
         //next(err);
         response.success = false;

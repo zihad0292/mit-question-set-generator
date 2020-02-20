@@ -29,13 +29,16 @@ export function fetchBaseQuestions() {
   };
 }
 
-export function generateBaseQuestion(baseQuestionName, allQuestions) {
+export function generateBaseQuestion(
+  baseQuestionName,
+  selectedSubjects,
+  allQuestions
+) {
   return function(dispatch) {
     dispatch({ type: "GENERATING_BASE_QUESTION" });
-
     axios
       .post(
-        `${baseUrl}generate?baseQuestionName=${baseQuestionName}&allQuestions=${allQuestions}`
+        `${baseUrl}generate?baseQuestionName=${baseQuestionName}&selectedSubjects=${selectedSubjects}&allQuestions=${allQuestions}`
       )
       .then(response => {
         const d = response.data;
