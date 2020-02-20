@@ -88,8 +88,6 @@ class CreateBaseQuestion extends Component {
       baseQuestionName: "",
       showMessage: false,
       subject: "",
-      allSubjectsAdded: false,
-      subjectList: [],
       questionsToRender: [],
       selectedSubjects: [],
       tempSelectedQuestions: [],
@@ -141,33 +139,30 @@ class CreateBaseQuestion extends Component {
 
     this.setState({
       subject: val.value,
-      questionsToRender: questionsToRender
+      questionsToRender: questionsToRender,
+      count: 0
     });
   }
 
   handleQuestionSelect(id, event) {
-    const { tempSelectedQuestions } = this.state;
+    const { tempSelectedQuestions, count } = this.state;
 
     let temp = tempSelectedQuestions;
     let filtered = [];
     if (event.target.checked) {
       temp.push(id);
-      this.setState(
-        {
-          tempSelectedQuestions: temp
-        },
-        () => console.log(this.state)
-      );
+      this.setState({
+        tempSelectedQuestions: temp,
+        count: this.state.count + 1
+      });
     } else {
       filtered = temp.filter(function(value, index, arr) {
         return value !== id;
       });
-      this.setState(
-        {
-          tempSelectedQuestions: filtered
-        },
-        () => console.log(this.state)
-      );
+      this.setState({
+        tempSelectedQuestions: filtered,
+        count: this.state.count - 1
+      });
     }
   }
 
@@ -197,16 +192,18 @@ class CreateBaseQuestion extends Component {
     let tempSelectedSubjects = selectedSubjects;
     tempSelectedSubjects.push(subject);
 
-    let tempFinalArray = finalArray;
-    tempFinalArray.push({
-      subject: subject,
-      questions: tempSelectedQuestions
-    });
+    let tempFinalArray = finalArray.concat(tempSelectedQuestions);
 
-    this.setState({
-      selectedSubjects: tempSelectedSubjects,
-      finalArray: tempFinalArray
-    });
+    this.setState(
+      {
+        selectedSubjects: tempSelectedSubjects,
+        finalArray: tempFinalArray,
+        tempSelectedQuestions: [],
+        subject: "",
+        questionsToRender: []
+      },
+      () => console.log(this.state)
+    );
 
     // if (questionSetName === "") {
     //   alert("Please give a name to the question set");
@@ -216,36 +213,39 @@ class CreateBaseQuestion extends Component {
   }
 
   handleCancel() {
-    const { baseQuestionName } = this.state;
-    const {} = this.props;
-
-    // if (questionSetName === "") {
-    //   alert("Please give a name to the question set");
-    // }
-
-    // generateQuestionSet(questionSetName, JSON.stringify(finalArray));
+    this.setState({
+      subject: "",
+      questionsToRender: [],
+      tempSelectedQuestions: [],
+      count: 0
+    });
   }
 
   handleRefresh() {
-    const { baseQuestionName } = this.state;
-    const {} = this.props;
-
-    // if (questionSetName === "") {
-    //   alert("Please give a name to the question set");
-    // }
-
-    // generateQuestionSet(questionSetName, JSON.stringify(finalArray));
+    this.setState({
+      baseQuestionName: "",
+      subject: "",
+      questionsToRender: [],
+      selectedSubjects: [],
+      tempSelectedQuestions: [],
+      finalArray: [],
+      count: 0
+    });
   }
 
   handleSubmit() {
-    const { baseQuestionName } = this.state;
-    const {} = this.props;
+    const { baseQuestionName, finalArray, selectedSubjects } = this.state;
+    const { generateBaseQuestion } = this.props;
 
-    // if (questionSetName === "") {
-    //   alert("Please give a name to the question set");
-    // }
-
-    // generateQuestionSet(questionSetName, JSON.stringify(finalArray));
+    if (baseQuestionName === "") {
+      alert("Please enter a name");
+    } else {
+      generateBaseQuestion(
+        baseQuestionName,
+        JSON.stringify(selectedSubjects),
+        JSON.stringify(finalArray)
+      );
+    }
   }
 
   renderSelectedSubjects() {
@@ -326,6 +326,11 @@ class CreateBaseQuestion extends Component {
       };
     });
 
+    const selectedSubj = {
+      value: this.state.subject,
+      label: this.state.subject
+    };
+
     return (
       <PageContainer maxWidth='lg'>
         <Grid container spacing={3} className={classes.titleRow}>
@@ -357,7 +362,8 @@ class CreateBaseQuestion extends Component {
             />
             <IntegrationReactSelect
               suggestions={subjectList}
-              label='Form'
+              label='Select Subject'
+              selected={selectedSubj}
               onChange={this.onSubjectSelect}
               placeholder='Select Subject'
             />
@@ -382,7 +388,7 @@ class CreateBaseQuestion extends Component {
                 <FlatButton
                   variant='contained'
                   color='primary'
-                  disabled={!allSubjectsAdded}
+                  disabled={this.state.selectedSubjects.length < 4}
                   className={classes.submitButton}
                   size='large'
                   fullWidth
