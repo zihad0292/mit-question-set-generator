@@ -125,7 +125,6 @@ class CreateBaseQuestion extends Component {
 
   onSubjectSelect(val) {
     const { allQuestions } = this.props;
-    const { selectedSubjects } = this.state;
 
     let questionsToRender = [];
     for (let i = 0; i < allQuestions.length; i++) {
@@ -193,16 +192,13 @@ class CreateBaseQuestion extends Component {
 
     let tempFinalArray = finalArray.concat(tempSelectedQuestions);
 
-    this.setState(
-      {
-        selectedSubjects: tempSelectedSubjects,
-        finalArray: tempFinalArray,
-        tempSelectedQuestions: [],
-        subject: "",
-        questionsToRender: []
-      },
-      () => console.log(this.state)
-    );
+    this.setState({
+      selectedSubjects: tempSelectedSubjects,
+      finalArray: tempFinalArray,
+      tempSelectedQuestions: [],
+      subject: "",
+      questionsToRender: []
+    });
 
     // if (questionSetName === "") {
     //   alert("Please give a name to the question set");
@@ -262,14 +258,40 @@ class CreateBaseQuestion extends Component {
 
   renderQuestions() {
     const { classes } = this.props;
-    const { questionsToRender } = this.state;
+    const { questionsToRender, subject, selectedSubjects } = this.state;
+
+    if (subject === "" && selectedSubjects.length < 4) {
+      return (
+        <Grid container spacing={3} className={classes.noQuestionsToDisplay}>
+          <Typography
+            variant="h5"
+            color="textPrimary"
+            className={classes.subjectTitle}
+          >
+            You need to select a subject to see the questions.
+          </Typography>
+        </Grid>
+      );
+    } else if (selectedSubjects.length === 4) {
+      return (
+        <Grid container spacing={3} className={classes.noQuestionsToDisplay}>
+          <Typography
+            variant="h5"
+            color="textPrimary"
+            className={classes.subjectTitle}
+          >
+            You have already selected questions from 4 subjects
+          </Typography>
+        </Grid>
+      );
+    }
 
     if (questionsToRender.length === 0) {
       return (
         <Grid container spacing={3} className={classes.noQuestionsToDisplay}>
           <Typography
-            variant='h5'
-            color='textPrimary'
+            variant="h5"
+            color="textPrimary"
             className={classes.subjectTitle}
           >
             Sorry, there are no questions to display.
@@ -309,14 +331,8 @@ class CreateBaseQuestion extends Component {
   }
 
   render() {
-    const {
-      classes,
-      generating,
-      subjects,
-      allQuestions,
-      selectedSubjects
-    } = this.props;
-    const { baseQuestionName, allSubjectsAdded } = this.state;
+    const { classes, generating, subjects, allQuestions } = this.props;
+    const { selectedSubjects } = this.state;
 
     const subjectList = subjects.map(subject => {
       return {
@@ -331,12 +347,12 @@ class CreateBaseQuestion extends Component {
     };
 
     return (
-      <PageContainer maxWidth='lg'>
+      <PageContainer maxWidth="lg">
         <Grid container spacing={3} className={classes.titleRow}>
           <Grid item xs={12} sm={8} className={classes.relativeContainer}>
             <Typography
-              variant='h4'
-              color='textPrimary'
+              variant="h4"
+              color="textPrimary"
               className={classes.subjectTitle}
             >
               Generate New Base Question
@@ -349,22 +365,23 @@ class CreateBaseQuestion extends Component {
           <Grid item xs={8}>
             <TextField
               required
-              id='baseQuestionName'
-              name='baseQuestionName'
-              label='Base Question Name'
+              id="baseQuestionName"
+              name="baseQuestionName"
+              label="Base Question Name"
               value={this.state.baseQuestionName}
-              margin='normal'
+              margin="normal"
               className={classes.noTopMargin}
-              variant='outlined'
+              variant="outlined"
               fullWidth
               onChange={this.handleChange}
             />
             <IntegrationReactSelect
               suggestions={subjectList}
-              label='Select Subject'
+              label="Select Subject"
+              disabled={selectedSubjects.length === 4}
               selected={selectedSubj}
               onChange={this.onSubjectSelect}
-              placeholder='Select Subject'
+              placeholder="Select Subject"
             />
           </Grid>
 
@@ -374,8 +391,8 @@ class CreateBaseQuestion extends Component {
                 className={`${classes.cardContent} ${classes.selectedSubjects}`}
               >
                 <Typography
-                  variant='h5'
-                  color='textPrimary'
+                  variant="h5"
+                  color="textPrimary"
                   className={classes.subjectTitle}
                 >
                   Selected Subjects
@@ -385,21 +402,21 @@ class CreateBaseQuestion extends Component {
                 />
                 {this.renderSelectedSubjects()}
                 <FlatButton
-                  variant='contained'
-                  color='primary'
-                  disabled={this.state.selectedSubjects.length < 4}
+                  variant="contained"
+                  color="primary"
+                  disabled={selectedSubjects.length < 4}
                   className={classes.submitButton}
-                  size='large'
+                  size="large"
                   fullWidth
                   onClick={this.handleSubmit}
                 >
                   Submit Base Question
                 </FlatButton>
                 <FlatButton
-                  variant='contained'
-                  color='secondary'
-                  disabled={this.state.selectedSubjects.length === 0}
-                  size='large'
+                  variant="contained"
+                  color="secondary"
+                  disabled={selectedSubjects.length === 0}
+                  size="large"
                   fullWidth
                   onClick={this.handleRefresh}
                 >
@@ -426,21 +443,21 @@ class CreateBaseQuestion extends Component {
                 {this.state.subject !== "" ? (
                   <div className={classes.buttonContainer}>
                     <FlatButton
-                      variant='contained'
-                      color='primary'
+                      variant="contained"
+                      color="primary"
                       disabled={generating}
                       className={classes.doneButton}
-                      size='large'
+                      size="large"
                       onClick={this.handleDone}
                     >
                       Done
                     </FlatButton>
                     <FlatButton
-                      variant='contained'
-                      color='primary'
+                      variant="contained"
+                      color="primary"
                       disabled={generating}
                       className={classes.cancelButton}
-                      size='large'
+                      size="large"
                       onClick={this.handleCancel}
                     >
                       Cancel

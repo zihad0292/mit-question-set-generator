@@ -140,6 +140,7 @@ class BaseQuestion extends Component {
   }
 
   onViewClick(selectedIndex) {
+    console.log(selectedIndex);
     this.setState({
       viewBaseQuestionId: selectedIndex,
       viewBaseQuestion: true
@@ -239,7 +240,7 @@ class BaseQuestion extends Component {
         icon: "visibility",
         tooltip: "View",
         onClick: (event, rowData) => {
-          this.onViewClick(rowData._id);
+          this.onViewClick(rowData);
         }
       },
       {
@@ -261,7 +262,7 @@ class BaseQuestion extends Component {
 
     return (
       <MaterialTable
-        title='Base Questions'
+        title="Base Questions"
         columns={columns}
         data={baseQuestionsToRender}
         actions={actions}
@@ -279,20 +280,20 @@ class BaseQuestion extends Component {
     return (
       <Fragment>
         {!viewBaseQuestion && (
-          <PageContainer maxWidth='lg'>
+          <PageContainer maxWidth="lg">
             <Grid container spacing={3} className={classes.titleRow}>
               <Grid item xs={12} sm={8} className={classes.relativeContainer}>
                 <Typography
-                  variant='h4'
-                  color='textPrimary'
+                  variant="h4"
+                  color="textPrimary"
                   className={classes.subjectTitle}
                 >
                   All Base Questions
                   <FlatButton
-                    variant='contained'
-                    color='primary'
+                    variant="contained"
+                    color="primary"
                     className={classes.buttonStyles}
-                    size='medium'
+                    size="medium"
                     onClick={() =>
                       history.push("/dashboard/base-questions/create-new")
                     }
@@ -311,8 +312,8 @@ class BaseQuestion extends Component {
               </Grid>
             </Grid>
             <ConfirmDialog
-              title='Confirm Delete?'
-              description='Do You Really Want to Delete this Base Question?'
+              title="Confirm Delete?"
+              description="Do You Really Want to Delete this Base Question?"
               active={this.state.confirm}
               onClose={this.onModalClose}
               onSubmit={this.onDeleteSubmit}
