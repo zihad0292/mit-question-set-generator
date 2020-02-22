@@ -63,18 +63,19 @@ export function generateBaseQuestion(
   };
 }
 
-export function fetchBaseQuestion(id) {
+export function fetchBaseQuestion(allQuestions) {
   return function(dispatch) {
     dispatch({ type: "FETCHING_BASE_QUESTIONS" });
-
     axios
-      .get(`${baseUrl}baseQuestion?id=${id}`)
+      .get(
+        `${baseUrl}baseQuestion?allQuestions=${JSON.stringify(allQuestions)}`
+      )
       .then(resp => {
         const d = resp.data;
 
         if (d.success) {
           dispatch({
-            type: "FETCH_SINGLE_BASE_QUESTION_FULFILLED",
+            type: "FETCHING_SINGLE_BASE_QUESTION_FULFILLED",
             payload: d
           });
         } else {

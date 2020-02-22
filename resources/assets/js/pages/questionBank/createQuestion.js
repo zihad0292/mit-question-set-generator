@@ -65,7 +65,7 @@ const styles = theme => ({
     position: "absolute",
     right: "20px",
     top: "50%",
-    marginTop: "-14px",
+    marginTop: "-28px",
     zIndex: "1",
     cursor: "pointer"
   },
@@ -275,13 +275,13 @@ class CreateQuestion extends Component {
           <FormControlLabel
             control={
               <Switch
-                color='primary'
+                color="primary"
                 checked={this.state.bn}
                 onChange={this.toggleInputLanguage}
-                value='bn'
+                value="bn"
               />
             }
-            label='BN'
+            label="BN"
           />
         </FormGroup>
       </div>
@@ -313,8 +313,8 @@ class CreateQuestion extends Component {
           <Grid item xs={10} className={classes.relativeContainer}>
             {index > 2 ? (
               <IndeterminateCheckBoxIcon
-                color='secondary'
-                fontSize='large'
+                color="secondary"
+                fontSize="large"
                 className={classes.removeIcon}
                 onClick={() => this.handleRemoveOption(index)}
               />
@@ -327,12 +327,12 @@ class CreateQuestion extends Component {
                 required
                 id={"option-" + index}
                 name={"option-" + index}
-                label='Option'
+                label="Option"
                 value={options[index].option}
-                type='textarea'
-                placeholder='Option'
-                className='form-control avroInput'
-                rows='1'
+                type="textarea"
+                placeholder="Option"
+                className="form-control avroInput"
+                rows="1"
                 enabled={this.state.bn}
                 onChange={option => this.handleOptionChange(index, option)}
               />
@@ -351,7 +351,7 @@ class CreateQuestion extends Component {
                     value={options[index].is_correct}
                   />
                 }
-                label='Is Correct?'
+                label="Is Correct?"
               />
             </FormGroup>
           </Grid>
@@ -364,8 +364,8 @@ class CreateQuestion extends Component {
         <Grid container spacing={3} className={classes.bottomSpacing}>
           <Grid item xs={12} sm={8}>
             <Typography
-              variant='h4'
-              color='textPrimary'
+              variant="h4"
+              color="textPrimary"
               className={classes.subjectTitle}
             >
               {type === "edit" ? "Edit" : "Add New"} Question
@@ -381,17 +381,17 @@ class CreateQuestion extends Component {
                 {subject !== "" ? (
                   <IntegrationReactSelect
                     suggestions={subjectList}
-                    label='Form'
+                    label="Form"
                     selected={selectedSubj}
                     onChange={this.onSubjectSelect}
-                    placeholder='Select Subject'
+                    placeholder="Select Subject"
                   />
                 ) : (
                   <IntegrationReactSelect
                     suggestions={subjectList}
-                    label='Form'
+                    label="Form"
                     onChange={this.onSubjectSelect}
-                    placeholder='Select Subject'
+                    placeholder="Select Subject"
                   />
                 )}
               </Grid>
@@ -399,13 +399,13 @@ class CreateQuestion extends Component {
                 <div className={classes.avroInputWrapper}>
                   <AvroInput
                     required
-                    id='question'
-                    name='question'
-                    type='textarea'
-                    placeholder='Question'
+                    id="question"
+                    name="question"
+                    type="textarea"
+                    placeholder="Question"
                     value={question}
-                    className='form-control avroInput'
-                    rows='4'
+                    className="form-control avroInput"
+                    rows="4"
                     enabled={this.state.bn}
                     onChange={question => this.handleQuestionChange(question)}
                   />
@@ -421,23 +421,23 @@ class CreateQuestion extends Component {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        name='optionsReorder'
+                        name="optionsReorder"
                         checked={optionsReorder}
                         onChange={this.handleCheckboxChange}
                         value={optionsReorder}
                       />
                     }
-                    label='Options can be rearranged when question set is generated?'
+                    label="Options can be rearranged when question set is generated?"
                   />
                 </FormGroup>
               </Grid>
             </Grid>
             {optionsCount < 5 ? (
               <FlatButton
-                variant='contained'
-                color='default'
+                variant="contained"
+                color="default"
                 className={classes.submitButton}
-                size='small'
+                size="small"
                 onClick={this.handleAddOption}
               >
                 Add New Option
@@ -451,10 +451,10 @@ class CreateQuestion extends Component {
 
             <Divider className={classes.bottomDivider} />
             <FlatButton
-              variant='contained'
-              color='primary'
+              variant="contained"
+              color="primary"
               className={classes.submitButton}
-              size='large'
+              size="large"
               fullWidth
               onClick={this.handleSubmit}
             >

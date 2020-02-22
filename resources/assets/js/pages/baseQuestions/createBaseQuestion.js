@@ -249,7 +249,7 @@ class CreateBaseQuestion extends Component {
     }
     return this.state.selectedSubjects.map((subject, index) => {
       return (
-        <p key={`${subject}+${index}`}>
+        <p key={`${subject}+${index}`} style={{ textTransform: "capitalize" }}>
           {index + 1}. {subject}
         </p>
       );

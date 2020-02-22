@@ -29,7 +29,7 @@ export default function reducer(state = initialState, action) {
         error: null,
         message: ""
       };
-    case "FETCH_SINGLE_BASE_QUESTION_FULFILLED":
+    case "FETCHING_SINGLE_BASE_QUESTION_FULFILLED":
       return {
         ...state,
         singleBaseQuestion: action.payload.results,

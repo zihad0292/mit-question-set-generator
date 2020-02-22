@@ -21,6 +21,8 @@ import {
   FlatButton
 } from "../../components/utils";
 
+import IntegrationReactSelect from "../../components/IntegrationReactSelect";
+
 import { shuffleArray } from "../../utilityFunctions";
 
 const styles = theme => ({
@@ -52,47 +54,17 @@ class CreateQuestionSet extends Component {
     this.state = {
       questionSetName: "",
       optionsReorder: false,
-      subjectsReorder: false,
+      baseQuestionIndex: null,
       showMessage: false
     };
-    this.populateStateVal = this.populateStateVal.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.onBaseQuestionSelect = this.onBaseQuestionSelect.bind(this);
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentDidMount() {
-    const {
-      englishQuestions,
-      mathQuestions,
-      physicsQuestions,
-      chemistryQuestions,
-      fetchQuestions
-    } = this.props;
-
-    // Fetch questions only if respective question state is empty
-    if (englishQuestions.length === 0) {
-      fetchQuestions("english");
-    }
-    if (mathQuestions.length === 0) {
-      fetchQuestions("math");
-    }
-    if (physicsQuestions.length === 0) {
-      fetchQuestions("physics");
-    }
-    if (chemistryQuestions.length === 0) {
-      fetchQuestions("chemistry");
-    }
-  }
-
-  populateStateVal() {
-    const { selectedOffice } = this.props;
-
-    this.setState({
-      name: selectedOffice.name,
-      location: selectedOffice.location,
-      showMessage: true
-    });
+    const { fetchQuestions } = this.props;
   }
 
   componentWillReceiveProps(nextProps) {
@@ -112,6 +84,12 @@ class CreateQuestionSet extends Component {
     // }
   }
 
+  onBaseQuestionSelect(index) {
+    this.setState({
+      baseQuestionIndex: index.value
+    });
+  }
+
   handleCheckboxChange(event) {
     this.setState(
       {
@@ -129,26 +107,11 @@ class CreateQuestionSet extends Component {
 
   handleSubmit() {
     const { questionSetName, subjectsReorder, optionsReorder } = this.state;
-    const {
-      englishQuestions,
-      mathQuestions,
-      physicsQuestions,
-      chemistryQuestions,
-      generateQuestionSet
-    } = this.props;
+    const { generateQuestionSet } = this.props;
 
     if (questionSetName === "") {
       alert("Please give a name to the question set");
     }
-
-    let randomEnglishQuestions = shuffleArray(englishQuestions);
-    randomEnglishQuestions.splice(10);
-    let randomMathQuestions = shuffleArray(mathQuestions);
-    randomMathQuestions.splice(20);
-    let randomPhysicsQuestions = shuffleArray(physicsQuestions);
-    randomPhysicsQuestions.splice(20);
-    let randomChemistryQuestions = shuffleArray(chemistryQuestions);
-    randomChemistryQuestions.splice(20);
 
     let finalArray = [
       {
@@ -193,16 +156,23 @@ class CreateQuestionSet extends Component {
   }
 
   render() {
-    const { classes, generating, updating, type } = this.props;
-    const { questionSetName, optionsReorder, subjectsReorder } = this.state;
-    console.log(this.props.englishQuestions);
+    const { classes, generating, updating, type, baseQuestions } = this.props;
+    const { questionSetName, optionsReorder, baseQuestionIndex } = this.state;
+
+    const selectBaseQuestion = baseQuestions.map((item, index) => {
+      return {
+        value: index,
+        label: item.baseQuestionName
+      };
+    });
+
     return (
-      <PageContainer maxWidth='lg'>
+      <PageContainer maxWidth="lg">
         <Grid container spacing={3} className={classes.titleRow}>
           <Grid item xs={12} sm={8} className={classes.relativeContainer}>
             <Typography
-              variant='h4'
-              color='textPrimary'
+              variant="h4"
+              color="textPrimary"
               className={classes.subjectTitle}
             >
               Generate New Question Set
@@ -218,54 +188,54 @@ class CreateQuestionSet extends Component {
                   <Grid item sm={12}>
                     <TextField
                       required
-                      id='questionSetName'
-                      name='questionSetName'
-                      label='Question Set Name'
+                      id="questionSetName"
+                      name="questionSetName"
+                      label="Question Set Name"
                       value={this.state.questionSetName}
-                      margin='normal'
-                      variant='outlined'
+                      margin="normal"
+                      variant="outlined"
                       fullWidth
                       onChange={this.handleChange}
                     />
                   </Grid>
-                  <Grid item sm={6}>
-                    <FormGroup>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            name='subjectsReorder'
-                            checked={subjectsReorder}
-                            onChange={this.handleCheckboxChange}
-                            value={subjectsReorder}
-                          />
-                        }
-                        label='Change the Subjects order?'
-                      />
-                    </FormGroup>
+                  <Grid item sm={12}>
+                    <IntegrationReactSelect
+                      suggestions={selectBaseQuestion}
+                      label="Form"
+                      onChange={this.onBaseQuestionSelect}
+                      placeholder="Select Base Question"
+                    />
                   </Grid>
-                  <Grid item sm={6}>
+                  {baseQuestionIndex !== null
+                    ? baseQuestions[baseQuestionIndex].selectedSubjects.map(
+                        subject => {
+                          return <p>{subject}</p>;
+                        }
+                      )
+                    : ""}
+                  <Grid item sm={12}>
                     <FormGroup>
                       <FormControlLabel
                         control={
                           <Checkbox
-                            name='optionsReorder'
+                            name="optionsReorder"
                             checked={optionsReorder}
                             onChange={this.handleCheckboxChange}
                             value={optionsReorder}
                           />
                         }
-                        label='Should the Options be rearranged?'
+                        label="Should the Options be rearranged?"
                       />
                     </FormGroup>
                   </Grid>
                 </Grid>
 
                 <FlatButton
-                  variant='contained'
-                  color='primary'
+                  variant="contained"
+                  color="primary"
                   disabled={generating}
                   className={classes.submitButton}
-                  size='large'
+                  size="large"
                   fullWidth
                   onClick={this.handleSubmit}
                 >
@@ -288,15 +258,8 @@ CreateQuestionSet.propTypes = {
 
 function mapStateToProps(store) {
   return {
-    generating: store.questionSetInfo.generating,
-    generated: store.questionSetInfo.generated,
-    deleting: store.questionSetInfo.deleting,
-    deleted: store.questionSetInfo.deleted,
-    englishQuestions: store.questionBankInfo.englishQuestions,
-    mathQuestions: store.questionBankInfo.mathQuestions,
-    physicsQuestions: store.questionBankInfo.physicsQuestions,
-    chemistryQuestions: store.questionBankInfo.chemistryQuestions,
-    questionSets: store.questionSetInfo.questionSets
+    questionSets: store.questionSetInfo.questionSets,
+    baseQuestions: store.baseQuestionInfo.baseQuestions
   };
 }
 

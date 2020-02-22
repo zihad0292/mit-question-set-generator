@@ -92,7 +92,7 @@ const styles = theme => ({
     width: "100%",
     display: "block",
     textTransform: "uppercase",
-    marginBottom: "10px"
+    marginBottom: "20px"
   },
   mainContainer: {
     marginTop: "20px"
@@ -122,6 +122,9 @@ const styles = theme => ({
   },
   buttonBg: {
     backgroundColor: "rgba(0, 0, 0, 0.08)"
+  },
+  fullWidthContent: {
+    width: "100%"
   }
 });
 
@@ -135,7 +138,7 @@ export class viewBaseQuestion extends Component {
   }
 
   componentDidMount() {
-    this.props.fetchBaseQuestion(this.props.baseQuestionId);
+    this.props.fetchBaseQuestion(this.props.baseQuestionDetails.allQuestions);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -172,41 +175,54 @@ export class viewBaseQuestion extends Component {
     initiateDownload(removeDownloadLink);
   }
 
+  renderSubjects() {
+    const { baseQuestionDetails, classes } = this.props;
+    return (
+      <Grid item xs={12}>
+        <h3 className={classes.subjectTitle}>
+          All subjects in this question{" "}
+          <small style={{ fontWeight: "normal" }}>
+            (according to the order)
+          </small>
+        </h3>
+        <p className={classes.questionContainer}>
+          {baseQuestionDetails.selectedSubjects.map((subject, index) => {
+            return (
+              <span style={{ textTransform: "capitalize" }} key={`${index}-s`}>
+                {index + 1}. {subject}&nbsp;&nbsp;&nbsp;
+              </span>
+            );
+          })}
+        </p>
+      </Grid>
+    );
+  }
+
   renderQuestions() {
-    const { classes, singleBaseQuestion } = this.props;
-    if (
-      singleBaseQuestion.allQuestions &&
-      singleBaseQuestion.allQuestions.length > 0
-    ) {
+    const { classes, singleBaseQuestion, baseQuestionDetails } = this.props;
+    if (singleBaseQuestion && singleBaseQuestion.length > 0) {
       var i = 1;
-      return singleBaseQuestion.allQuestions.map((subject, index) => {
+      return singleBaseQuestion.map((question, index) => {
         return (
-          <Fragment>
-            {/* <h3 className={classes.subjectTitle}>{subject.subject}</h3> */}
-            {subject.questions.map((question, idx) => {
-              return (
-                <Grid item xs={12} key={index + 100}>
-                  <p className={classes.questionContainer}>
-                    {i++}.&nbsp;{question.question}
-                  </p>
-                  <p className={classes.optionsContainer}>
-                    {question.options &&
-                      question.options.map((option, i) => {
-                        return (
-                          <Fragment key={i}>
-                            <span>
-                              ({numberToAlphabet(i)})&nbsp;
-                              {option.option}
-                            </span>
-                            &nbsp; &nbsp; &nbsp;
-                          </Fragment>
-                        );
-                      })}
-                  </p>
-                </Grid>
-              );
-            })}
-          </Fragment>
+          <Grid item xs={12} key={`${index}-q`}>
+            <p className={classes.questionContainer}>
+              {i++}.&nbsp;{question.question}
+            </p>
+            <p className={classes.optionsContainer}>
+              {question.options &&
+                question.options.map((option, i) => {
+                  return (
+                    <Fragment key={`${i}-o`}>
+                      <span>
+                        ({numberToAlphabet(i)})&nbsp;
+                        {option.option}
+                      </span>
+                      &nbsp; &nbsp; &nbsp;
+                    </Fragment>
+                  );
+                })}
+            </p>
+          </Grid>
         );
       });
     }
@@ -214,56 +230,56 @@ export class viewBaseQuestion extends Component {
 
   renderAnswers() {
     const { classes, singleBaseQuestion } = this.props;
-    if (
-      singleBaseQuestion.allQuestions &&
-      singleBaseQuestion.allQuestions.length > 0
-    ) {
-      var i = 1;
-      return singleBaseQuestion.allQuestions.map((subject, index) => {
+    if (singleBaseQuestion && singleBaseQuestion.length > 0) {
+      return singleBaseQuestion.map((question, index) => {
         return (
-          <Fragment>
-            {subject.questions.map((question, idx) => {
-              return (
-                <Grid item xs={12} key={index + 100}>
-                  <p className={classes.optionsContainer}>
-                    {i++}.&nbsp;
-                    {question.options &&
-                      question.options.map((option, i) => {
-                        return (
-                          <Fragment key={i}>
-                            <span>
-                              {option.is_correct ? (
-                                <Fragment>{numberToAlphabet(i)}&nbsp;</Fragment>
-                              ) : (
-                                ""
-                              )}
-                            </span>
-                          </Fragment>
-                        );
-                      })}
-                  </p>
-                </Grid>
-              );
-            })}
-          </Fragment>
+          <Grid item xs={12} key={`${index}-a`}>
+            <p className={classes.optionsContainer}>
+              {index + 1}.&nbsp;
+              {question.options &&
+                question.options.map((option, i) => {
+                  return (
+                    <Fragment key={i}>
+                      <span>
+                        {option.is_correct ? (
+                          <Fragment>{numberToAlphabet(i)}&nbsp;</Fragment>
+                        ) : (
+                          ""
+                        )}
+                      </span>
+                    </Fragment>
+                  );
+                })}
+            </p>
+          </Grid>
         );
       });
     }
   }
+
   render() {
     const { classes } = this.props;
-
     return (
-      <PageContainer maxWidth='lg'>
+      <PageContainer maxWidth="lg">
         {/* <FullBodyLoader active={fetching || deleting} /> */}
+        <Grid container spacing={2} className={classes.mainContainer}>
+          <CustomSmallPaper className={classes.fullWidthContent}>
+            <CardContent className={classes.cardContent}>
+              <Grid container className={classes.root}>
+                {this.renderSubjects()}
+              </Grid>
+            </CardContent>
+          </CustomSmallPaper>
+        </Grid>
+
         <Grid container spacing={2} className={classes.mainContainer}>
           <CustomSmallPaper className={classes.questionWrapper}>
             <CardContent className={classes.cardContent}>
               <Grid container className={classes.root}>
-                <p id='downloadQuestions' className={classes.textRight}>
+                <p id="downloadQuestions" className={classes.textRight}>
                   <IconButton
-                    color='primary'
-                    aria-label='Download'
+                    color="primary"
+                    aria-label="Download"
                     className={classes.buttonBg}
                     onClick={() =>
                       this.export2Doc("questionDownload", "BaseQuestion")
@@ -272,7 +288,7 @@ export class viewBaseQuestion extends Component {
                     <GetAppIcon />
                   </IconButton>
                 </p>
-                <div id='questionDownload'>{this.renderQuestions()}</div>
+                <div id="questionDownload">{this.renderQuestions()}</div>
               </Grid>
             </CardContent>
           </CustomSmallPaper>
@@ -281,10 +297,10 @@ export class viewBaseQuestion extends Component {
           <CustomSmallPaper className={classes.questionWrapper}>
             <CardContent className={classes.cardContent}>
               <Grid container className={classes.root}>
-                <p id='downloadQuestions' className={classes.textRight}>
+                <p id="downloadQuestions" className={classes.textRight}>
                   <IconButton
-                    color='primary'
-                    aria-label='Download'
+                    color="primary"
+                    aria-label="Download"
                     className={classes.buttonBg}
                     onClick={() =>
                       this.export2Doc("answerDownload", "answerSheet")
@@ -293,7 +309,7 @@ export class viewBaseQuestion extends Component {
                     <GetAppIcon />
                   </IconButton>
                 </p>
-                <div id='answerDownload'>
+                <div id="answerDownload">
                   <h3 className={classes.subjectTitle}>Answers</h3>
                   {this.renderAnswers()}
                 </div>

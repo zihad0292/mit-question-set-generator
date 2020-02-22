@@ -1,5 +1,6 @@
 var url = require("url");
 var BaseQuestion = require("../models/baseQuestion");
+var QuestionBank = require("../models/questionBank");
 
 module.exports = {
   getAllBaseQuestions: function(req, res, next) {
@@ -29,7 +30,6 @@ module.exports = {
       allQuestions: JSON.parse(query.allQuestions)
     };
 
-    console.log(baseQuestionRequest);
     var response = {
       success: true,
       status: 200
@@ -89,11 +89,38 @@ module.exports = {
       } else {
         response.results = result;
       }
-
       res.json(response);
     };
-    BaseQuestion.findOne({ _id: query.id }, cb);
+    QuestionBank.find({ _id: { $in: JSON.parse(query.allQuestions) } }, cb);
   },
+  //   deleteOffice: function (req, res, next) {
+  //     var url_parts = url.parse(req.url, true);
+  //     var query = url_parts.query;
+
+  //     var response = {
+  //         success : true,
+  //         status  : 200
+  //     };
+
+  //     Office.findOne({ _id: query.id }, function (err, office) {
+  //         User.deleteMany(office._id);
+  //         DBConfig.findOnlyId({ token: office.primary_key },function (err, dbconfig) {
+  //             dbconfig.forEach(function (item) {
+  //                 IndexRelation.deleteMany(item._id);
+  //             });
+  //         });
+  //         DBConfig.deleteMany(office.primary_key);
+  //     });
+
+  //     Office.delete(query.id, function (err, success) {
+  //         if(err){
+  //             return next(err);
+  //         }else{
+  //             response.message = "Office Successfully deleted";
+  //             res.json(response);
+  //         }
+  //     })
+  // },
 
   deleteBaseQuestion: function(req, res, next) {
     var url_parts = url.parse(req.url, true);

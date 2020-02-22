@@ -62,11 +62,11 @@ module.exports = {
   },
 
   find: function(params, response) {
-    QuestionBank.find(params, function(err, question) {
+    QuestionBank.find(params, function(err, questions) {
       if (err) {
         response(err, null);
       } else {
-        response(null, question);
+        response(null, questions.reverse());
       }
     });
   },

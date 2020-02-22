@@ -23,7 +23,7 @@ routes.get("/question-bank/stats/", questionBankController.countQuestions);
 // Base Question CRUD
 routes.get("/base-question/list", baseQuestionController.getAllBaseQuestions);
 routes.get(
-  "/base-question/questionBank",
+  "/base-question/baseQuestion",
   baseQuestionController.findBaseQuestion
 );
 routes.post(

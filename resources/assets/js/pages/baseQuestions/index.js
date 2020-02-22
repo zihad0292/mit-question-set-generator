@@ -106,7 +106,7 @@ class BaseQuestion extends Component {
       message: "",
       showMessage: false,
       viewBaseQuestion: false,
-      viewBaseQuestionId: null
+      baseQuestionDetails: null
     };
 
     this.onModalClose = this.onModalClose.bind(this);
@@ -140,9 +140,8 @@ class BaseQuestion extends Component {
   }
 
   onViewClick(selectedIndex) {
-    console.log(selectedIndex);
     this.setState({
-      viewBaseQuestionId: selectedIndex,
+      baseQuestionDetails: selectedIndex,
       viewBaseQuestion: true
     });
   }
@@ -328,7 +327,9 @@ class BaseQuestion extends Component {
           </PageContainer>
         )}
         {viewBaseQuestion && (
-          <ViewBaseQuestion baseQuestionId={this.state.viewBaseQuestionId} />
+          <ViewBaseQuestion
+            baseQuestionDetails={this.state.baseQuestionDetails}
+          />
         )}
       </Fragment>
     );
