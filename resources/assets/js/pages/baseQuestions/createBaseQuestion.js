@@ -142,20 +142,32 @@ class CreateBaseQuestion extends Component {
     });
   }
 
-  handleQuestionSelect(id, event) {
+  handleQuestionSelect(question, event) {
     const { tempSelectedQuestions, count } = this.state;
+
+    var formattedQuestion = {
+      question: question.question,
+      subject: question.subject,
+      options: question.options.map(option => {
+        return {
+          option: option.option,
+          is_correct: `${option.is_correct}`
+        };
+      }),
+      optionsReorder: `${question.optionsReorder}`
+    };
 
     let temp = tempSelectedQuestions;
     let filtered = [];
     if (event.target.checked) {
-      temp.push(id);
+      temp.push(formattedQuestion);
       this.setState({
         tempSelectedQuestions: temp,
         count: this.state.count + 1
       });
     } else {
       filtered = temp.filter(function(value, index, arr) {
-        return value !== id;
+        return value.question !== question.question;
       });
       this.setState({
         tempSelectedQuestions: filtered,
@@ -192,13 +204,16 @@ class CreateBaseQuestion extends Component {
 
     let tempFinalArray = finalArray.concat(tempSelectedQuestions);
 
-    this.setState({
-      selectedSubjects: tempSelectedSubjects,
-      finalArray: tempFinalArray,
-      tempSelectedQuestions: [],
-      subject: "",
-      questionsToRender: []
-    });
+    this.setState(
+      {
+        selectedSubjects: tempSelectedSubjects,
+        finalArray: tempFinalArray,
+        tempSelectedQuestions: [],
+        subject: "",
+        questionsToRender: []
+      },
+      () => console.log(this.state)
+    );
 
     // if (questionSetName === "") {
     //   alert("Please give a name to the question set");
@@ -260,7 +275,7 @@ class CreateBaseQuestion extends Component {
     const { classes } = this.props;
     const { questionsToRender, subject, selectedSubjects } = this.state;
 
-    if (subject === "" && selectedSubjects.length < 4) {
+    if (subject === "" && selectedSubjects.length < 6) {
       return (
         <Grid container spacing={3} className={classes.noQuestionsToDisplay}>
           <Typography
@@ -272,7 +287,7 @@ class CreateBaseQuestion extends Component {
           </Typography>
         </Grid>
       );
-    } else if (selectedSubjects.length === 4) {
+    } else if (selectedSubjects.length === 6) {
       return (
         <Grid container spacing={3} className={classes.noQuestionsToDisplay}>
           <Typography
@@ -280,7 +295,7 @@ class CreateBaseQuestion extends Component {
             color="textPrimary"
             className={classes.subjectTitle}
           >
-            You have already selected questions from 4 subjects
+            You have already selected questions from 6 subjects
           </Typography>
         </Grid>
       );
@@ -306,9 +321,7 @@ class CreateBaseQuestion extends Component {
             <FormControlLabel
               control={
                 <Checkbox
-                  onChange={event =>
-                    this.handleQuestionSelect(question._id, event)
-                  }
+                  onChange={event => this.handleQuestionSelect(question, event)}
                 />
               }
             />
@@ -378,7 +391,7 @@ class CreateBaseQuestion extends Component {
             <IntegrationReactSelect
               suggestions={subjectList}
               label="Select Subject"
-              disabled={selectedSubjects.length === 4}
+              disabled={selectedSubjects.length === 6}
               selected={selectedSubj}
               onChange={this.onSubjectSelect}
               placeholder="Select Subject"
@@ -410,7 +423,7 @@ class CreateBaseQuestion extends Component {
                   fullWidth
                   onClick={this.handleSubmit}
                 >
-                  Submit Base Question
+                  Save Base Question
                 </FlatButton>
                 <FlatButton
                   variant="contained"

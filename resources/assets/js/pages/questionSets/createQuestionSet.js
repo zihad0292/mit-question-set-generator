@@ -15,6 +15,7 @@ import Divider from "@material-ui/core/Divider";
 
 import { fetchQuestions } from "../../actions/questionBankActions";
 import { generateQuestionSet } from "../../actions/questionSetActions";
+import { fetchBaseQuestions } from "../../actions/baseQuestionActions";
 import {
   PageContainer,
   CustomSmallPaper,
@@ -64,7 +65,10 @@ class CreateQuestionSet extends Component {
   }
 
   componentDidMount() {
-    const { fetchQuestions } = this.props;
+    const { fetchBaseQuestions, baseQuestions } = this.props;
+    if (baseQuestions.length === 0) {
+      fetchBaseQuestions();
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -165,7 +169,6 @@ class CreateQuestionSet extends Component {
         label: item.baseQuestionName
       };
     });
-
     return (
       <PageContainer maxWidth="lg">
         <Grid container spacing={3} className={classes.titleRow}>
@@ -264,7 +267,10 @@ function mapStateToProps(store) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ fetchQuestions, generateQuestionSet }, dispatch);
+  return bindActionCreators(
+    { fetchQuestions, generateQuestionSet, fetchBaseQuestions },
+    dispatch
+  );
 }
 
 export default connect(

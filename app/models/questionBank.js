@@ -66,7 +66,7 @@ module.exports = {
       if (err) {
         response(err, null);
       } else {
-        response(null, questions.reverse());
+        response(null, questions);
       }
     });
   },
