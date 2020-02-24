@@ -20,12 +20,12 @@ var baseQuestionSchema = new Schema(
         },
         options: [
           {
-            option: String,
-            is_correct: Boolean
+            option: String
+            // is_correct: Boolean
           }
         ],
         optionsReorder: {
-          type: Boolean
+          // type: Boolean
         }
       }
     ]
