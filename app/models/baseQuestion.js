@@ -1,6 +1,24 @@
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
+// var optionsSchema = new Schema({
+//   option: { type: String },
+//   is_correct: { type: Boolean, default: false }
+// });
+
+// var questionsSchema = new Schema({
+//   question: {
+//     type: String,
+//     required: [true, "Question Field can not be empty"]
+//   },
+//   subject: {
+//     type: String,
+//     required: [true, "You must select a subject"]
+//   },
+//   options: [optionsSchema],
+//   optionsReorder: { type: Boolean, default: true }
+// });
+
 var baseQuestionSchema = new Schema(
   {
     baseQuestionName: {
@@ -8,32 +26,32 @@ var baseQuestionSchema = new Schema(
       required: [true, "BaseQuestion Name Can't be empty"]
     },
     selectedSubjects: [String],
-    allQuestions: [
-      {
-        question: {
-          type: String,
-          required: [true, "Question Field can not be empty"]
-        },
-        subject: {
-          type: String,
-          required: [true, "You must select a subject"]
-        },
-        options: [
-          {
-            option: String
-            // is_correct: Boolean
-          }
-        ],
-        optionsReorder: {
-          // type: Boolean
-        }
-      }
-    ]
+    allQuestions: [String]
   },
   {
     timestamps: { createdAt: "created_at", updatedAt: "updated_at" }
   }
 );
+
+// baseQuestionSchema.pre("save", function(next) {
+//   var baseQuestion = this;
+
+//   var optionsInfo = [];
+
+//   baseQuestions.allQuestions.forEach(function(question) {
+//     question.options.forEach(function(option) {
+//       var field = {
+//         option: option.option,
+//         is_correct: option.is_correct
+//       };
+//       optionsInfo.push(field);
+//     });
+//   });
+
+//   baseQuestion.fieldInformations = fieldInfo;
+
+//   next();
+// });
 
 var BaseQuestion = mongoose.model("baseQuestions", baseQuestionSchema);
 

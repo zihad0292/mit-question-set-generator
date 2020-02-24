@@ -138,6 +138,7 @@ class CreateBaseQuestion extends Component {
     this.setState({
       subject: val.value,
       questionsToRender: questionsToRender,
+      tempSelectedQuestions: [],
       count: 0
     });
   }
@@ -145,29 +146,17 @@ class CreateBaseQuestion extends Component {
   handleQuestionSelect(question, event) {
     const { tempSelectedQuestions, count } = this.state;
 
-    var formattedQuestion = {
-      question: question.question,
-      subject: question.subject,
-      options: question.options.map(option => {
-        return {
-          option: option.option,
-          is_correct: option.is_correct
-        };
-      }),
-      optionsReorder: question.optionsReorder
-    };
-
     let temp = tempSelectedQuestions;
     let filtered = [];
     if (event.target.checked) {
-      temp.push(formattedQuestion);
+      temp.push(question._id);
       this.setState({
         tempSelectedQuestions: temp,
         count: this.state.count + 1
       });
     } else {
       filtered = temp.filter(function(value, index, arr) {
-        return value.question !== question.question;
+        return value._id !== question._id;
       });
       this.setState({
         tempSelectedQuestions: filtered,

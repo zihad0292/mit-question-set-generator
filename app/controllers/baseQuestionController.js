@@ -81,13 +81,21 @@ module.exports = {
       status: 200
     };
 
+    var questionIDs = JSON.parse(query.allQuestions);
     var cb = function(err, result) {
       if (err) {
         response.success = false;
         response.status = 401;
         response.error = err;
       } else {
-        response.results = result;
+        var finalResult = [];
+        for (var i = 0; i < questionIDs.length; i++) {
+          let questionTopush = result.filter(question => {
+            return questionIDs[i] == question._id;
+          });
+          finalResult.push(questionTopush[0]);
+        }
+        response.results = finalResult;
       }
       res.json(response);
     };
