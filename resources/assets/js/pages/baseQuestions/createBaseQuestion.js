@@ -151,10 +151,10 @@ class CreateBaseQuestion extends Component {
       options: question.options.map(option => {
         return {
           option: option.option,
-          is_correct: `${option.is_correct}`
+          is_correct: option.is_correct
         };
       }),
-      optionsReorder: `${question.optionsReorder}`
+      optionsReorder: question.optionsReorder
     };
 
     let temp = tempSelectedQuestions;
