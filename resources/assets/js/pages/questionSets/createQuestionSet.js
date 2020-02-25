@@ -46,6 +46,10 @@ const styles = theme => ({
   },
   rightIcon: {
     marginLeft: theme.spacing(1)
+  },
+  subjectOrder: {
+    display: "inline-block",
+    margin: "0 20px 0 20px"
   }
 });
 
@@ -56,12 +60,16 @@ class CreateQuestionSet extends Component {
       questionSetName: "",
       optionsReorder: false,
       baseQuestionIndex: null,
-      showMessage: false
+      showMessage: false,
+      subjectOrder: [],
+      availablePos: [],
+      takenPositions: []
     };
     this.handleChange = this.handleChange.bind(this);
     this.onBaseQuestionSelect = this.onBaseQuestionSelect.bind(this);
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleSubjectOrderChange = this.handleSubjectOrderChange.bind(this);
   }
 
   componentDidMount() {
@@ -88,9 +96,20 @@ class CreateQuestionSet extends Component {
     // }
   }
 
+  handleSubjectOrderChange(event) {
+    console.log(event);
+    console.log(subject);
+  }
+
   onBaseQuestionSelect(index) {
+    let availablePos = this.props.baseQuestions[
+      index.value
+    ].selectedSubjects.map((item, index) => {
+      return index + 1;
+    });
     this.setState({
-      baseQuestionIndex: index.value
+      baseQuestionIndex: index.value,
+      availablePos: availablePos
     });
   }
 
@@ -161,7 +180,12 @@ class CreateQuestionSet extends Component {
 
   render() {
     const { classes, generating, updating, type, baseQuestions } = this.props;
-    const { questionSetName, optionsReorder, baseQuestionIndex } = this.state;
+    const {
+      questionSetName,
+      optionsReorder,
+      baseQuestionIndex,
+      availablePos
+    } = this.state;
 
     const selectBaseQuestion = baseQuestions.map((item, index) => {
       return {
@@ -169,13 +193,20 @@ class CreateQuestionSet extends Component {
         label: item.baseQuestionName
       };
     });
+
+    const selectSubjectOrder = availablePos.map(item => {
+      return {
+        value: item,
+        label: item
+      };
+    });
     return (
-      <PageContainer maxWidth="lg">
+      <PageContainer maxWidth='lg'>
         <Grid container spacing={3} className={classes.titleRow}>
           <Grid item xs={12} sm={8} className={classes.relativeContainer}>
             <Typography
-              variant="h4"
-              color="textPrimary"
+              variant='h4'
+              color='textPrimary'
               className={classes.subjectTitle}
             >
               Generate New Question Set
@@ -191,12 +222,12 @@ class CreateQuestionSet extends Component {
                   <Grid item sm={12}>
                     <TextField
                       required
-                      id="questionSetName"
-                      name="questionSetName"
-                      label="Question Set Name"
+                      id='questionSetName'
+                      name='questionSetName'
+                      label='Question Set Name'
                       value={this.state.questionSetName}
-                      margin="normal"
-                      variant="outlined"
+                      margin='normal'
+                      variant='outlined'
                       fullWidth
                       onChange={this.handleChange}
                     />
@@ -204,41 +235,69 @@ class CreateQuestionSet extends Component {
                   <Grid item sm={12}>
                     <IntegrationReactSelect
                       suggestions={selectBaseQuestion}
-                      label="Form"
-                      onChange={this.onBaseQuestionSelect}
-                      placeholder="Select Base Question"
+                      label='Form'
+                      onChange={e => this.onBaseQuestionSelect(e, "form")}
+                      placeholder='Select Base Question'
                     />
                   </Grid>
-                  {baseQuestionIndex !== null
-                    ? baseQuestions[baseQuestionIndex].selectedSubjects.map(
+                  {baseQuestionIndex !== null ? (
+                    <Grid item sm={12}>
+                      <Typography variant='h5' color='textPrimary'>
+                        Select Subjects order
+                      </Typography>
+                      {baseQuestions[baseQuestionIndex].selectedSubjects.map(
                         subject => {
-                          return <p>{subject}</p>;
+                          return (
+                            <div
+                              style={{
+                                display: "inline-block",
+                                width: "170px",
+                                margin: "20px 10px 0",
+                                textTransform: "capitalize"
+                              }}
+                              key={subject}
+                            >
+                              <IntegrationReactSelect
+                                suggestions={selectSubjectOrder}
+                                label={subject}
+                                onChange={(val, subject) =>
+                                  this.handleSubjectOrderChange(val, subject)
+                                }
+                                placeholder='Select order'
+                                className={classes.subjectOrder}
+                              />
+                            </div>
+                          );
                         }
-                      )
-                    : ""}
+                      )}
+                    </Grid>
+                  ) : (
+                    ""
+                  )}
+
                   <Grid item sm={12}>
                     <FormGroup>
                       <FormControlLabel
                         control={
                           <Checkbox
-                            name="optionsReorder"
+                            name='optionsReorder'
                             checked={optionsReorder}
                             onChange={this.handleCheckboxChange}
                             value={optionsReorder}
                           />
                         }
-                        label="Should the Options be rearranged?"
+                        label='Should the Options be rearranged?'
                       />
                     </FormGroup>
                   </Grid>
                 </Grid>
 
                 <FlatButton
-                  variant="contained"
-                  color="primary"
+                  variant='contained'
+                  color='primary'
                   disabled={generating}
                   className={classes.submitButton}
-                  size="large"
+                  size='large'
                   fullWidth
                   onClick={this.handleSubmit}
                 >

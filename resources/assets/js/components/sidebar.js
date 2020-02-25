@@ -66,17 +66,17 @@ const Pages = [
   {
     title: "Subjects",
     url: "/subjects",
-    icon: "collections_icon"
+    icon: "library_books"
   },
   {
     title: "Question Bank",
     url: "/question-bank/allsubjects",
-    icon: "collections_icon"
+    icon: "account_balance"
   },
   {
     title: "Base Questions",
     url: "/base-questions",
-    icon: "collections_icon"
+    icon: "note"
   },
   {
     title: "Question Sets",
