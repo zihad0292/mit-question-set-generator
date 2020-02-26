@@ -1,5 +1,5 @@
 const initialState = {
-  singleQuestionSet: [],
+  singleQuestionSet: {},
   questionSets: [],
   message: "",
   fetching: false,

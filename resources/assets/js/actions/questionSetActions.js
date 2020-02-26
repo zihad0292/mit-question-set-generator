@@ -29,13 +29,20 @@ export function fetchQuestionSets() {
   };
 }
 
-export function generateQuestionSet(questionSetName, questionSet) {
+export function generateQuestionSet(
+  questionSetName,
+  questionPaper1,
+  questionPaper2,
+  questionPaper3,
+  questionPaper4,
+  subjectOrder,
+  optionsReorder
+) {
   return function(dispatch) {
     dispatch({ type: "GENERATING_QUESTION_SET" });
-
     axios
       .post(
-        `${baseUrl}generate?questionSetName=${questionSetName}&questionSet=${questionSet}`
+        `${baseUrl}generate?questionSetName=${questionSetName}&questionPaper1=${questionPaper1}&questionPaper2=${questionPaper2}&questionPaper3=${questionPaper3}&questionPaper4=${questionPaper4}&subjectOrder=${subjectOrder}&optionsReorder=${optionsReorder}`
       )
       .then(response => {
         const d = response.data;

@@ -3,21 +3,16 @@ var Schema = mongoose.Schema;
 
 var questionSetSchema = new Schema(
   {
-    questionSetName: {
+    setName: {
       type: String,
       required: [true, "QuestionSet Name Can't be empty"]
     },
-    questionSet: [
-      {
-        subject: String,
-        questions: [
-          {
-            question: String,
-            options: [{ option: String, is_correct: Boolean }]
-          }
-        ]
-      }
-    ]
+    questionPaper1: [String],
+    questionPaper2: [String],
+    questionPaper3: [String],
+    questionPaper4: [String],
+    subjectOrder: [String],
+    optionsReorder: Boolean
   },
   {
     timestamps: { createdAt: "created_at", updatedAt: "updated_at" }

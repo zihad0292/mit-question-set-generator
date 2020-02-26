@@ -141,10 +141,9 @@ class QuestionSet extends Component {
   }
 
   onViewClick(selectedIndex) {
-    this.setState({
-      viewSetId: selectedIndex,
-      viewSet: true
-    });
+    this.props.history.push(
+      `/dashboard/question-sets/view-set/${selectedIndex}`
+    );
   }
 
   onDeleteClick(selectedIndex) {
@@ -206,7 +205,7 @@ class QuestionSet extends Component {
     const columns = [
       {
         title: "Name",
-        field: "questionSetName",
+        field: "setName",
         sorting: false
       },
       {

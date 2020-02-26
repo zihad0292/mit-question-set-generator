@@ -1,5 +1,6 @@
 var url = require("url");
 var QuestionSet = require("../models/questionSet");
+var QuestionBank = require("../models/questionBank");
 
 module.exports = {
   getAllQuestionSets: function(req, res, next) {
@@ -23,14 +24,19 @@ module.exports = {
     var url_parts = url.parse(req.url, true);
     var query = url_parts.query;
 
-    var QuestionSetRequest = {
-      questionSetName: query.questionSetName,
-      questionSet: JSON.parse(query.questionSet)
-    };
-
     var response = {
       success: true,
       status: 200
+    };
+
+    var QuestionSetRequest = {
+      setName: query.questionSetName,
+      questionPaper1: JSON.parse(query.questionPaper1),
+      questionPaper2: JSON.parse(query.questionPaper2),
+      questionPaper3: JSON.parse(query.questionPaper3),
+      questionPaper4: JSON.parse(query.questionPaper4),
+      subjectOrder: JSON.parse(query.subjectOrder),
+      optionsReorder: query.optionsReorder
     };
 
     QuestionSet.create(QuestionSetRequest, function(err, result) {

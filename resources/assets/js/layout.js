@@ -22,6 +22,7 @@ import BaseQuestions from "./pages/baseQuestions";
 import CreateBaseQuestion from "./pages/baseQuestions/createBaseQuestion";
 // import EditQuestion from "./pages/questionBank/editQuestion";
 import QuestionSets from "./pages/questionSets";
+import ViewQuestionSet from "./pages/questionSets/viewQuestionSet";
 import CreateQuestionSet from "./pages/questionSets/createQuestionSet";
 import NotFound from "./pages/notfound";
 
@@ -81,13 +82,13 @@ class Layout extends Component {
         <Grid
           container
           spacing={0}
-          direction='column'
-          alignItems='center'
-          justify='center'
+          direction="column"
+          alignItems="center"
+          justify="center"
           style={{ minHeight: "100vh" }}
         >
           <Grid item xs={3}>
-            <img src='/images/preloader.gif' />
+            <img src="/images/preloader.gif" />
           </Grid>
         </Grid>
       );
@@ -100,39 +101,45 @@ class Layout extends Component {
         <Sidebar isOpen={openMenu} />
         <div className={classes.routeContainer}>
           <Switch>
-            <Route exact path='/dashboard' component={Landing} />
+            <Route exact path="/dashboard" component={Landing} />
             <Route
               exact
-              path='/dashboard/question-bank/allsubjects'
+              path="/dashboard/question-bank/allsubjects"
               component={QuestionBank}
             />
-            <Route exact path='/dashboard/subjects' component={AllSubjects} />
+            <Route exact path="/dashboard/subjects" component={AllSubjects} />
             <Route
               exact
-              path='/dashboard/base-questions'
+              path="/dashboard/base-questions"
               component={BaseQuestions}
             />
             <Route
               exact
-              path='/dashboard/base-questions/create-new'
+              path="/dashboard/base-questions/create-new"
               component={CreateBaseQuestion}
             />
             <Route
-              path='/dashboard/question-bank/allsubjects/:subject'
+              path="/dashboard/question-bank/allsubjects/:subject"
               component={QuestionBankCategory}
             />
             <Route
-              path='/dashboard/question-bank/create/:subject'
+              path="/dashboard/question-bank/create/:subject"
               component={CreateQuestion}
             />
 
             <Route
               exact
-              path='/dashboard/question-sets'
+              path="/dashboard/question-sets"
               component={QuestionSets}
             />
+
             <Route
-              path='/dashboard/question-sets/generate-new'
+              exact
+              path="/dashboard/question-sets/view-set/:id"
+              component={ViewQuestionSet}
+            />
+            <Route
+              path="/dashboard/question-sets/generate-new"
               component={CreateQuestionSet}
             />
             <Route component={NotFound} />

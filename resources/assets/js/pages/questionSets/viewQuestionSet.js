@@ -7,6 +7,7 @@ import Grid from "@material-ui/core/Grid";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
+import Icon from "@material-ui/core/Icon";
 
 import GetAppIcon from "@material-ui/icons/GetApp";
 
@@ -98,7 +99,9 @@ const styles = theme => ({
     marginTop: "20px"
   },
   questionContainer: {
-    margin: "0"
+    margin: "0 0 15px 0",
+    paddingBottom: "10px",
+    borderBottom: "1px solid #ddd"
   },
   questionWrapper: {
     width: "100%",
@@ -131,172 +134,58 @@ export class viewQuestionSet extends Component {
     this.state = {
       questionSet: []
     };
-    this.export2Doc = this.export2Doc.bind(this);
   }
 
   componentDidMount() {
-    this.props.fetchQuestionSet(this.props.setId);
+    this.props.fetchQuestionSet(this.props.match.params.subject);
   }
 
-  componentWillReceiveProps(nextProps) {
-    // console.log(nextProps);
-  }
-
-  export2Doc(element, filename = "") {
-    var downloadLink = document.createElement("a");
-
-    function initiateDownload(callback) {
-      var preHtml =
-        "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Export HTML To Doc</title></head><body>";
-      var postHtml = "</body></html>";
-      var html =
-        preHtml + document.getElementById(element).innerHTML + postHtml;
-
-      var url =
-        "data:application/vnd.ms-word;charset=utf-8," +
-        encodeURIComponent(html);
-
-      filename = filename ? filename + ".docx" : "document.docx";
-      downloadLink.href = url;
-      downloadLink.download = filename;
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-
-      callback();
-    }
-
-    function removeDownloadLink() {
-      document.body.removeChild(downloadLink);
-    }
-
-    initiateDownload(removeDownloadLink);
-  }
-
-  renderQuestions() {
+  renderQuestionPapers() {
     const { classes, singleQuestionSet } = this.props;
-    if (
-      singleQuestionSet.questionSet &&
-      singleQuestionSet.questionSet.length > 0
-    ) {
-      var i = 1;
-      return singleQuestionSet.questionSet.map((subject, index) => {
-        return (
-          <Fragment>
-            {/* <h3 className={classes.subjectTitle}>{subject.subject}</h3> */}
-            {subject.questions.map((question, idx) => {
-              return (
-                <Grid item xs={12} key={index + 100}>
-                  <p className={classes.questionContainer}>
-                    {i++}.&nbsp;{question.question}
-                  </p>
-                  <p className={classes.optionsContainer}>
-                    {question.options &&
-                      question.options.map((option, i) => {
-                        return (
-                          <Fragment key={i}>
-                            <span>
-                              ({numberToAlphabet(i)})&nbsp;
-                              {option.option}
-                            </span>
-                            &nbsp; &nbsp; &nbsp;
-                          </Fragment>
-                        );
-                      })}
-                  </p>
-                </Grid>
-              );
-            })}
-          </Fragment>
-        );
-      });
-    }
+    const repeater = [1, 2, 3, 4];
+    return (
+      <Fragment>
+        <h3 className={singleQuestionSet.setName}></h3>
+        <Grid item xs={12}>
+          {repeater.map(item => {
+            return (
+              <p className={classes.questionContainer}>
+                ${item}. Question Paper {item}
+                <FlatButton
+                  variant="contained"
+                  color="default"
+                  className={classes.submitButton}
+                  size="small"
+                  onClick={() =>
+                    this.props.history.push(
+                      `/dashboard/question-sets/view-question-paper/paper${item}`
+                    )
+                  }
+                >
+                  View
+                  <Icon className={`${classes.rightIcon} ${classes.addIcon}`}>
+                    visibility
+                  </Icon>
+                </FlatButton>
+              </p>
+            );
+          })}
+        </Grid>
+      </Fragment>
+    );
   }
 
-  renderAnswers() {
-    const { classes, singleQuestionSet } = this.props;
-    if (
-      singleQuestionSet.questionSet &&
-      singleQuestionSet.questionSet.length > 0
-    ) {
-      var i = 1;
-      return singleQuestionSet.questionSet.map((subject, index) => {
-        return (
-          <Fragment>
-            {subject.questions.map((question, idx) => {
-              return (
-                <Grid item xs={12} key={index + 100}>
-                  <p className={classes.optionsContainer}>
-                    {i++}.&nbsp;
-                    {question.options &&
-                      question.options.map((option, i) => {
-                        return (
-                          <Fragment key={i}>
-                            <span>
-                              {option.is_correct ? (
-                                <Fragment>{numberToAlphabet(i)}&nbsp;</Fragment>
-                              ) : (
-                                ""
-                              )}
-                            </span>
-                          </Fragment>
-                        );
-                      })}
-                  </p>
-                </Grid>
-              );
-            })}
-          </Fragment>
-        );
-      });
-    }
-  }
   render() {
     const { classes } = this.props;
 
     return (
-      <PageContainer maxWidth='lg'>
+      <PageContainer maxWidth="lg">
         {/* <FullBodyLoader active={fetching || deleting} /> */}
         <Grid container spacing={2} className={classes.mainContainer}>
           <CustomSmallPaper className={classes.questionWrapper}>
             <CardContent className={classes.cardContent}>
               <Grid container className={classes.root}>
-                <p id='downloadQuestions' className={classes.textRight}>
-                  <IconButton
-                    color='primary'
-                    aria-label='Download'
-                    className={classes.buttonBg}
-                    onClick={() =>
-                      this.export2Doc("questionDownload", "questionSet")
-                    }
-                  >
-                    <GetAppIcon />
-                  </IconButton>
-                </p>
-                <div id='questionDownload'>{this.renderQuestions()}</div>
-              </Grid>
-            </CardContent>
-          </CustomSmallPaper>
-        </Grid>
-        <Grid container spacing={2} className={classes.mainContainer}>
-          <CustomSmallPaper className={classes.questionWrapper}>
-            <CardContent className={classes.cardContent}>
-              <Grid container className={classes.root}>
-                <p id='downloadQuestions' className={classes.textRight}>
-                  <IconButton
-                    color='primary'
-                    aria-label='Download'
-                    className={classes.buttonBg}
-                    onClick={() =>
-                      this.export2Doc("answerDownload", "answerSheet")
-                    }
-                  >
-                    <GetAppIcon />
-                  </IconButton>
-                </p>
-                <div id='answerDownload'>
-                  <h3 className={classes.subjectTitle}>Answers</h3>
-                  {this.renderAnswers()}
-                </div>
+                {this.renderQuestionPapers()}
               </Grid>
             </CardContent>
           </CustomSmallPaper>

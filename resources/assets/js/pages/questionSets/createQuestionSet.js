@@ -49,7 +49,7 @@ const styles = theme => ({
   },
   subjectOrder: {
     display: "inline-block",
-    margin: "0 20px 0 20px"
+    margin: "0 0 0 10px"
   }
 });
 
@@ -97,8 +97,30 @@ class CreateQuestionSet extends Component {
   }
 
   handleSubjectOrderChange(event) {
-    console.log(event);
-    console.log(subject);
+    var tempArray = [...this.state.subjectOrder];
+    var newPosition = event.target.value - 1;
+    if (tempArray[newPosition] !== "" || newPosition === -1) {
+      if (tempArray.indexOf(event.target.name) !== -1) {
+        var oldPosition = tempArray.indexOf(event.target.name);
+        tempArray[oldPosition] = "";
+        this.setState({
+          subjectOrder: tempArray
+        });
+      }
+      alert("Please select a different position");
+      return;
+    }
+    if (tempArray.indexOf(event.target.name) !== -1) {
+      var oldPosition = tempArray.indexOf(event.target.name);
+      tempArray[oldPosition] = "";
+      tempArray[newPosition] = event.target.name;
+    } else {
+      tempArray[newPosition] = event.target.name;
+    }
+    console.log(tempArray);
+    this.setState({
+      subjectOrder: tempArray
+    });
   }
 
   onBaseQuestionSelect(index) {
@@ -107,19 +129,22 @@ class CreateQuestionSet extends Component {
     ].selectedSubjects.map((item, index) => {
       return index + 1;
     });
+    let subjectOrder = this.props.baseQuestions[
+      index.value
+    ].selectedSubjects.map((item, index) => {
+      return "";
+    });
     this.setState({
       baseQuestionIndex: index.value,
-      availablePos: availablePos
+      availablePos: availablePos,
+      subjectOrder: subjectOrder
     });
   }
 
   handleCheckboxChange(event) {
-    this.setState(
-      {
-        [event.target.name]: event.target.checked
-      },
-      () => console.log(this.state)
-    );
+    this.setState({
+      [event.target.name]: event.target.checked
+    });
   }
 
   handleChange(event) {
@@ -129,53 +154,51 @@ class CreateQuestionSet extends Component {
   }
 
   handleSubmit() {
-    const { questionSetName, subjectsReorder, optionsReorder } = this.state;
-    const { generateQuestionSet } = this.props;
+    const {
+      questionSetName,
+      optionsReorder,
+      baseQuestionIndex,
+      subjectOrder
+    } = this.state;
+    const { generateQuestionSet, baseQuestions } = this.props;
 
     if (questionSetName === "") {
       alert("Please give a name to the question set");
+      return;
     }
 
-    let finalArray = [
-      {
-        subject: "english",
-        questions: randomEnglishQuestions
-      },
-      {
-        subject: "math",
-        questions: randomMathQuestions
-      },
-      {
-        subject: "physics",
-        questions: randomPhysicsQuestions
-      },
-      {
-        subject: "chemistry",
-        questions: randomChemistryQuestions
-      }
-    ];
-
-    if (subjectsReorder) {
-      finalArray = shuffleArray(finalArray);
+    if (subjectOrder.indexOf("") !== -1) {
+      alert("Please select subject order properly");
+      return;
     }
+    console.log(baseQuestions[baseQuestionIndex].allQuestions);
+    let finalArray = baseQuestions[baseQuestionIndex].allQuestions;
 
-    if (optionsReorder) {
-      finalArray = finalArray.map(item => {
-        return {
-          subject: item.subject,
-          questions: item.questions.map(subitem => {
-            return {
-              question: subitem.question,
-              options: subitem.optionsReorder
-                ? shuffleArray(subitem.options)
-                : subitem.options
-            };
-          })
-        };
-      });
-    }
-    console.log(JSON.stringify(finalArray));
-    generateQuestionSet(questionSetName, JSON.stringify(finalArray));
+    // if (optionsReorder) {
+    //   finalArray = finalArray.map(item => {
+    //     return {
+    //       subject: item.subject,
+    //       questions: item.questions.map(subitem => {
+    //         return {
+    //           question: subitem.question,
+    //           options: subitem.optionsReorder
+    //             ? shuffleArray(subitem.options)
+    //             : subitem.options
+    //         };
+    //       })
+    //     };
+    //   });
+    // }
+
+    generateQuestionSet(
+      questionSetName,
+      JSON.stringify(shuffleArray(finalArray)),
+      JSON.stringify(shuffleArray(finalArray)),
+      JSON.stringify(shuffleArray(finalArray)),
+      JSON.stringify(shuffleArray(finalArray)),
+      JSON.stringify(subjectOrder),
+      JSON.stringify(optionsReorder)
+    );
   }
 
   render() {
@@ -201,12 +224,12 @@ class CreateQuestionSet extends Component {
       };
     });
     return (
-      <PageContainer maxWidth='lg'>
+      <PageContainer maxWidth="lg">
         <Grid container spacing={3} className={classes.titleRow}>
           <Grid item xs={12} sm={8} className={classes.relativeContainer}>
             <Typography
-              variant='h4'
-              color='textPrimary'
+              variant="h4"
+              color="textPrimary"
               className={classes.subjectTitle}
             >
               Generate New Question Set
@@ -222,12 +245,12 @@ class CreateQuestionSet extends Component {
                   <Grid item sm={12}>
                     <TextField
                       required
-                      id='questionSetName'
-                      name='questionSetName'
-                      label='Question Set Name'
+                      id="questionSetName"
+                      name="questionSetName"
+                      label="Question Set Name"
                       value={this.state.questionSetName}
-                      margin='normal'
-                      variant='outlined'
+                      margin="normal"
+                      variant="outlined"
                       fullWidth
                       onChange={this.handleChange}
                     />
@@ -235,14 +258,14 @@ class CreateQuestionSet extends Component {
                   <Grid item sm={12}>
                     <IntegrationReactSelect
                       suggestions={selectBaseQuestion}
-                      label='Form'
+                      label="Form"
                       onChange={e => this.onBaseQuestionSelect(e, "form")}
-                      placeholder='Select Base Question'
+                      placeholder="Select Base Question"
                     />
                   </Grid>
                   {baseQuestionIndex !== null ? (
                     <Grid item sm={12}>
-                      <Typography variant='h5' color='textPrimary'>
+                      <Typography variant="h5" color="textPrimary">
                         Select Subjects order
                       </Typography>
                       {baseQuestions[baseQuestionIndex].selectedSubjects.map(
@@ -251,21 +274,38 @@ class CreateQuestionSet extends Component {
                             <div
                               style={{
                                 display: "inline-block",
-                                width: "170px",
-                                margin: "20px 10px 0",
+                                width: "100%",
+                                maxWidth: "200px",
+                                margin: "20px 10px 0 0",
                                 textTransform: "capitalize"
                               }}
                               key={subject}
                             >
-                              <IntegrationReactSelect
+                              {subject}
+                              {/* <IntegrationReactSelect
                                 suggestions={selectSubjectOrder}
                                 label={subject}
-                                onChange={(val, subject) =>
-                                  this.handleSubjectOrderChange(val, subject)
+                                onChange={val =>
+                                  this.handleSubjectOrderChange(val)
                                 }
-                                placeholder='Select order'
+                                placeholder="Select order"
                                 className={classes.subjectOrder}
-                              />
+                              /> */}
+                              <select
+                                id="subjectOrder"
+                                name={subject}
+                                onChange={this.handleSubjectOrderChange}
+                                className={classes.subjectOrder}
+                              >
+                                <option value="">0</option>
+                                {availablePos.map(item => {
+                                  return (
+                                    <option value={item} key={item}>
+                                      {item}
+                                    </option>
+                                  );
+                                })}
+                              </select>
                             </div>
                           );
                         }
@@ -280,24 +320,24 @@ class CreateQuestionSet extends Component {
                       <FormControlLabel
                         control={
                           <Checkbox
-                            name='optionsReorder'
+                            name="optionsReorder"
                             checked={optionsReorder}
                             onChange={this.handleCheckboxChange}
                             value={optionsReorder}
                           />
                         }
-                        label='Should the Options be rearranged?'
+                        label="Should the Options be rearranged?"
                       />
                     </FormGroup>
                   </Grid>
                 </Grid>
 
                 <FlatButton
-                  variant='contained'
-                  color='primary'
+                  variant="contained"
+                  color="primary"
                   disabled={generating}
                   className={classes.submitButton}
-                  size='large'
+                  size="large"
                   fullWidth
                   onClick={this.handleSubmit}
                 >
