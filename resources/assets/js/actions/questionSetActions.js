@@ -66,7 +66,6 @@ export function generateQuestionSet(
 
 export function fetchQuestionSet(id) {
   return function(dispatch) {
-    console.log("Fetch question set");
     dispatch({ type: "FETCHING_QUESTION_SETS" });
 
     axios

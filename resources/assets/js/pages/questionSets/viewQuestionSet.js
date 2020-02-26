@@ -123,6 +123,16 @@ const styles = theme => ({
     width: "100%",
     marginRight: "50px"
   },
+  rightIcon: {
+    marginLeft: theme.spacing(1)
+  },
+  addIcon: {
+    position: "relative",
+    top: "-2px"
+  },
+  viewButton: {
+    marginLeft: "40px"
+  },
   buttonBg: {
     backgroundColor: "rgba(0, 0, 0, 0.08)"
   }
@@ -137,7 +147,7 @@ export class viewQuestionSet extends Component {
   }
 
   componentDidMount() {
-    this.props.fetchQuestionSet(this.props.match.params.subject);
+    this.props.fetchQuestionSet(this.props.match.params.id);
   }
 
   renderQuestionPapers() {
@@ -145,16 +155,16 @@ export class viewQuestionSet extends Component {
     const repeater = [1, 2, 3, 4];
     return (
       <Fragment>
-        <h3 className={singleQuestionSet.setName}></h3>
+        <h3>{singleQuestionSet.setName}</h3>
         <Grid item xs={12}>
           {repeater.map(item => {
             return (
-              <p className={classes.questionContainer}>
-                ${item}. Question Paper {item}
+              <p className={classes.questionContainer} key={item}>
+                {item}. Question Paper {item}
                 <FlatButton
                   variant="contained"
-                  color="default"
-                  className={classes.submitButton}
+                  color="primary"
+                  className={classes.viewButton}
                   size="small"
                   onClick={() =>
                     this.props.history.push(

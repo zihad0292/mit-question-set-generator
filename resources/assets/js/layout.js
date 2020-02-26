@@ -23,6 +23,7 @@ import CreateBaseQuestion from "./pages/baseQuestions/createBaseQuestion";
 // import EditQuestion from "./pages/questionBank/editQuestion";
 import QuestionSets from "./pages/questionSets";
 import ViewQuestionSet from "./pages/questionSets/viewQuestionSet";
+import ViewQuestionPaper from "./pages/questionSets/viewQuestionPaper";
 import CreateQuestionSet from "./pages/questionSets/createQuestionSet";
 import NotFound from "./pages/notfound";
 
@@ -138,6 +139,13 @@ class Layout extends Component {
               path="/dashboard/question-sets/view-set/:id"
               component={ViewQuestionSet}
             />
+
+            <Route
+              exact
+              path="/dashboard/question-sets/view-question-paper/:paper"
+              component={ViewQuestionPaper}
+            />
+
             <Route
               path="/dashboard/question-sets/generate-new"
               component={CreateQuestionSet}
