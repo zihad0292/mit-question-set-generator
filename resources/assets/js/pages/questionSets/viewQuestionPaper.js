@@ -141,19 +141,18 @@ export class viewQuestionPaper extends Component {
     const { fetchQuestionPaper, singleQuestionSet } = this.props;
     var str = this.props.match.params.paper;
     var res = str.split("-");
-    console.log(res);
     this.setState({
-      questionSetIndex: str[0]
+      questionSetIndex: res[0]
     });
 
-    const paper = this.props.match.params.paper;
-    if (paper == "paper1") {
+    const paper = res[1];
+    if (paper == "1") {
       fetchQuestionPaper(singleQuestionSet.questionPaper1);
-    } else if (paper == "paper2") {
+    } else if (paper == "2") {
       fetchQuestionPaper(singleQuestionSet.questionPaper2);
-    } else if (paper == "paper3") {
+    } else if (paper == "3") {
       fetchQuestionPaper(singleQuestionSet.questionPaper3);
-    } else if (paper == "paper4") {
+    } else if (paper == "4") {
       fetchQuestionPaper(singleQuestionSet.questionPaper4);
     }
   }
@@ -220,14 +219,29 @@ export class viewQuestionPaper extends Component {
       classes,
       questionPaper,
       baseQuestionDetails,
-      questionSets
+      questionSets,
+      singleQuestionSet
     } = this.props;
 
-    console.log(questionSets);
+    // const { questionSetIndex } = this.state;
 
-    if (questionPaper && questionPaper.length > 0) {
+    // console.log(singleQuestionSet.subjectOrder);
+
+    var questionsToRender = [];
+
+    for (var i = 0; i < singleQuestionSet.subjectOrder.length; i++) {
+      for (var j = 0; j < questionPaper.length; j++) {
+        if (questionPaper[j].subject == singleQuestionSet.subjectOrder[i]) {
+          questionsToRender.push(questionPaper[j]);
+        }
+      }
+    }
+
+    console.log(questionsToRender);
+
+    if (questionsToRender && questionsToRender.length > 0) {
       var i = 1;
-      return questionPaper.map((question, index) => {
+      return questionsToRender.map((question, index) => {
         return (
           <Grid item xs={12} key={`${index}-q`}>
             <p className={classes.questionContainer}>
@@ -254,9 +268,20 @@ export class viewQuestionPaper extends Component {
   }
 
   renderAnswers() {
-    const { classes, questionPaper } = this.props;
-    if (questionPaper && questionPaper.length > 0) {
-      return questionPaper.map((question, index) => {
+    const { classes, questionPaper, singleQuestionSet } = this.props;
+
+    var questionsToRender = [];
+
+    for (var i = 0; i < singleQuestionSet.subjectOrder.length; i++) {
+      for (var j = 0; j < questionPaper.length; j++) {
+        if (questionPaper[j].subject == singleQuestionSet.subjectOrder[i]) {
+          questionsToRender.push(questionPaper[j]);
+        }
+      }
+    }
+
+    if (questionsToRender && questionsToRender.length > 0) {
+      return questionsToRender.map((question, index) => {
         return (
           <Grid item xs={12} key={`${index}-a`}>
             <p className={classes.optionsContainer}>
@@ -285,9 +310,9 @@ export class viewQuestionPaper extends Component {
   render() {
     const { classes } = this.props;
     return (
-      <PageContainer maxWidth='lg'>
+      <PageContainer maxWidth="lg">
         {/* <FullBodyLoader active={fetching || deleting} /> */}
-        <Grid container spacing={2} className={classes.mainContainer}>
+        {/* <Grid container spacing={2} className={classes.mainContainer}>
           <CustomSmallPaper className={classes.fullWidthContent}>
             <CardContent className={classes.cardContent}>
               <Grid container className={classes.root}>
@@ -295,16 +320,16 @@ export class viewQuestionPaper extends Component {
               </Grid>
             </CardContent>
           </CustomSmallPaper>
-        </Grid>
+        </Grid> */}
 
         <Grid container spacing={2} className={classes.mainContainer}>
           <CustomSmallPaper className={classes.questionWrapper}>
             <CardContent className={classes.cardContent}>
               <Grid container className={classes.root}>
-                <p id='downloadQuestions' className={classes.textRight}>
+                <p id="downloadQuestions" className={classes.textRight}>
                   <IconButton
-                    color='primary'
-                    aria-label='Download'
+                    color="primary"
+                    aria-label="Download"
                     className={classes.buttonBg}
                     onClick={() =>
                       this.export2Doc("questionDownload", "BaseQuestion")
@@ -313,7 +338,7 @@ export class viewQuestionPaper extends Component {
                     <GetAppIcon />
                   </IconButton>
                 </p>
-                <div id='questionDownload'>{this.renderQuestions()}</div>
+                <div id="questionDownload">{this.renderQuestions()}</div>
               </Grid>
             </CardContent>
           </CustomSmallPaper>
@@ -322,10 +347,10 @@ export class viewQuestionPaper extends Component {
           <CustomSmallPaper className={classes.questionWrapper}>
             <CardContent className={classes.cardContent}>
               <Grid container className={classes.root}>
-                <p id='downloadQuestions' className={classes.textRight}>
+                <p id="downloadQuestions" className={classes.textRight}>
                   <IconButton
-                    color='primary'
-                    aria-label='Download'
+                    color="primary"
+                    aria-label="Download"
                     className={classes.buttonBg}
                     onClick={() =>
                       this.export2Doc("answerDownload", "answerSheet")
@@ -334,7 +359,7 @@ export class viewQuestionPaper extends Component {
                     <GetAppIcon />
                   </IconButton>
                 </p>
-                <div id='answerDownload'>
+                <div id="answerDownload">
                   <h3 className={classes.subjectTitle}>Answers</h3>
                   {this.renderAnswers()}
                 </div>
