@@ -139,6 +139,13 @@ export class viewQuestionPaper extends Component {
 
   componentDidMount() {
     const { fetchQuestionPaper, singleQuestionSet } = this.props;
+    var str = this.props.match.params.paper;
+    var res = str.split("-");
+    console.log(res);
+    this.setState({
+      questionSetIndex: str[0]
+    });
+
     const paper = this.props.match.params.paper;
     if (paper == "paper1") {
       fetchQuestionPaper(singleQuestionSet.questionPaper1);
@@ -209,7 +216,15 @@ export class viewQuestionPaper extends Component {
   }
 
   renderQuestions() {
-    const { classes, questionPaper, baseQuestionDetails } = this.props;
+    const {
+      classes,
+      questionPaper,
+      baseQuestionDetails,
+      questionSets
+    } = this.props;
+
+    console.log(questionSets);
+
     if (questionPaper && questionPaper.length > 0) {
       var i = 1;
       return questionPaper.map((question, index) => {
@@ -270,7 +285,7 @@ export class viewQuestionPaper extends Component {
   render() {
     const { classes } = this.props;
     return (
-      <PageContainer maxWidth="lg">
+      <PageContainer maxWidth='lg'>
         {/* <FullBodyLoader active={fetching || deleting} /> */}
         <Grid container spacing={2} className={classes.mainContainer}>
           <CustomSmallPaper className={classes.fullWidthContent}>
@@ -286,10 +301,10 @@ export class viewQuestionPaper extends Component {
           <CustomSmallPaper className={classes.questionWrapper}>
             <CardContent className={classes.cardContent}>
               <Grid container className={classes.root}>
-                <p id="downloadQuestions" className={classes.textRight}>
+                <p id='downloadQuestions' className={classes.textRight}>
                   <IconButton
-                    color="primary"
-                    aria-label="Download"
+                    color='primary'
+                    aria-label='Download'
                     className={classes.buttonBg}
                     onClick={() =>
                       this.export2Doc("questionDownload", "BaseQuestion")
@@ -298,7 +313,7 @@ export class viewQuestionPaper extends Component {
                     <GetAppIcon />
                   </IconButton>
                 </p>
-                <div id="questionDownload">{this.renderQuestions()}</div>
+                <div id='questionDownload'>{this.renderQuestions()}</div>
               </Grid>
             </CardContent>
           </CustomSmallPaper>
@@ -307,10 +322,10 @@ export class viewQuestionPaper extends Component {
           <CustomSmallPaper className={classes.questionWrapper}>
             <CardContent className={classes.cardContent}>
               <Grid container className={classes.root}>
-                <p id="downloadQuestions" className={classes.textRight}>
+                <p id='downloadQuestions' className={classes.textRight}>
                   <IconButton
-                    color="primary"
-                    aria-label="Download"
+                    color='primary'
+                    aria-label='Download'
                     className={classes.buttonBg}
                     onClick={() =>
                       this.export2Doc("answerDownload", "answerSheet")
@@ -319,7 +334,7 @@ export class viewQuestionPaper extends Component {
                     <GetAppIcon />
                   </IconButton>
                 </p>
-                <div id="answerDownload">
+                <div id='answerDownload'>
                   <h3 className={classes.subjectTitle}>Answers</h3>
                   {this.renderAnswers()}
                 </div>
@@ -336,6 +351,7 @@ function mapStateToProps(store) {
   return {
     ...store.questionSetInfo,
     singleQuestionSet: store.questionSetInfo.singleQuestionSet,
+    questionSets: store.questionSetInfo.questionSets,
     questionPaper: store.questionPaperInfo.questionPaper
   };
 }

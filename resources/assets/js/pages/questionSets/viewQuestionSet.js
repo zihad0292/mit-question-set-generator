@@ -142,30 +142,40 @@ export class viewQuestionSet extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      questionSet: []
+      questionSet: [],
+      questionSetIndex: null
     };
   }
 
   componentDidMount() {
-    this.props.fetchQuestionSet(this.props.match.params.id);
+    var str = this.props.match.params.id;
+    var res = str.split("-");
+    console.log(res);
+    this.setState({
+      questionSetIndex: str[1]
+    });
+    this.props.fetchQuestionSet(res[0]);
   }
 
   renderQuestionPapers() {
-    const { classes, singleQuestionSet } = this.props;
+    const { classes, singleQuestionSet, questionSets } = this.props;
+    const { questionSetIndex } = this.state;
     const repeater = [1, 2, 3, 4];
+
     return (
       <Fragment>
         <h3>{singleQuestionSet.setName}</h3>
         <Grid item xs={12}>
           {repeater.map(item => {
+            var param = `${questionSetIndex}-${item}`;
             return (
               <p className={classes.questionContainer} key={item}>
                 {item}. Question Paper {item}
                 <FlatButton
-                  variant="contained"
-                  color="primary"
+                  variant='contained'
+                  color='primary'
                   className={classes.viewButton}
-                  size="small"
+                  size='small'
                   onClick={() =>
                     this.props.history.push(
                       `/dashboard/question-sets/view-question-paper/paper${item}`
@@ -189,7 +199,7 @@ export class viewQuestionSet extends Component {
     const { classes } = this.props;
 
     return (
-      <PageContainer maxWidth="lg">
+      <PageContainer maxWidth='lg'>
         {/* <FullBodyLoader active={fetching || deleting} /> */}
         <Grid container spacing={2} className={classes.mainContainer}>
           <CustomSmallPaper className={classes.questionWrapper}>

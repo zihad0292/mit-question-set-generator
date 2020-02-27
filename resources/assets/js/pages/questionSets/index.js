@@ -141,9 +141,9 @@ class QuestionSet extends Component {
   }
 
   onViewClick(selectedIndex) {
-    this.props.history.push(
-      `/dashboard/question-sets/view-set/${selectedIndex}`
-    );
+    var param = `${selectedIndex._id}-${selectedIndex.tableData.id}`;
+
+    this.props.history.push(`/dashboard/question-sets/view-set/${param}`);
   }
 
   onDeleteClick(selectedIndex) {
@@ -235,7 +235,7 @@ class QuestionSet extends Component {
         icon: "visibility",
         tooltip: "View",
         onClick: (event, rowData) => {
-          this.onViewClick(rowData._id);
+          this.onViewClick(rowData);
         }
       },
       {
@@ -257,7 +257,7 @@ class QuestionSet extends Component {
 
     return (
       <MaterialTable
-        title="Question sets"
+        title='Question sets'
         columns={columns}
         data={questionSetsToRender}
         actions={actions}
@@ -274,20 +274,20 @@ class QuestionSet extends Component {
     return (
       <Fragment>
         {!viewSet && (
-          <PageContainer maxWidth="lg">
+          <PageContainer maxWidth='lg'>
             <Grid container spacing={3} className={classes.titleRow}>
               <Grid item xs={12} sm={8} className={classes.relativeContainer}>
                 <Typography
-                  variant="h4"
-                  color="textPrimary"
+                  variant='h4'
+                  color='textPrimary'
                   className={classes.subjectTitle}
                 >
                   All Question Sets
                   <FlatButton
-                    variant="contained"
-                    color="primary"
+                    variant='contained'
+                    color='primary'
                     className={classes.buttonStyles}
-                    size="medium"
+                    size='medium'
                     onClick={() =>
                       history.push("/dashboard/question-sets/generate-new")
                     }
@@ -306,8 +306,8 @@ class QuestionSet extends Component {
               </Grid>
             </Grid>
             <ConfirmDialog
-              title="Confirm Delete?"
-              description="Do You Really Want to Delete this Question Set?"
+              title='Confirm Delete?'
+              description='Do You Really Want to Delete this Question Set?'
               active={this.state.confirm}
               onClose={this.onModalClose}
               onSubmit={this.onDeleteSubmit}
