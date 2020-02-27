@@ -41,7 +41,7 @@ class TopBar extends Component {
             <MenuIcon />
           </IconButton> */}
           <Typography variant='h6' className={classes.title}>
-            Admission Question Set Generator
+            MCQ Question Management System
           </Typography>
         </Toolbar>
       </AppBar>
