@@ -61,6 +61,7 @@ class CreateQuestionSet extends Component {
       optionsReorder: false,
       baseQuestionIndex: null,
       showMessage: false,
+      selectedSubjects: null,
       subjectOrder: [],
       availablePos: [],
       takenPositions: []
@@ -134,11 +135,15 @@ class CreateQuestionSet extends Component {
     ].selectedSubjects.map((item, index) => {
       return "";
     });
-    this.setState({
-      baseQuestionIndex: index.value,
-      availablePos: availablePos,
-      subjectOrder: subjectOrder
-    });
+    this.setState(
+      {
+        baseQuestionIndex: index.value,
+        availablePos: availablePos,
+        subjectOrder: subjectOrder,
+        selectedSubjects: this.props.baseQuestions[index.value].selectedSubjects
+      },
+      () => console.log(this.state)
+    );
   }
 
   handleCheckboxChange(event) {
@@ -158,7 +163,8 @@ class CreateQuestionSet extends Component {
       questionSetName,
       optionsReorder,
       baseQuestionIndex,
-      subjectOrder
+      subjectOrder,
+      selectedSubjects
     } = this.state;
     const { generateQuestionSet, baseQuestions } = this.props;
 
@@ -171,31 +177,31 @@ class CreateQuestionSet extends Component {
       alert("Please select subject order properly");
       return;
     }
-    console.log(baseQuestions[baseQuestionIndex].allQuestions);
-    let finalArray = baseQuestions[baseQuestionIndex].allQuestions;
 
-    // if (optionsReorder) {
-    //   finalArray = finalArray.map(item => {
-    //     return {
-    //       subject: item.subject,
-    //       questions: item.questions.map(subitem => {
-    //         return {
-    //           question: subitem.question,
-    //           options: subitem.optionsReorder
-    //             ? shuffleArray(subitem.options)
-    //             : subitem.options
-    //         };
-    //       })
-    //     };
-    //   });
-    // }
+    let allQuestions = baseQuestions[baseQuestionIndex].allQuestions;
+    console.log(allQuestions);
+    let finalArray = [[], [], [], []];
+    var trackStartPosition = 0;
+    for (var i = 0; i < selectedSubjects.length; i++) {
+      let questionCount = selectedSubjects[i].count;
+      var arrayToShuffle = allQuestions.slice(
+        trackStartPosition,
+        trackStartPosition + questionCount
+      );
+      console.log(arrayToShuffle);
+      trackStartPosition = questionCount;
+      for (var j = 0; j < 4; j++) {
+        var shuffledArray = shuffleArray(arrayToShuffle);
+        finalArray[j] = finalArray[j].concat(shuffledArray);
+      }
+    }
 
     generateQuestionSet(
       questionSetName,
-      JSON.stringify(shuffleArray(finalArray)),
-      JSON.stringify(shuffleArray(finalArray)),
-      JSON.stringify(shuffleArray(finalArray)),
-      JSON.stringify(shuffleArray(finalArray)),
+      JSON.stringify(finalArray[0]),
+      JSON.stringify(finalArray[1]),
+      JSON.stringify(finalArray[2]),
+      JSON.stringify(finalArray[3]),
       JSON.stringify(subjectOrder),
       JSON.stringify(optionsReorder)
     );
@@ -259,7 +265,7 @@ class CreateQuestionSet extends Component {
                     <IntegrationReactSelect
                       suggestions={selectBaseQuestion}
                       label="Form"
-                      onChange={e => this.onBaseQuestionSelect(e, "form")}
+                      onChange={this.onBaseQuestionSelect}
                       placeholder="Select Base Question"
                     />
                   </Grid>
@@ -279,9 +285,9 @@ class CreateQuestionSet extends Component {
                                 margin: "20px 10px 0 0",
                                 textTransform: "capitalize"
                               }}
-                              key={subject}
+                              key={subject._id}
                             >
-                              {subject}
+                              {subject.subject}
                               {/* <IntegrationReactSelect
                                 suggestions={selectSubjectOrder}
                                 label={subject}
@@ -293,7 +299,7 @@ class CreateQuestionSet extends Component {
                               /> */}
                               <select
                                 id="subjectOrder"
-                                name={subject}
+                                name={subject.subject}
                                 onChange={this.handleSubjectOrderChange}
                                 className={classes.subjectOrder}
                               >

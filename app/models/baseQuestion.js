@@ -25,7 +25,12 @@ var baseQuestionSchema = new Schema(
       type: String,
       required: [true, "BaseQuestion Name Can't be empty"]
     },
-    selectedSubjects: [String],
+    selectedSubjects: [
+      {
+        subject: { type: String },
+        count: { type: Number }
+      }
+    ],
     allQuestions: [String]
   },
   {

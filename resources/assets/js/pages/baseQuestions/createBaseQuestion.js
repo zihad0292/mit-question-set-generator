@@ -185,11 +185,12 @@ class CreateBaseQuestion extends Component {
       selectedSubjects,
       tempSelectedQuestions,
       finalArray,
-      subject
+      subject,
+      count
     } = this.state;
 
     let tempSelectedSubjects = selectedSubjects;
-    tempSelectedSubjects.push(subject);
+    tempSelectedSubjects.push({ subject: subject, count: count });
 
     let tempFinalArray = finalArray.concat(tempSelectedQuestions);
 
@@ -253,8 +254,11 @@ class CreateBaseQuestion extends Component {
     }
     return this.state.selectedSubjects.map((subject, index) => {
       return (
-        <p key={`${subject}+${index}`} style={{ textTransform: "capitalize" }}>
-          {index + 1}. {subject}
+        <p
+          key={`${subject.subject}+${index}`}
+          style={{ textTransform: "capitalize" }}
+        >
+          {index + 1}. {subject.subject}
         </p>
       );
     });

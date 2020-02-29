@@ -98,7 +98,8 @@ const styles = theme => ({
     marginTop: "20px"
   },
   questionContainer: {
-    margin: "0"
+    margin: "0",
+    lineHeight: "1.7"
   },
   questionWrapper: {
     width: "100%",
@@ -189,7 +190,7 @@ export class viewBaseQuestion extends Component {
           {baseQuestionDetails.selectedSubjects.map((subject, index) => {
             return (
               <span style={{ textTransform: "capitalize" }} key={`${index}-s`}>
-                {index + 1}. {subject}&nbsp;&nbsp;&nbsp;
+                {index + 1}. {subject.subject}&nbsp;&nbsp;&nbsp;
               </span>
             );
           })}
