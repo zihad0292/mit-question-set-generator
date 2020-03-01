@@ -70,7 +70,7 @@ class CreateQuestionSet extends Component {
     this.onBaseQuestionSelect = this.onBaseQuestionSelect.bind(this);
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleSubjectOrderChange = this.handleSubjectOrderChange.bind(this);
+    // this.handleSubjectOrderChange = this.handleSubjectOrderChange.bind(this);
   }
 
   componentDidMount() {
@@ -80,48 +80,34 @@ class CreateQuestionSet extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    // if (
-    //   (this.props.generated != nextProps.generated && nextProps.generated) ||
-    //   (this.props.updated != nextProps.updated && nextProps.updated)
-    // ) {
-    //   this.props.fetchOfficeList();
-    //   // console.log(nextProps);
-    //   this.setState({
-    //     name: "",
-    //     location: ""
-    //   });
-    // }
-    // if (this.props.onComplete) {
-    //   this.props.onComplete();
-    // }
-  }
+  handleSubjectOrderChange(event, subject) {
+    console.log(event);
+    console.log(subject);
 
-  handleSubjectOrderChange(event) {
-    var tempArray = [...this.state.subjectOrder];
-    var newPosition = event.target.value - 1;
-    if (tempArray[newPosition] !== "" || newPosition === -1) {
-      if (tempArray.indexOf(event.target.name) !== -1) {
-        var oldPosition = tempArray.indexOf(event.target.name);
-        tempArray[oldPosition] = "";
-        this.setState({
-          subjectOrder: tempArray
-        });
-      }
-      alert("Please select a different position");
-      return;
-    }
-    if (tempArray.indexOf(event.target.name) !== -1) {
-      var oldPosition = tempArray.indexOf(event.target.name);
-      tempArray[oldPosition] = "";
-      tempArray[newPosition] = event.target.name;
-    } else {
-      tempArray[newPosition] = event.target.name;
-    }
-    console.log(tempArray);
-    this.setState({
-      subjectOrder: tempArray
-    });
+    // var tempArray = [...this.state.subjectOrder];
+    // var newPosition = event.target.value - 1;
+    // if (tempArray[newPosition] !== "" || newPosition === -1) {
+    //   if (tempArray.indexOf(event.target.name) !== -1) {
+    //     var oldPosition = tempArray.indexOf(event.target.name);
+    //     tempArray[oldPosition] = "";
+    //     this.setState({
+    //       subjectOrder: tempArray
+    //     });
+    //   }
+    //   alert("Please select a different position");
+    //   return;
+    // }
+    // if (tempArray.indexOf(event.target.name) !== -1) {
+    //   var oldPosition = tempArray.indexOf(event.target.name);
+    //   tempArray[oldPosition] = "";
+    //   tempArray[newPosition] = event.target.name;
+    // } else {
+    //   tempArray[newPosition] = event.target.name;
+    // }
+    // console.log(tempArray);
+    // this.setState({
+    //   subjectOrder: tempArray
+    // });
   }
 
   onBaseQuestionSelect(index) {
@@ -135,15 +121,12 @@ class CreateQuestionSet extends Component {
     ].selectedSubjects.map((item, index) => {
       return "";
     });
-    this.setState(
-      {
-        baseQuestionIndex: index.value,
-        availablePos: availablePos,
-        subjectOrder: subjectOrder,
-        selectedSubjects: this.props.baseQuestions[index.value].selectedSubjects
-      },
-      () => console.log(this.state)
-    );
+    this.setState({
+      baseQuestionIndex: index.value,
+      availablePos: availablePos,
+      subjectOrder: subjectOrder,
+      selectedSubjects: this.props.baseQuestions[index.value].selectedSubjects
+    });
   }
 
   handleCheckboxChange(event) {
@@ -179,7 +162,7 @@ class CreateQuestionSet extends Component {
     }
 
     let allQuestions = baseQuestions[baseQuestionIndex].allQuestions;
-    console.log(allQuestions);
+
     let finalArray = [[], [], [], []];
     var trackStartPosition = 0;
     for (var i = 0; i < selectedSubjects.length; i++) {
@@ -188,7 +171,7 @@ class CreateQuestionSet extends Component {
         trackStartPosition,
         trackStartPosition + questionCount
       );
-      console.log(arrayToShuffle);
+
       trackStartPosition = questionCount;
       for (var j = 0; j < 4; j++) {
         var shuffledArray = shuffleArray(arrayToShuffle);
@@ -230,12 +213,12 @@ class CreateQuestionSet extends Component {
       };
     });
     return (
-      <PageContainer maxWidth="lg">
+      <PageContainer maxWidth='lg'>
         <Grid container spacing={3} className={classes.titleRow}>
           <Grid item xs={12} sm={8} className={classes.relativeContainer}>
             <Typography
-              variant="h4"
-              color="textPrimary"
+              variant='h4'
+              color='textPrimary'
               className={classes.subjectTitle}
             >
               Generate New Question Set
@@ -251,12 +234,12 @@ class CreateQuestionSet extends Component {
                   <Grid item sm={12}>
                     <TextField
                       required
-                      id="questionSetName"
-                      name="questionSetName"
-                      label="Question Set Name"
-                      value={this.state.questionSetName}
-                      margin="normal"
-                      variant="outlined"
+                      id='questionSetName'
+                      name='questionSetName'
+                      label='Question Set Name'
+                      value={questionSetName}
+                      margin='normal'
+                      variant='outlined'
                       fullWidth
                       onChange={this.handleChange}
                     />
@@ -264,14 +247,14 @@ class CreateQuestionSet extends Component {
                   <Grid item sm={12}>
                     <IntegrationReactSelect
                       suggestions={selectBaseQuestion}
-                      label="Form"
+                      label='Form'
                       onChange={this.onBaseQuestionSelect}
-                      placeholder="Select Base Question"
+                      placeholder='Select Base Question'
                     />
                   </Grid>
                   {baseQuestionIndex !== null ? (
                     <Grid item sm={12}>
-                      <Typography variant="h5" color="textPrimary">
+                      <Typography variant='h5' color='textPrimary'>
                         Select Subjects order
                       </Typography>
                       {baseQuestions[baseQuestionIndex].selectedSubjects.map(
@@ -288,22 +271,27 @@ class CreateQuestionSet extends Component {
                               key={subject._id}
                             >
                               {subject.subject}
-                              {/* <IntegrationReactSelect
+                              <IntegrationReactSelect
                                 suggestions={selectSubjectOrder}
-                                label={subject}
-                                onChange={val =>
-                                  this.handleSubjectOrderChange(val)
-                                }
-                                placeholder="Select order"
+                                label={subject.subject}
+                                name={subject.subject}
+                                // onChange={val =>
+                                //   this.handleSubjectOrderChange(val)
+                                // }
+                                onChange={this.handleSubjectOrderChange.bind(
+                                  this,
+                                  subject.subject
+                                )}
+                                placeholder='Select order'
                                 className={classes.subjectOrder}
-                              /> */}
-                              <select
-                                id="subjectOrder"
+                              />
+                              {/* <select
+                                id='subjectOrder'
                                 name={subject.subject}
                                 onChange={this.handleSubjectOrderChange}
                                 className={classes.subjectOrder}
                               >
-                                <option value="">0</option>
+                                <option value=''>0</option>
                                 {availablePos.map(item => {
                                   return (
                                     <option value={item} key={item}>
@@ -311,7 +299,7 @@ class CreateQuestionSet extends Component {
                                     </option>
                                   );
                                 })}
-                              </select>
+                              </select> */}
                             </div>
                           );
                         }
@@ -326,24 +314,24 @@ class CreateQuestionSet extends Component {
                       <FormControlLabel
                         control={
                           <Checkbox
-                            name="optionsReorder"
+                            name='optionsReorder'
                             checked={optionsReorder}
                             onChange={this.handleCheckboxChange}
                             value={optionsReorder}
                           />
                         }
-                        label="Should the Options be rearranged?"
+                        label='Should the Options be rearranged?'
                       />
                     </FormGroup>
                   </Grid>
                 </Grid>
 
                 <FlatButton
-                  variant="contained"
-                  color="primary"
+                  variant='contained'
+                  color='primary'
                   disabled={generating}
                   className={classes.submitButton}
-                  size="large"
+                  size='large'
                   fullWidth
                   onClick={this.handleSubmit}
                 >
