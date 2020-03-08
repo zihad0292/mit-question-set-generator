@@ -62,7 +62,7 @@ class CreateQuestionSet extends Component {
       baseQuestionIndex: null,
       showMessage: false,
       selectedSubjects: null,
-      subjectOrder: [],
+      subjectOrder: {},
       availablePos: [],
       takenPositions: []
     };
@@ -80,12 +80,26 @@ class CreateQuestionSet extends Component {
     }
   }
 
-  handleSubjectOrderChange(event, subject) {
-    console.log(event);
-    console.log(subject);
+  handleSubjectOrderChange(subject, event) {
+    var newPosition = event.value;
+    var oldPosition = this.state.subjectOrder[subject];
+    var tempSubjectOrder = this.state.subjectOrder;
 
-    // var tempArray = [...this.state.subjectOrder];
-    // var newPosition = event.target.value - 1;
+    tempSubjectOrder[subject] = newPosition;
+
+    var tempAvailablePos = this.state.availablePos.filter(item => {
+      return item !== newPosition;
+    });
+    console.log(oldPosition);
+    if (oldPosition !== null) {
+      tempAvailablePos.push(oldPosition);
+    }
+
+    this.setState({
+      subjectOrder: tempSubjectOrder,
+      availablePos: tempAvailablePos
+    });
+
     // if (tempArray[newPosition] !== "" || newPosition === -1) {
     //   if (tempArray.indexOf(event.target.name) !== -1) {
     //     var oldPosition = tempArray.indexOf(event.target.name);
@@ -116,11 +130,15 @@ class CreateQuestionSet extends Component {
     ].selectedSubjects.map((item, index) => {
       return index + 1;
     });
-    let subjectOrder = this.props.baseQuestions[
-      index.value
-    ].selectedSubjects.map((item, index) => {
-      return "";
-    });
+
+    let tempSubjects = this.props.baseQuestions[index.value].selectedSubjects;
+
+    let subjectOrder = {};
+
+    for (var i = 0; i < tempSubjects.length; i++) {
+      subjectOrder[tempSubjects[i].subject] = null;
+    }
+
     this.setState({
       baseQuestionIndex: index.value,
       availablePos: availablePos,
@@ -206,19 +224,28 @@ class CreateQuestionSet extends Component {
       };
     });
 
-    const selectSubjectOrder = availablePos.map(item => {
+    let tempAvailablePos = [...availablePos];
+    tempAvailablePos.sort();
+
+    let selectSubjectOrder = tempAvailablePos.map(item => {
       return {
         value: item,
         label: item
       };
     });
+
+    selectSubjectOrder.unshift({
+      value: "",
+      label: "Select Order"
+    });
+
     return (
-      <PageContainer maxWidth='lg'>
+      <PageContainer maxWidth="lg">
         <Grid container spacing={3} className={classes.titleRow}>
           <Grid item xs={12} sm={8} className={classes.relativeContainer}>
             <Typography
-              variant='h4'
-              color='textPrimary'
+              variant="h4"
+              color="textPrimary"
               className={classes.subjectTitle}
             >
               Generate New Question Set
@@ -234,12 +261,12 @@ class CreateQuestionSet extends Component {
                   <Grid item sm={12}>
                     <TextField
                       required
-                      id='questionSetName'
-                      name='questionSetName'
-                      label='Question Set Name'
+                      id="questionSetName"
+                      name="questionSetName"
+                      label="Question Set Name"
                       value={questionSetName}
-                      margin='normal'
-                      variant='outlined'
+                      margin="normal"
+                      variant="outlined"
                       fullWidth
                       onChange={this.handleChange}
                     />
@@ -247,14 +274,14 @@ class CreateQuestionSet extends Component {
                   <Grid item sm={12}>
                     <IntegrationReactSelect
                       suggestions={selectBaseQuestion}
-                      label='Form'
+                      label="Form"
                       onChange={this.onBaseQuestionSelect}
-                      placeholder='Select Base Question'
+                      placeholder="Select Base Question"
                     />
                   </Grid>
                   {baseQuestionIndex !== null ? (
                     <Grid item sm={12}>
-                      <Typography variant='h5' color='textPrimary'>
+                      <Typography variant="h5" color="textPrimary">
                         Select Subjects order
                       </Typography>
                       {baseQuestions[baseQuestionIndex].selectedSubjects.map(
@@ -282,7 +309,7 @@ class CreateQuestionSet extends Component {
                                   this,
                                   subject.subject
                                 )}
-                                placeholder='Select order'
+                                placeholder="Select order"
                                 className={classes.subjectOrder}
                               />
                               {/* <select
@@ -314,24 +341,24 @@ class CreateQuestionSet extends Component {
                       <FormControlLabel
                         control={
                           <Checkbox
-                            name='optionsReorder'
+                            name="optionsReorder"
                             checked={optionsReorder}
                             onChange={this.handleCheckboxChange}
                             value={optionsReorder}
                           />
                         }
-                        label='Should the Options be rearranged?'
+                        label="Should the Options be rearranged?"
                       />
                     </FormGroup>
                   </Grid>
                 </Grid>
 
                 <FlatButton
-                  variant='contained'
-                  color='primary'
+                  variant="contained"
+                  color="primary"
                   disabled={generating}
                   className={classes.submitButton}
-                  size='large'
+                  size="large"
                   fullWidth
                   onClick={this.handleSubmit}
                 >
