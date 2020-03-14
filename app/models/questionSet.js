@@ -11,7 +11,7 @@ var questionSetSchema = new Schema(
     questionPaper2: [String],
     questionPaper3: [String],
     questionPaper4: [String],
-    subjectOrder: [String],
+    subjectOrder: [],
     optionsReorder: Boolean
   },
   {

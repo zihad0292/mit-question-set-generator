@@ -90,7 +90,7 @@ class CreateQuestionSet extends Component {
     var tempAvailablePos = this.state.availablePos.filter(item => {
       return item !== newPosition;
     });
-    console.log(oldPosition);
+
     if (oldPosition !== null) {
       tempAvailablePos.push(oldPosition);
     }
@@ -99,29 +99,6 @@ class CreateQuestionSet extends Component {
       subjectOrder: tempSubjectOrder,
       availablePos: tempAvailablePos
     });
-
-    // if (tempArray[newPosition] !== "" || newPosition === -1) {
-    //   if (tempArray.indexOf(event.target.name) !== -1) {
-    //     var oldPosition = tempArray.indexOf(event.target.name);
-    //     tempArray[oldPosition] = "";
-    //     this.setState({
-    //       subjectOrder: tempArray
-    //     });
-    //   }
-    //   alert("Please select a different position");
-    //   return;
-    // }
-    // if (tempArray.indexOf(event.target.name) !== -1) {
-    //   var oldPosition = tempArray.indexOf(event.target.name);
-    //   tempArray[oldPosition] = "";
-    //   tempArray[newPosition] = event.target.name;
-    // } else {
-    //   tempArray[newPosition] = event.target.name;
-    // }
-    // console.log(tempArray);
-    // this.setState({
-    //   subjectOrder: tempArray
-    // });
   }
 
   onBaseQuestionSelect(index) {
@@ -169,17 +146,30 @@ class CreateQuestionSet extends Component {
     } = this.state;
     const { generateQuestionSet, baseQuestions } = this.props;
 
+    if (baseQuestionIndex === null) {
+      alert("Please select a base question");
+      return;
+    }
+
     if (questionSetName === "") {
       alert("Please give a name to the question set");
       return;
     }
 
-    if (subjectOrder.indexOf("") !== -1) {
+    var subjectOrderFlag = 0;
+    Object.keys(subjectOrder).map(key => {
+      if (subjectOrder[key] === null || subjectOrder[key] === "") {
+        subjectOrderFlag = 1;
+      }
+    });
+
+    if (subjectOrderFlag === 1) {
       alert("Please select subject order properly");
       return;
     }
 
     let allQuestions = baseQuestions[baseQuestionIndex].allQuestions;
+    console.log(allQuestions);
 
     let finalArray = [[], [], [], []];
     var trackStartPosition = 0;
@@ -190,12 +180,16 @@ class CreateQuestionSet extends Component {
         trackStartPosition + questionCount
       );
 
-      trackStartPosition = questionCount;
+      trackStartPosition = trackStartPosition + questionCount;
       for (var j = 0; j < 4; j++) {
         var shuffledArray = shuffleArray(arrayToShuffle);
         finalArray[j] = finalArray[j].concat(shuffledArray);
       }
     }
+
+    var SubjectNamesOrder = Object.keys(subjectOrder).sort(function(a, b) {
+      return subjectOrder[a] - subjectOrder[b];
+    });
 
     generateQuestionSet(
       questionSetName,
@@ -203,8 +197,8 @@ class CreateQuestionSet extends Component {
       JSON.stringify(finalArray[1]),
       JSON.stringify(finalArray[2]),
       JSON.stringify(finalArray[3]),
-      JSON.stringify(subjectOrder),
-      JSON.stringify(optionsReorder)
+      JSON.stringify(SubjectNamesOrder),
+      optionsReorder
     );
   }
 
@@ -236,9 +230,8 @@ class CreateQuestionSet extends Component {
 
     selectSubjectOrder.unshift({
       value: "",
-      label: "Select Order"
+      label: "-"
     });
-
     return (
       <PageContainer maxWidth="lg">
         <Grid container spacing={3} className={classes.titleRow}>
@@ -256,9 +249,17 @@ class CreateQuestionSet extends Component {
         <Grid container spacing={3}>
           <Grid item xs={10}>
             <CustomSmallPaper>
-              <div className={classes.cardContent}>
+              <div
+                className={classes.cardContent}
+                style={{
+                  minHeight:
+                    selectSubjectOrder.length < 5
+                      ? "400px"
+                      : `${selectSubjectOrder.length * 110}px`
+                }}
+              >
                 <Grid container spacing={3}>
-                  <Grid item sm={12}>
+                  <Grid item sm={6}>
                     <TextField
                       required
                       id="questionSetName"
@@ -271,7 +272,7 @@ class CreateQuestionSet extends Component {
                       onChange={this.handleChange}
                     />
                   </Grid>
-                  <Grid item sm={12}>
+                  <Grid item sm={6}>
                     <IntegrationReactSelect
                       suggestions={selectBaseQuestion}
                       label="Form"
@@ -297,8 +298,8 @@ class CreateQuestionSet extends Component {
                               }}
                               key={subject._id}
                             >
-                              {subject.subject}
                               <IntegrationReactSelect
+                                id={`id-${subject.subject}`}
                                 suggestions={selectSubjectOrder}
                                 label={subject.subject}
                                 name={subject.subject}
@@ -313,12 +314,12 @@ class CreateQuestionSet extends Component {
                                 className={classes.subjectOrder}
                               />
                               {/* <select
-                                id='subjectOrder'
+                                id="subjectOrder"
                                 name={subject.subject}
                                 onChange={this.handleSubjectOrderChange}
                                 className={classes.subjectOrder}
                               >
-                                <option value=''>0</option>
+                                <option value="">0</option>
                                 {availablePos.map(item => {
                                   return (
                                     <option value={item} key={item}>

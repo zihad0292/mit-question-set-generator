@@ -1,55 +1,57 @@
-import React from 'react';
-import Select from 'react-select';
-import { emphasize, makeStyles, useTheme } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import NoSsr from '@material-ui/core/NoSsr';
-import TextField from '@material-ui/core/TextField';
-import Paper from '@material-ui/core/Paper';
-import Chip from '@material-ui/core/Chip';
-import MenuItem from '@material-ui/core/MenuItem';
-import SearchIcon from '@material-ui/icons/Search';
-import CancelIcon from '@material-ui/icons/Cancel';
-import PropTypes from 'prop-types';
+import React from "react";
+import Select from "react-select";
+import { emphasize, makeStyles, useTheme } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import NoSsr from "@material-ui/core/NoSsr";
+import TextField from "@material-ui/core/TextField";
+import Paper from "@material-ui/core/Paper";
+import Chip from "@material-ui/core/Chip";
+import MenuItem from "@material-ui/core/MenuItem";
+import SearchIcon from "@material-ui/icons/Search";
+import CancelIcon from "@material-ui/icons/Cancel";
+import PropTypes from "prop-types";
 
 const useStyles = makeStyles(theme => ({
   root: {
-    flexGrow: 1,
+    flexGrow: 1
   },
   input: {
-    display: 'flex',
-    height: 'auto',
-    padding: '10px'
+    display: "flex",
+    height: "auto",
+    padding: "10px"
   },
   valueContainer: {
-    display: 'flex',
-    flexWrap: 'wrap',
+    display: "flex",
+    flexWrap: "wrap",
     flex: 1,
-    alignItems: 'center',
-    overflow: 'hidden',
+    alignItems: "center",
+    overflow: "hidden"
   },
   chip: {
-    margin: theme.spacing(0.5, 0.25),
+    margin: theme.spacing(0.5, 0.25)
   },
   chipFocused: {
     backgroundColor: emphasize(
-      theme.palette.type === 'light' ? theme.palette.grey[300] : theme.palette.grey[700],
-      1.0,
-    ),
+      theme.palette.type === "light"
+        ? theme.palette.grey[300]
+        : theme.palette.grey[700],
+      1.0
+    )
   },
   noOptionsMessage: {
-    padding: theme.spacing(1, 2),
+    padding: theme.spacing(1, 2)
   },
   singleValue: {
-    fontSize: 16,
+    fontSize: 16
   },
   placeholder: {
-    position: 'absolute',
+    position: "absolute",
     left: 12,
     bottom: 16,
-    fontSize: 16,
+    fontSize: 16
   },
   paper: {
-    position: 'absolute',
+    position: "absolute",
     zIndex: 1501,
     marginTop: theme.spacing(1),
     left: 0,
@@ -57,8 +59,8 @@ const useStyles = makeStyles(theme => ({
     borderRadius: theme.shape.borderRadius
   },
   divider: {
-    height: theme.spacing(2),
-  },
+    height: theme.spacing(2)
+  }
 }));
 
 function NoOptionsMessage(props) {
@@ -76,7 +78,7 @@ function NoOptionsMessage(props) {
 NoOptionsMessage.propTypes = {
   children: PropTypes.node,
   innerProps: PropTypes.object,
-  selectProps: PropTypes.object.isRequired,
+  selectProps: PropTypes.object.isRequired
 };
 
 function inputComponent({ inputRef, ...props }) {
@@ -84,7 +86,7 @@ function inputComponent({ inputRef, ...props }) {
 }
 
 inputComponent.propTypes = {
-  inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+  inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object])
 };
 
 function Control(props) {
@@ -92,23 +94,23 @@ function Control(props) {
     children,
     innerProps,
     innerRef,
-    selectProps: { classes, TextFieldProps },
+    selectProps: { classes, TextFieldProps }
   } = props;
 
   return (
     <TextField
-        margin="normal"
-        variant="outlined"
-        fullWidth
-        InputProps={{
-          inputComponent,
-          inputProps: {
-            className: classes.input,
-            ref: innerRef,
-            children,
-            ...innerProps,
-          },
-        }}
+      margin="normal"
+      variant="outlined"
+      fullWidth
+      InputProps={{
+        inputComponent,
+        inputProps: {
+          className: classes.input,
+          ref: innerRef,
+          children,
+          ...innerProps
+        }
+      }}
       {...TextFieldProps}
     />
   );
@@ -118,7 +120,7 @@ Control.propTypes = {
   children: PropTypes.node,
   innerProps: PropTypes.object,
   innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
-  selectProps: PropTypes.object.isRequired,
+  selectProps: PropTypes.object.isRequired
 };
 
 function Option(props) {
@@ -128,7 +130,7 @@ function Option(props) {
       selected={props.isFocused}
       component="div"
       style={{
-        fontWeight: props.isSelected ? 500 : 400,
+        fontWeight: props.isSelected ? 500 : 400
       }}
       {...props.innerProps}
     >
@@ -142,7 +144,7 @@ Option.propTypes = {
   innerProps: PropTypes.object,
   innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
   isFocused: PropTypes.bool,
-  isSelected: PropTypes.bool,
+  isSelected: PropTypes.bool
 };
 
 function Placeholder(props) {
@@ -160,12 +162,15 @@ function Placeholder(props) {
 Placeholder.propTypes = {
   children: PropTypes.node,
   innerProps: PropTypes.object,
-  selectProps: PropTypes.object.isRequired,
+  selectProps: PropTypes.object.isRequired
 };
 
 function SingleValue(props) {
   return (
-    <Typography className={props.selectProps.classes.singleValue} {...props.innerProps}>
+    <Typography
+      className={props.selectProps.classes.singleValue}
+      {...props.innerProps}
+    >
       {props.children}
     </Typography>
   );
@@ -174,16 +179,20 @@ function SingleValue(props) {
 SingleValue.propTypes = {
   children: PropTypes.node,
   innerProps: PropTypes.object,
-  selectProps: PropTypes.object.isRequired,
+  selectProps: PropTypes.object.isRequired
 };
 
 function ValueContainer(props) {
-  return <div className={props.selectProps.classes.valueContainer}>{props.children}</div>;
+  return (
+    <div className={props.selectProps.classes.valueContainer}>
+      {props.children}
+    </div>
+  );
 }
 
 ValueContainer.propTypes = {
   children: PropTypes.node,
-  selectProps: PropTypes.object.isRequired,
+  selectProps: PropTypes.object.isRequired
 };
 
 function MultiValue(props) {
@@ -191,7 +200,9 @@ function MultiValue(props) {
     <Chip
       tabIndex={-1}
       label={props.children}
-      className={`${props.selectProps.classes.chip} ${props.isFocused ? props.selectProps.classes.chipFocused : ''}`}
+      className={`${props.selectProps.classes.chip} ${
+        props.isFocused ? props.selectProps.classes.chipFocused : ""
+      }`}
       onDelete={props.removeProps.onClick}
       deleteIcon={<CancelIcon {...props.removeProps} />}
     />
@@ -202,12 +213,17 @@ MultiValue.propTypes = {
   children: PropTypes.node,
   isFocused: PropTypes.bool,
   removeProps: PropTypes.object.isRequired,
-  selectProps: PropTypes.object.isRequired,
+  selectProps: PropTypes.object.isRequired
 };
 
 function Menu(props) {
   return (
-    <Paper square elevation={3} className={props.selectProps.classes.paper} {...props.innerProps}>
+    <Paper
+      square
+      elevation={3}
+      className={props.selectProps.classes.paper}
+      {...props.innerProps}
+    >
       {props.children}
     </Paper>
   );
@@ -216,7 +232,7 @@ function Menu(props) {
 Menu.propTypes = {
   children: PropTypes.node,
   innerProps: PropTypes.object,
-  selectProps: PropTypes.object,
+  selectProps: PropTypes.object
 };
 
 const components = {
@@ -227,7 +243,7 @@ const components = {
   Option,
   Placeholder,
   SingleValue,
-  ValueContainer,
+  ValueContainer
 };
 
 export default function IntegrationReactSelect(props) {
@@ -235,7 +251,7 @@ export default function IntegrationReactSelect(props) {
   const theme = useTheme();
   let [single, setSingle] = React.useState(null);
 
-  if(props.selected) single = props.selected;
+  if (props.selected) single = props.selected;
 
   function handleChangeSingle(value) {
     setSingle(value);
@@ -246,10 +262,10 @@ export default function IntegrationReactSelect(props) {
     input: base => ({
       ...base,
       color: theme.palette.text.primary,
-      '& input': {
-        font: 'inherit',
-      },
-    }),
+      "& input": {
+        font: "inherit"
+      }
+    })
   };
 
   return (
@@ -258,17 +274,21 @@ export default function IntegrationReactSelect(props) {
         <Select
           classes={classes}
           styles={selectStyles}
-          inputId="react-select-single"
+          inputId={props.id ? props.id : "react-select-single"}
           isDisabled={props.disabled}
           TextFieldProps={{
             label: props.label,
             InputLabelProps: {
-              htmlFor: 'react-select-single',
-              shrink: true,
+              htmlFor: "react-select-single",
+              shrink: true
             },
-            placeholder: props.placeholder ? props.placeholder : 'Search to Filter',
+            placeholder: props.placeholder
+              ? props.placeholder
+              : "Search to Filter"
           }}
-          placeholder={props.placeholder ? props.placeholder : 'Search to Filter'}
+          placeholder={
+            props.placeholder ? props.placeholder : "Search to Filter"
+          }
           options={props.suggestions}
           components={components}
           value={single}
@@ -280,10 +300,10 @@ export default function IntegrationReactSelect(props) {
 }
 
 IntegrationReactSelect.propTypes = {
-    suggestions: PropTypes.arrayOf(PropTypes.object).isRequired,
-    onChange: PropTypes.func.isRequired,
-    label: PropTypes.string.isRequired,
-    placeholder: PropTypes.string,
-    disabled: PropTypes.bool,
-    selected: PropTypes.object
+  suggestions: PropTypes.arrayOf(PropTypes.object).isRequired,
+  onChange: PropTypes.func.isRequired,
+  label: PropTypes.string.isRequired,
+  placeholder: PropTypes.string,
+  disabled: PropTypes.bool,
+  selected: PropTypes.object
 };
