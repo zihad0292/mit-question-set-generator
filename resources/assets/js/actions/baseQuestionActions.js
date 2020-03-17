@@ -4,7 +4,7 @@ import { retrieveStats } from "./statsActions";
 
 const baseUrl = "/api/base-question/";
 
-export function fetchBaseQuestions() {
+export function fetchAllBaseQuestions() {
   return function(dispatch) {
     dispatch({ type: "FETCHING_BASE_QUESTIONS" });
     const fetchURL = `${baseUrl}list`;
@@ -48,7 +48,7 @@ export function generateBaseQuestion(
             type: "GENERATING_BASE_QUESTION_FULFILLED",
             payload: d.message
           });
-          dispatch(fetchBaseQuestions());
+          dispatch(fetchAllBaseQuestions());
           dispatch(retrieveStats());
         } else {
           dispatch({
@@ -108,7 +108,7 @@ export function deleteBaseQuestion(id) {
             type: "DELETE_BASE_QUESTION_FULFILLED",
             payload: d.message
           });
-          dispatch(fetchBaseQuestions());
+          dispatch(fetchAllBaseQuestions());
           dispatch(retrieveStats());
         } else {
           dispatch({

@@ -1,17 +1,37 @@
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
+var questionBankSchema = new Schema({
+  question: {
+    type: String,
+    required: [true, "Question Field can not be empty"]
+  },
+  subject: {
+    type: String,
+    required: [true, "You must select a subject"]
+  },
+  options: [
+    {
+      option: String,
+      is_correct: Boolean
+    }
+  ],
+  optionsReorder: {
+    type: Boolean
+  }
+});
+
 var questionSetSchema = new Schema(
   {
     setName: {
       type: String,
       required: [true, "QuestionSet Name Can't be empty"]
     },
-    questionPaper1: [String],
-    questionPaper2: [String],
-    questionPaper3: [String],
-    questionPaper4: [String],
-    subjectOrder: [],
+    questionPaper1: [questionBankSchema],
+    questionPaper2: [questionBankSchema],
+    questionPaper3: [questionBankSchema],
+    questionPaper4: [questionBankSchema],
+    subjectOrder: [String],
     optionsReorder: Boolean
   },
   {
@@ -26,7 +46,6 @@ module.exports = {
 
   create: function(params, result) {
     var questionSetInfo = new QuestionSet(params);
-
     var error = questionSetInfo.validateSync();
 
     if (error) {

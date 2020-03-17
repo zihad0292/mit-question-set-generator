@@ -31,13 +31,17 @@ module.exports = {
 
     var QuestionSetRequest = {
       setName: query.questionSetName,
-      questionPaper1: JSON.parse(query.questionPaper1),
-      questionPaper2: JSON.parse(query.questionPaper2),
-      questionPaper3: JSON.parse(query.questionPaper3),
-      questionPaper4: JSON.parse(query.questionPaper4),
+      questionPaper1: JSON.parse(decodeURI(query.questionPaper1)),
+      questionPaper2: JSON.parse(decodeURI(query.questionPaper2)),
+      questionPaper3: JSON.parse(decodeURI(query.questionPaper3)),
+      questionPaper4: JSON.parse(decodeURI(query.questionPaper4)),
       subjectOrder: JSON.parse(query.subjectOrder),
       optionsReorder: query.optionsReorder
     };
+
+    console.log(
+      typeof JSON.parse(decodeURI(QuestionSetRequest.questionPaper1))
+    );
 
     QuestionSet.create(QuestionSetRequest, function(err, result) {
       if (err) {

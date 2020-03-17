@@ -15,7 +15,8 @@ import Divider from "@material-ui/core/Divider";
 
 import { fetchQuestions } from "../../actions/questionBankActions";
 import { generateQuestionSet } from "../../actions/questionSetActions";
-import { fetchBaseQuestions } from "../../actions/baseQuestionActions";
+import { fetchBaseQuestion } from "../../actions/baseQuestionActions";
+import { fetchAllBaseQuestions } from "../../actions/baseQuestionActions";
 import {
   PageContainer,
   CustomSmallPaper,
@@ -74,9 +75,9 @@ class CreateQuestionSet extends Component {
   }
 
   componentDidMount() {
-    const { fetchBaseQuestions, baseQuestions } = this.props;
+    const { fetchAllBaseQuestions, baseQuestions } = this.props;
     if (baseQuestions.length === 0) {
-      fetchBaseQuestions();
+      fetchAllBaseQuestions();
     }
   }
 
@@ -102,25 +103,29 @@ class CreateQuestionSet extends Component {
   }
 
   onBaseQuestionSelect(index) {
-    let availablePos = this.props.baseQuestions[
-      index.value
-    ].selectedSubjects.map((item, index) => {
-      return index + 1;
-    });
+    const selectedBaseQuestion = this.props.baseQuestions[index.value];
 
-    let tempSubjects = this.props.baseQuestions[index.value].selectedSubjects;
+    this.props.fetchBaseQuestion(selectedBaseQuestion.allQuestions);
+
+    let availablePos = selectedBaseQuestion.selectedSubjects.map(
+      (item, index) => {
+        return index + 1;
+      }
+    );
+
+    let selectedSubjects = selectedBaseQuestion.selectedSubjects;
 
     let subjectOrder = {};
 
-    for (var i = 0; i < tempSubjects.length; i++) {
-      subjectOrder[tempSubjects[i].subject] = null;
+    for (var i = 0; i < selectedSubjects.length; i++) {
+      subjectOrder[selectedSubjects[i].subject] = null;
     }
 
     this.setState({
       baseQuestionIndex: index.value,
       availablePos: availablePos,
       subjectOrder: subjectOrder,
-      selectedSubjects: this.props.baseQuestions[index.value].selectedSubjects
+      selectedSubjects: selectedBaseQuestion.selectedSubjects
     });
   }
 
@@ -144,7 +149,11 @@ class CreateQuestionSet extends Component {
       subjectOrder,
       selectedSubjects
     } = this.state;
-    const { generateQuestionSet, baseQuestions } = this.props;
+    const {
+      generateQuestionSet,
+      baseQuestions,
+      singleBaseQuestion
+    } = this.props;
 
     if (baseQuestionIndex === null) {
       alert("Please select a base question");
@@ -168,8 +177,7 @@ class CreateQuestionSet extends Component {
       return;
     }
 
-    let allQuestions = baseQuestions[baseQuestionIndex].allQuestions;
-    console.log(allQuestions);
+    let allQuestions = [...singleBaseQuestion];
 
     let finalArray = [[], [], [], []];
     var trackStartPosition = 0;
@@ -179,7 +187,6 @@ class CreateQuestionSet extends Component {
         trackStartPosition,
         trackStartPosition + questionCount
       );
-
       trackStartPosition = trackStartPosition + questionCount;
       for (var j = 0; j < 4; j++) {
         var shuffledArray = shuffleArray(arrayToShuffle);
@@ -187,17 +194,17 @@ class CreateQuestionSet extends Component {
       }
     }
 
-    var SubjectNamesOrder = Object.keys(subjectOrder).sort(function(a, b) {
+    var subjectsOrder = Object.keys(subjectOrder).sort(function(a, b) {
       return subjectOrder[a] - subjectOrder[b];
     });
 
     generateQuestionSet(
       questionSetName,
-      JSON.stringify(finalArray[0]),
-      JSON.stringify(finalArray[1]),
-      JSON.stringify(finalArray[2]),
-      JSON.stringify(finalArray[3]),
-      JSON.stringify(SubjectNamesOrder),
+      JSON.stringify(encodeURI(finalArray[0])),
+      JSON.stringify(encodeURI(finalArray[1])),
+      JSON.stringify(encodeURI(finalArray[2])),
+      JSON.stringify(encodeURI(finalArray[3])),
+      JSON.stringify(subjectsOrder),
       optionsReorder
     );
   }
@@ -383,13 +390,19 @@ CreateQuestionSet.propTypes = {
 function mapStateToProps(store) {
   return {
     questionSets: store.questionSetInfo.questionSets,
+    singleBaseQuestion: store.baseQuestionInfo.singleBaseQuestion,
     baseQuestions: store.baseQuestionInfo.baseQuestions
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
-    { fetchQuestions, generateQuestionSet, fetchBaseQuestions },
+    {
+      fetchQuestions,
+      generateQuestionSet,
+      fetchAllBaseQuestions,
+      fetchBaseQuestion
+    },
     dispatch
   );
 }

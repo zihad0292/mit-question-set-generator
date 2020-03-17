@@ -14,7 +14,7 @@ import Divider from "@material-ui/core/Divider";
 import AddIcon from "@material-ui/icons/Add";
 
 import {
-  fetchBaseQuestions,
+  fetchAllBaseQuestions,
   deleteBaseQuestion
 } from "../../actions/baseQuestionActions";
 
@@ -117,10 +117,10 @@ class BaseQuestion extends Component {
   }
 
   componentDidMount() {
-    const { fetchBaseQuestions, baseQuestions } = this.props;
+    const { fetchAllBaseQuestions, baseQuestions } = this.props;
     // Fetch question set only if respective BaseQuestion state is empty
     if (baseQuestions.length === 0) {
-      fetchBaseQuestions();
+      fetchAllBaseQuestions();
     }
   }
 
@@ -345,7 +345,7 @@ function mapStateToProps(store) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
-    { fetchQuestions, fetchBaseQuestions, deleteBaseQuestion },
+    { fetchQuestions, fetchAllBaseQuestions, deleteBaseQuestion },
     dispatch
   );
 }

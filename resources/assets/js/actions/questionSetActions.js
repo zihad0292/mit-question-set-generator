@@ -48,6 +48,7 @@ export function generateQuestionSet(
         const d = response.data;
 
         if (d.success) {
+          console.log(d);
           dispatch({
             type: "GENERATING_QUESTION_SET_FULFILLED",
             payload: d.message
@@ -55,10 +56,12 @@ export function generateQuestionSet(
           dispatch(fetchQuestionSets());
           dispatch(retrieveStats());
         } else {
+          console.log(d);
           dispatch({ type: "FETCHING_QUESTION_SETS_FAILED", payload: d.error });
         }
       })
       .catch(err => {
+        console.log(err);
         dispatch({ type: "FETCHING_QUESTION_SETS_FAILED", payload: err });
       });
   };
