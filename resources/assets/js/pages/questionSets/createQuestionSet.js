@@ -198,14 +198,24 @@ class CreateQuestionSet extends Component {
       return subjectOrder[a] - subjectOrder[b];
     });
 
+    var modifiedArray = finalArray.map(row => {
+      return row.map(item => {
+        return {
+          question: item.question,
+          options: item.options.map(option => {
+            return { option: option.option, is_correct: option.is_correct };
+          })
+        };
+      });
+    });
+    console.log(modifiedArray);
     generateQuestionSet(
       questionSetName,
-      JSON.stringify(encodeURI(finalArray[0])),
-      JSON.stringify(encodeURI(finalArray[1])),
-      JSON.stringify(encodeURI(finalArray[2])),
-      JSON.stringify(encodeURI(finalArray[3])),
-      JSON.stringify(subjectsOrder),
-      optionsReorder
+      JSON.stringify(modifiedArray[0]),
+      JSON.stringify(modifiedArray[1]),
+      JSON.stringify(modifiedArray[2]),
+      JSON.stringify(modifiedArray[3]),
+      JSON.stringify(subjectsOrder)
     );
   }
 

@@ -35,15 +35,26 @@ export function generateQuestionSet(
   questionPaper2,
   questionPaper3,
   questionPaper4,
-  subjectOrder,
-  optionsReorder
+  subjectOrder
 ) {
   return function(dispatch) {
     dispatch({ type: "GENERATING_QUESTION_SET" });
-    axios
-      .post(
-        `${baseUrl}generate?questionSetName=${questionSetName}&questionPaper1=${questionPaper1}&questionPaper2=${questionPaper2}&questionPaper3=${questionPaper3}&questionPaper4=${questionPaper4}&subjectOrder=${subjectOrder}&optionsReorder=${optionsReorder}`
-      )
+    // axios
+    //   .put(
+    //     `${baseUrl}generate?questionSetName=${questionSetName}&questionPaper1=${questionPaper1}&questionPaper2=${questionPaper2}&questionPaper3=${questionPaper3}&questionPaper4=${questionPaper4}&subjectOrder=${subjectOrder}`
+    //   )
+    axios({
+      method: "post",
+      url: `${baseUrl}generate`,
+      data: {
+        questionSetName: questionSetName,
+        questionPaper1: questionPaper1,
+        questionPaper2: questionPaper2,
+        questionPaper3: questionPaper3,
+        questionPaper4: questionPaper4,
+        subjectOrder: subjectOrder
+      }
+    })
       .then(response => {
         const d = response.data;
 

@@ -21,27 +21,19 @@ module.exports = {
   },
 
   createQuestionSet: function(req, res) {
-    var url_parts = url.parse(req.url, true);
-    var query = url_parts.query;
-
     var response = {
       success: true,
       status: 200
     };
 
     var QuestionSetRequest = {
-      setName: query.questionSetName,
-      questionPaper1: JSON.parse(decodeURI(query.questionPaper1)),
-      questionPaper2: JSON.parse(decodeURI(query.questionPaper2)),
-      questionPaper3: JSON.parse(decodeURI(query.questionPaper3)),
-      questionPaper4: JSON.parse(decodeURI(query.questionPaper4)),
-      subjectOrder: JSON.parse(query.subjectOrder),
-      optionsReorder: query.optionsReorder
+      setName: req.body.questionSetName,
+      questionPaper1: JSON.parse(req.body.questionPaper1),
+      questionPaper2: JSON.parse(req.body.questionPaper2),
+      questionPaper3: JSON.parse(req.body.questionPaper3),
+      questionPaper4: JSON.parse(req.body.questionPaper4),
+      subjectOrder: JSON.parse(req.body.subjectOrder)
     };
-
-    console.log(
-      typeof JSON.parse(decodeURI(QuestionSetRequest.questionPaper1))
-    );
 
     QuestionSet.create(QuestionSetRequest, function(err, result) {
       if (err) {

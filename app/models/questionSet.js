@@ -6,19 +6,19 @@ var questionBankSchema = new Schema({
     type: String,
     required: [true, "Question Field can not be empty"]
   },
-  subject: {
-    type: String,
-    required: [true, "You must select a subject"]
-  },
+  // subject: {
+  //   type: String,
+  //   required: [true, "You must select a subject"]
+  // },
   options: [
     {
       option: String,
       is_correct: Boolean
     }
-  ],
-  optionsReorder: {
-    type: Boolean
-  }
+  ]
+  // optionsReorder: {
+  //   type: Boolean
+  // }
 });
 
 var questionSetSchema = new Schema(
@@ -31,8 +31,7 @@ var questionSetSchema = new Schema(
     questionPaper2: [questionBankSchema],
     questionPaper3: [questionBankSchema],
     questionPaper4: [questionBankSchema],
-    subjectOrder: [String],
-    optionsReorder: Boolean
+    subjectOrder: [String]
   },
   {
     timestamps: { createdAt: "created_at", updatedAt: "updated_at" }
