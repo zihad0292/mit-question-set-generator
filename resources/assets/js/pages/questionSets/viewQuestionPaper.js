@@ -16,7 +16,7 @@ import {
   WidgetTitle,
   FlatButton,
   FullBodyLoader,
-  ConfirmDialog
+  ConfirmDialog,
 } from "../../components/utils";
 
 import { fetchQuestionPaper } from "../../actions/questionPaperActions";
@@ -24,136 +24,136 @@ import { fetchQuestionPaper } from "../../actions/questionPaperActions";
 import { numberToAlphabet } from "../../utilityFunctions";
 import { func } from "prop-types";
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
-    width: "100%"
+    width: "100%",
   },
   tableTitle: {
     margin: theme.spacing(2),
-    marginBottom: theme.spacing(1)
+    marginBottom: theme.spacing(1),
   },
   relativeContainer: {
-    position: "relative"
+    position: "relative",
   },
   media: {
-    height: 260
+    height: 260,
   },
   title: {
     position: "absolute",
     bottom: 125,
     padding: theme.spacing(2),
     width: "60%",
-    color: theme.palette.primary.dark
+    color: theme.palette.primary.dark,
   },
   dbCardRow: {
     padding: theme.spacing(1),
-    margin: theme.spacing(1, 0)
+    margin: theme.spacing(1, 0),
   },
   dbRowImage: {
-    width: 40
+    width: 40,
   },
   cardContent: {
     height: "auto",
-    overflow: "hidden"
+    overflow: "hidden",
   },
   noQuestionsToDisplay: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    minHeight: "300px"
+    minHeight: "300px",
   },
   enableIcon: {
     position: "relative",
     top: -1,
-    marginRight: theme.spacing(0.5)
+    marginRight: theme.spacing(0.5),
   },
   noBottomSpacing: {
-    marginBottom: 0
+    marginBottom: 0,
   },
   optionsContainer: {
     fontSize: ".8em",
     lineHeight: "1.7",
-    marginTop: 0
+    marginTop: 0,
   },
   correctAnswer: {
     color: "green",
     position: "relative",
-    top: "7px"
+    top: "7px",
   },
   cardButton: {
-    margin: theme.spacing(0.5)
+    margin: theme.spacing(0.5),
   },
   toolbarStyle: {
     backgroundImage: "url('/images/index-relation-banner.png')",
     minHeight: 140,
-    backgroundSize: "cover"
+    backgroundSize: "cover",
   },
   subjectTitle: {
     width: "100%",
     display: "block",
     textTransform: "uppercase",
-    marginBottom: "20px"
+    marginBottom: "20px",
   },
   mainContainer: {
-    marginTop: "20px"
+    marginTop: "20px",
   },
   questionContainer: {
-    margin: "0"
+    margin: "0",
   },
   questionWrapper: {
     width: "100%",
-    minHeight: "300px"
+    minHeight: "300px",
   },
   bottomSpacing: {
-    marginBottom: theme.spacing(3)
+    marginBottom: theme.spacing(3),
   },
   buttonStyles: {
     padding: "8px 15px 6px",
-    marginLeft: "10px"
+    marginLeft: "10px",
   },
   buttonIcon: {
     position: "relative",
-    top: "-3px"
+    top: "-3px",
   },
   textRight: {
     textAlign: "right",
     width: "100%",
-    marginRight: "50px"
+    marginRight: "50px",
   },
   buttonBg: {
-    backgroundColor: "rgba(0, 0, 0, 0.08)"
+    backgroundColor: "rgba(0, 0, 0, 0.08)",
   },
   fullWidthContent: {
-    width: "100%"
-  }
+    width: "100%",
+  },
 });
 
 export class viewQuestionPaper extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      questionPaper: []
+      questionPaper: [],
     };
     this.export2Doc = this.export2Doc.bind(this);
   }
 
   componentDidMount() {
-    const { fetchQuestionPaper, singleQuestionSet } = this.props;
+    const { singleQuestionSet } = this.props;
     var str = this.props.match.params.paper;
     var res = str.split("-");
     this.setState({
-      questionSetIndex: res[0]
+      questionSetIndex: res[0],
     });
 
     const paper = res[1];
     if (paper == "1") {
-      fetchQuestionPaper(singleQuestionSet.questionPaper1);
+      this.setState({ questionPaper: singleQuestionSet.questionPaper1 });
     } else if (paper == "2") {
-      fetchQuestionPaper(singleQuestionSet.questionPaper2);
+      this.setState({ questionPaper: singleQuestionSet.questionPaper2 });
     } else if (paper == "3") {
-      fetchQuestionPaper(singleQuestionSet.questionPaper3);
+      this.setState({ questionPaper: singleQuestionSet.questionPaper3 });
     } else if (paper == "4") {
-      fetchQuestionPaper(singleQuestionSet.questionPaper4);
+      this.setState({ questionPaper: singleQuestionSet.questionPaper4 });
     }
   }
 
@@ -220,28 +220,16 @@ export class viewQuestionPaper extends Component {
       questionPaper,
       baseQuestionDetails,
       questionSets,
-      singleQuestionSet
+      singleQuestionSet,
     } = this.props;
 
     // const { questionSetIndex } = this.state;
 
     // console.log(singleQuestionSet.subjectOrder);
 
-    var questionsToRender = [];
-
-    for (var i = 0; i < singleQuestionSet.subjectOrder.length; i++) {
-      for (var j = 0; j < questionPaper.length; j++) {
-        if (questionPaper[j].subject == singleQuestionSet.subjectOrder[i]) {
-          questionsToRender.push(questionPaper[j]);
-        }
-      }
-    }
-
-    console.log(questionsToRender);
-
-    if (questionsToRender && questionsToRender.length > 0) {
+    if (this.state.questionPaper && this.state.questionPaper.length > 0) {
       var i = 1;
-      return questionsToRender.map((question, index) => {
+      return this.state.questionPaper.map((question, index) => {
         return (
           <Grid item xs={12} key={`${index}-q`}>
             <p className={classes.questionContainer}>
@@ -270,18 +258,9 @@ export class viewQuestionPaper extends Component {
   renderAnswers() {
     const { classes, questionPaper, singleQuestionSet } = this.props;
 
-    var questionsToRender = [];
-
-    for (var i = 0; i < singleQuestionSet.subjectOrder.length; i++) {
-      for (var j = 0; j < questionPaper.length; j++) {
-        if (questionPaper[j].subject == singleQuestionSet.subjectOrder[i]) {
-          questionsToRender.push(questionPaper[j]);
-        }
-      }
-    }
-
-    if (questionsToRender && questionsToRender.length > 0) {
-      return questionsToRender.map((question, index) => {
+    if (this.state.questionPaper && this.state.questionPaper.length > 0) {
+      var i = 1;
+      return this.state.questionPaper.map((question, index) => {
         return (
           <Grid item xs={12} key={`${index}-a`}>
             <p className={classes.optionsContainer}>
@@ -377,7 +356,7 @@ function mapStateToProps(store) {
     ...store.questionSetInfo,
     singleQuestionSet: store.questionSetInfo.singleQuestionSet,
     questionSets: store.questionSetInfo.questionSets,
-    questionPaper: store.questionPaperInfo.questionPaper
+    questionPaper: store.questionPaperInfo.questionPaper,
   };
 }
 

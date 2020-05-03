@@ -3,13 +3,13 @@ var QuestionSet = require("../models/questionSet");
 var QuestionBank = require("../models/questionBank");
 
 module.exports = {
-  getAllQuestionSets: function(req, res, next) {
+  getAllQuestionSets: function (req, res, next) {
     var response = {
       success: true,
-      status: 200
+      status: 200,
     };
 
-    QuestionSet.getAll(function(err, result) {
+    QuestionSet.getAll(function (err, result) {
       if (err) {
         return next(err);
       } else {
@@ -20,10 +20,10 @@ module.exports = {
     });
   },
 
-  createQuestionSet: function(req, res) {
+  createQuestionSet: function (req, res) {
     var response = {
       success: true,
-      status: 200
+      status: 200,
     };
 
     var QuestionSetRequest = {
@@ -32,10 +32,10 @@ module.exports = {
       questionPaper2: JSON.parse(req.body.questionPaper2),
       questionPaper3: JSON.parse(req.body.questionPaper3),
       questionPaper4: JSON.parse(req.body.questionPaper4),
-      subjectOrder: JSON.parse(req.body.subjectOrder)
+      subjectOrder: JSON.parse(req.body.subjectOrder),
     };
 
-    QuestionSet.create(QuestionSetRequest, function(err, result) {
+    QuestionSet.create(QuestionSetRequest, function (err, result) {
       if (err) {
         //next(err);
         response.success = false;
@@ -49,16 +49,16 @@ module.exports = {
     });
   },
 
-  countQuestionSet: function(req, res) {
+  countQuestionSet: function (req, res) {
     var url_parts = url.parse(req.url, true);
     var query = url_parts.query;
 
     var response = {
       success: true,
-      status: 200
+      status: 200,
     };
 
-    QuestionSet.count({}, function(err, result) {
+    QuestionSet.count({}, function (err, result) {
       if (err) {
         //next(err);
         response.success = false;
@@ -72,16 +72,16 @@ module.exports = {
     });
   },
 
-  findQuestionSet: function(req, res) {
+  findQuestionSet: function (req, res) {
     var url_parts = url.parse(req.url, true);
     var query = url_parts.query;
 
     var response = {
       success: true,
-      status: 200
+      status: 200,
     };
 
-    var cb = function(err, result) {
+    var cb = function (err, result) {
       if (err) {
         response.success = false;
         response.status = 401;
@@ -95,16 +95,16 @@ module.exports = {
     QuestionSet.findOne({ _id: query.id }, cb);
   },
 
-  deleteQuestionSet: function(req, res, next) {
+  deleteQuestionSet: function (req, res, next) {
     var url_parts = url.parse(req.url, true);
     var query = url_parts.query;
 
     var response = {
       success: true,
-      status: 200
+      status: 200,
     };
 
-    QuestionSet.delete(query.id, function(err, success) {
+    QuestionSet.delete(query.id, function (err, success) {
       if (err) {
         return next(err);
       } else {
@@ -112,5 +112,5 @@ module.exports = {
         res.json(response);
       }
     });
-  }
+  },
 };

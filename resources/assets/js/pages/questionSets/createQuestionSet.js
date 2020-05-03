@@ -20,38 +20,38 @@ import { fetchAllBaseQuestions } from "../../actions/baseQuestionActions";
 import {
   PageContainer,
   CustomSmallPaper,
-  FlatButton
+  FlatButton,
 } from "../../components/utils";
 
 import IntegrationReactSelect from "../../components/IntegrationReactSelect";
 
 import { shuffleArray } from "../../utilityFunctions";
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
-    width: "100%"
+    width: "100%",
   },
   titleRow: {
-    marginBottom: theme.spacing(3)
+    marginBottom: theme.spacing(3),
   },
   tableTitle: {
     margin: theme.spacing(2),
-    marginBottom: theme.spacing(1)
+    marginBottom: theme.spacing(1),
   },
   cardContent: {
-    padding: theme.spacing(0, 2)
+    padding: theme.spacing(0, 2),
   },
   submitButton: {
     margin: theme.spacing(2, 0),
-    padding: theme.spacing(1.5)
+    padding: theme.spacing(1.5),
   },
   rightIcon: {
-    marginLeft: theme.spacing(1)
+    marginLeft: theme.spacing(1),
   },
   subjectOrder: {
     display: "inline-block",
-    margin: "0 0 0 10px"
-  }
+    margin: "0 0 0 10px",
+  },
 });
 
 class CreateQuestionSet extends Component {
@@ -65,7 +65,7 @@ class CreateQuestionSet extends Component {
       selectedSubjects: null,
       subjectOrder: {},
       availablePos: [],
-      takenPositions: []
+      takenPositions: [],
     };
     this.handleChange = this.handleChange.bind(this);
     this.onBaseQuestionSelect = this.onBaseQuestionSelect.bind(this);
@@ -88,7 +88,7 @@ class CreateQuestionSet extends Component {
 
     tempSubjectOrder[subject] = newPosition;
 
-    var tempAvailablePos = this.state.availablePos.filter(item => {
+    var tempAvailablePos = this.state.availablePos.filter((item) => {
       return item !== newPosition;
     });
 
@@ -98,7 +98,7 @@ class CreateQuestionSet extends Component {
 
     this.setState({
       subjectOrder: tempSubjectOrder,
-      availablePos: tempAvailablePos
+      availablePos: tempAvailablePos,
     });
   }
 
@@ -125,19 +125,19 @@ class CreateQuestionSet extends Component {
       baseQuestionIndex: index.value,
       availablePos: availablePos,
       subjectOrder: subjectOrder,
-      selectedSubjects: selectedBaseQuestion.selectedSubjects
+      selectedSubjects: selectedBaseQuestion.selectedSubjects,
     });
   }
 
   handleCheckboxChange(event) {
     this.setState({
-      [event.target.name]: event.target.checked
+      [event.target.name]: event.target.checked,
     });
   }
 
   handleChange(event) {
     this.setState({
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
     });
   }
 
@@ -147,12 +147,12 @@ class CreateQuestionSet extends Component {
       optionsReorder,
       baseQuestionIndex,
       subjectOrder,
-      selectedSubjects
+      selectedSubjects,
     } = this.state;
     const {
       generateQuestionSet,
       baseQuestions,
-      singleBaseQuestion
+      singleBaseQuestion,
     } = this.props;
 
     if (baseQuestionIndex === null) {
@@ -166,7 +166,7 @@ class CreateQuestionSet extends Component {
     }
 
     var subjectOrderFlag = 0;
-    Object.keys(subjectOrder).map(key => {
+    Object.keys(subjectOrder).map((key) => {
       if (subjectOrder[key] === null || subjectOrder[key] === "") {
         subjectOrderFlag = 1;
       }
@@ -194,17 +194,26 @@ class CreateQuestionSet extends Component {
       }
     }
 
-    var subjectsOrder = Object.keys(subjectOrder).sort(function(a, b) {
+    var subjectsOrder = Object.keys(subjectOrder).sort(function (a, b) {
       return subjectOrder[a] - subjectOrder[b];
     });
 
-    var modifiedArray = finalArray.map(row => {
-      return row.map(item => {
+    var modifiedArray = finalArray.map((row) => {
+      return row.map((item) => {
         return {
           question: item.question,
-          options: item.options.map(option => {
-            return { option: option.option, is_correct: option.is_correct };
-          })
+          options: optionsReorder
+            ? shuffleArray(
+                item.options.map((option) => {
+                  return {
+                    option: option.option,
+                    is_correct: option.is_correct,
+                  };
+                })
+              )
+            : item.options.map((option) => {
+                return { option: option.option, is_correct: option.is_correct };
+              }),
         };
       });
     });
@@ -225,29 +234,29 @@ class CreateQuestionSet extends Component {
       questionSetName,
       optionsReorder,
       baseQuestionIndex,
-      availablePos
+      availablePos,
     } = this.state;
 
     const selectBaseQuestion = baseQuestions.map((item, index) => {
       return {
         value: index,
-        label: item.baseQuestionName
+        label: item.baseQuestionName,
       };
     });
 
     let tempAvailablePos = [...availablePos];
     tempAvailablePos.sort();
 
-    let selectSubjectOrder = tempAvailablePos.map(item => {
+    let selectSubjectOrder = tempAvailablePos.map((item) => {
       return {
         value: item,
-        label: item
+        label: item,
       };
     });
 
     selectSubjectOrder.unshift({
       value: "",
-      label: "-"
+      label: "-",
     });
     return (
       <PageContainer maxWidth="lg">
@@ -272,7 +281,7 @@ class CreateQuestionSet extends Component {
                   minHeight:
                     selectSubjectOrder.length < 5
                       ? "400px"
-                      : `${selectSubjectOrder.length * 110}px`
+                      : `${selectSubjectOrder.length * 110}px`,
                 }}
               >
                 <Grid container spacing={3}>
@@ -303,7 +312,7 @@ class CreateQuestionSet extends Component {
                         Select Subjects order
                       </Typography>
                       {baseQuestions[baseQuestionIndex].selectedSubjects.map(
-                        subject => {
+                        (subject) => {
                           return (
                             <div
                               style={{
@@ -311,7 +320,7 @@ class CreateQuestionSet extends Component {
                                 width: "100%",
                                 maxWidth: "200px",
                                 margin: "20px 10px 0 0",
-                                textTransform: "capitalize"
+                                textTransform: "capitalize",
                               }}
                               key={subject._id}
                             >
@@ -394,14 +403,14 @@ class CreateQuestionSet extends Component {
 
 CreateQuestionSet.propTypes = {
   classes: PropTypes.object.isRequired,
-  onComplete: PropTypes.func
+  onComplete: PropTypes.func,
 };
 
 function mapStateToProps(store) {
   return {
     questionSets: store.questionSetInfo.questionSets,
     singleBaseQuestion: store.baseQuestionInfo.singleBaseQuestion,
-    baseQuestions: store.baseQuestionInfo.baseQuestions
+    baseQuestions: store.baseQuestionInfo.baseQuestions,
   };
 }
 
@@ -411,7 +420,7 @@ function mapDispatchToProps(dispatch) {
       fetchQuestions,
       generateQuestionSet,
       fetchAllBaseQuestions,
-      fetchBaseQuestion
+      fetchBaseQuestion,
     },
     dispatch
   );
